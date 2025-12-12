@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -27,7 +26,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.androidx.splash.screen)
             implementation(libs.maps.mobile)
-            implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+            implementation(libs.androidx.constraintlayout)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -52,7 +51,7 @@ kotlin {
 
 android {
     namespace = "org.example.project"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    compileSdk = 36
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
@@ -60,10 +59,10 @@ android {
 
     defaultConfig {
         applicationId = "org.example.project"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        minSdk = 30
+        targetSdk = 36
+        versionCode = 1_001_000
+        versionName = "1.1.0"
     }
     packaging {
         resources {

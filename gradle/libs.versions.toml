@@ -1,8 +1,5 @@
 [versions]
 agp = "8.13.2"
-android-compileSdk = "36"
-android-minSdk = "30"
-android-targetSdk = "36"
 androidx-activityCompose = "1.12.1"
 androidx-appcompat = "1.7.1"
 androidx-constraintlayout = "2.2.1"
@@ -17,7 +14,6 @@ composeBom = "2025.12.00"
 junit = "4.13.2"
 kotlin = "2.2.21"
 ktor = "3.3.3"
-logback = "1.5.20"
 kotlinx-coroutines = "1.10.2"
 android-splash-screen = "1.2.0"
 
@@ -27,7 +23,6 @@ koin = "4.1.1"
 ksp-version = "2.1.10-1.0.31"
 
 securityCrypto = "1.1.0"
-tdlib = "2.8.4"
 maps-mobile = "4.19.0-lite"
 
 [libraries]

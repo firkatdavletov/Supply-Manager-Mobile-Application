@@ -60,7 +60,7 @@ kotlin {
 
 android {
     namespace = "org.example.project.shared"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    compileSdk = 36
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
