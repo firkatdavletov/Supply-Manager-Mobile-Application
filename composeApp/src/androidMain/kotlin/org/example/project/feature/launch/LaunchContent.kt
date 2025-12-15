@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -33,7 +34,6 @@ fun LaunchContent(
     isLoading: Boolean,
     isError: Boolean,
     modifier: Modifier = Modifier,
-    errorMessage: String?,
     onRetryClicked: () -> Unit,
 ) {
     Box(
@@ -60,6 +60,7 @@ fun LaunchContent(
                 .padding(16.dp)
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
+                .navigationBarsPadding()
         ) {
             if (isLoading) {
                 CircularProgressIndicator(
@@ -100,7 +101,6 @@ private fun LaunchScreen_Preview_Night() {
         LaunchContent(
             isLoading = false,
             isError = true,
-            errorMessage = null
         ) { }
     }
 }
@@ -119,7 +119,6 @@ private fun LaunchScreen_Preview() {
         LaunchContent(
             isLoading = false,
             isError = true,
-            errorMessage = null
         ) { }
     }
 }

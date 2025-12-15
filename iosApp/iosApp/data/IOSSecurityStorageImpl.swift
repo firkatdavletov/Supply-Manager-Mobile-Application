@@ -34,7 +34,7 @@ import UIKit
     }
     
     func getDeviceId() -> String {
-        return UIDevice.current.identifierForVendor!.uuidString
+        return "test_device_id"//UIDevice.current.identifierForVendor!.uuidString
     }
     
     private func save(key: String, value: String) {

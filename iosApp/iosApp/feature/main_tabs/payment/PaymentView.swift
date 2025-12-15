@@ -24,86 +24,44 @@ struct PaymentView: View {
     }
     
     var body: some View {
-        
-        VStack {
-            ScrollView(.horizontal) {
-                LazyHStack(alignment: .top, spacing: 8) {
-                    ForEach(state.paymentTypes, id: \.id) { type in
-                        PaymentTypeView(
-                            selected: type.selected,
-                            title: type.title,
-                            key: type.id,
-                            onSelect: { key in
-                                component.onEvent(event: PaymentViewEventOnSelectPaymentType(id: key))
-                            }
-                        )
-                    }
-                }
-                .padding(.top)
-                .padding(.horizontal)
+        PaymentContent(
+            deliveryType: state.deliveryType,
+            addressString: state.addressString,
+            departmentName: state.departmentName,
+            isPrivateHome: state.isPrivateHome,
+            entrance: state.entrance,
+            entranceInputError: state.entranceInputError,
+            flat: state.flat,
+            flatInputError: state.flatInputError,
+            comment: state.comment,
+            totalAmount: Int(state.totalAmount),
+            deliveryPrice: Int(state.deliveryPrice),
+            productPrice: Int(state.productPrice),
+            paymentTypes: state.paymentTypes,
+            onChangeDeliveryType: { deliveryType in
+                component.onEvent(event: PaymentViewEventOnChangeDeliveryType(deliveryType: deliveryType))
+            },
+            onBackButtonClicked: {
+                component.onEvent(event: PaymentViewEventOnBackButtonClicked())
+            },
+            onSelectAddress: {
+                component.onEvent(event: PaymentViewEventOnChangeAddress())
+            },
+            onConfirmClicked: {
+                component.onEvent(event: PaymentViewEventOnConfirmButtonClicked())
+            },
+            onIsPrivateHouseChanged: { value in
+                component.onEvent(event: PaymentViewEventOnIsPrivateHouseChanged(isPrivateHouse: value))
+            },
+            onEntranceChanged: { entrance in
+                component.onEvent(event: PaymentViewEventOnEntranceChanged(value: entrance))
+            },
+            onFlatChanged: { flat in
+                component.onEvent(event: PaymentViewEventOnFlatChanged(value: flat))
+            },
+            onCommentChanged: { comment in
+                component.onEvent(event: PaymentViewEventOnCommentChanged(value: comment))
             }
-            Spacer()
-            HStack {
-                Text("ИТОГО:")
-                    .font(.system(size: 14, weight: .regular, design: .rounded))
-                    .foregroundColor(Color("DarkGrayColor"))
-                
-                Text("\(Int(state.totalPrice + state.deliveryPrice))₽")
-                    .font(.system(size: 30, weight: .bold, design: .rounded))
-                    .foregroundColor(Color("BlackColor"))
-            }
-            ConfirmButton(
-                title: "ОПЛАТИТЬ",
-                onConfirm: {
-                    let selected = state.paymentTypes.first(where: { $0.selected })?.id ?? ""
-                    
-                    if (selected == "card") {
-                        activeSheet = .card
-                    } else {
-                        component.onEvent(event: PaymentViewEventOnPayButtonClicked(cryptogram: nil, token: nil))
-                    }
-                },
-                isLoading: state.isLoading,
-                isDisabled: false
-            )
-            .padding()
-        }
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                HStack(alignment: .center, spacing: 16) {
-                    Button(action: {
-                        component.onEvent(event: PaymentViewEventOnBackClicked())
-                    }) {
-                        Image(systemName: "chevron.backward")
-                            .foregroundColor(.white) // цвет иконки
-                            .frame(width: 36, height: 36)
-                            .background(Circle().fill(Color("DarkGrayColor"))) // чёрный круглый фон
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    Text("Оплата заказа")
-                        .font(.system(size: 17, weight: .regular, design: .rounded))
-                        .foregroundColor(Color("DarkGrayColor"))
-                }
-            }
-        }
-        .sheet(item: $activeSheet) { item in
-            switch item {
-            case .card:
-                CardPaymentView(
-                    paymentService: PaymentService(),
-                    callback: { crypto in
-                        component.onEvent(event: PaymentViewEventOnPayButtonClicked(cryptogram: crypto, token: nil))
-                    }
-                )
-            }
-        }
-        .customAlert(
-            item: dialogSlot.child?.instance,
-            onDismiss: { $0.onDismissClicked() },
-            title: { Text($0.title) },
-            message: { Text($0.message) },
-            actions: { _ in Button("OK", action: {}) }
         )
     }
 }

@@ -197,7 +197,6 @@ fun PaymentContent(
                                     modifier = Modifier
                                         .weight(1f)
                                         .height(64.dp),
-//                                    contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp),
                                     value = entrance,
                                     onValueChange = onEntranceChanged,
                                     shape = RoundedCornerShape(50),
@@ -217,7 +216,6 @@ fun PaymentContent(
                                     modifier = Modifier
                                         .weight(1f)
                                         .height(64.dp),
-//                                    contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp),
                                     value = flat,
                                     onValueChange = onFlatChanged,
                                     shape = RoundedCornerShape(50),
@@ -237,7 +235,6 @@ fun PaymentContent(
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp, vertical = 8.dp)
                                 .height(64.dp),
-//                            contentPadding = PaddingValues(vertical = 10.dp, horizontal = 16.dp),
                             value = comment,
                             onValueChange = onCommentChanged,
                             shape = RoundedCornerShape(50),
@@ -279,7 +276,6 @@ fun PaymentContent(
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .height(64.dp),
-//                    contentPadding = PaddingValues(vertical = 10.dp, horizontal = 16.dp),
                     value = comment,
                     onValueChange = onCommentChanged,
                     shape = RoundedCornerShape(50),

@@ -55,7 +55,7 @@ struct SearchAddressView: View {
             
             LazyVStack(alignment: .leading, spacing: 24) {
                 ForEach(state.addresses, id: \.self) { address in
-                    Text(address)
+                    Text("address")
                         .font(.system(size: 16, weight: .regular, design: .rounded))
                         .foregroundColor(Color("DarkGrayColor"))
                 }

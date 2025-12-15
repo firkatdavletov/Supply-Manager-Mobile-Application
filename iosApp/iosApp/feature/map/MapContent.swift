@@ -46,16 +46,16 @@ struct MapContent: View {
                     if (showBackButton) {
                         IconButton(
                             systemName: "arrow.backward",
-                            tint: Color("secondaryContainer"),
-                            foreground: Color("onSecondaryContainer"),
+                            tint: Color.secondaryContainer,
+                            foreground: Color.onSecondaryContainer,
                             action: onBackButtonClicked
                         )
                     }
                     Spacer()
                     IconButton(
                         systemName: "magnifyingglass",
-                        tint: Color("secondaryContainer"),
-                        foreground: Color("onSecondaryContainer"),
+                        tint: Color.secondaryContainer,
+                        foreground: Color.onSecondaryContainer,
                         action: onBackButtonClicked
                     )
                 }
@@ -63,6 +63,7 @@ struct MapContent: View {
                 if (addressString != nil) {
                     Text(addressString!)
                         .font(AppTypography.headlineLarge)
+                        .foregroundStyle(Color.onBackground)
                 }
                 if (deliveryInfo != nil) {
                     Text(deliveryInfo!)
@@ -71,9 +72,9 @@ struct MapContent: View {
                         .padding(.vertical, 8)
                         .background(
                             RoundedRectangle(cornerRadius: 16)
-                                .fill(Color("secondaryContainer"))
+                                .fill(Color.secondaryContainer)
                         )
-                        .foregroundStyle(Color("onSecondaryContainer"))
+                        .foregroundStyle(Color.onBackground)
                 }
                 Spacer()
             }
@@ -86,44 +87,39 @@ struct MapContent: View {
             VStack {
                 IconButton(
                     systemName: "location",
-                    tint: Color("secondaryContainer"),
-                    foreground: Color("onSecondaryContainer"),
+                    tint: Color.secondaryContainer,
+                    foreground: Color.onSecondaryContainer,
                     action: onRequestLocation
                 )
                     .frame(maxWidth: .infinity, alignment: .trailing)
                     .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
                 HStack {
-                    RoundedButton(
+                    SelectedButton(
                         title: "Самовывоз",
-                        onClick: {
+                        selected: deliveryType == DeliveryType.pickup,
+                        action: {
                             onSelectDeliveryType(DeliveryType.pickup)
-                        },
-                        background: deliveryType == DeliveryType.pickup ? Color("primaryContainer") : Color("secondaryContainer"),
-                        foreground: Color("onPrimaryContainer"),
-                        enabled: true
+                        }
                     )
-                    RoundedButton(
+                    SelectedButton(
                         title: "Доставка",
-                        onClick: {
+                        selected: deliveryType == DeliveryType.delivery,
+                        action: {
                             onSelectDeliveryType(DeliveryType.delivery)
-                        },
-                        background: deliveryType == DeliveryType.delivery ? Color("primaryContainer") : Color("secondaryContainer"),
-                        foreground: Color("onPrimaryContainer"),
-                        enabled: true
+                        }
                     )
                 }
                 RoundedButton(
                     title: "Подтвердить",
-                    onClick: {
-                        onSelectDeliveryType(DeliveryType.pickup)
-                    },
-                    background: Color("secondaryContainer"),
-                    foreground: Color("onPrimaryContainer"),
+                    onClick: onConfirm,
+                    background: Color.secondaryContainer,
+                    foreground: Color.onSecondaryContainer,
                     enabled: isConfirmEnabled
                 )
             }
                 .frame(maxHeight: .infinity, alignment: .bottom)
                 .padding(.horizontal)
+                .background(Color.background)
         }
     }
 }
@@ -147,6 +143,6 @@ struct MapContent: View {
         onSelectDepartment: {_ in },
         onRequestLocation: {},
         showBackButton: true,
-        showMap: true
+        showMap: false
     )
 }

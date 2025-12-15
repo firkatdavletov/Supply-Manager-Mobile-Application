@@ -22,35 +22,13 @@ struct LaunchView: View {
         _state = StateValue((component as! DefaultLaunchComponent).state)
     }
     var body: some View {
-        ZStack {
-            Image("logo")
-                .frame(width: 10, height: 10, alignment: .center)
-            
-            VStack(alignment: .trailing, spacing: 16) {
-                Spacer()
-                if (state.isLoading) {
-                    ProgressView()
-                } else if (state.isError) {
-                    VStack {
-                        ConfirmButton(
-                            title: "Повторить",
-                            onConfirm: {
-                                component.onEvent(event: LaunchViewEventOnReconnect())
-                            },
-                            isLoading: false,
-                            isDisabled: false
-                        )
-                        Text(
-                            state.errorMessages.first!
-                        )
-                        .foregroundColor(Color("error"))
-                        .font(.system(size: 12, weight: .light, design: .rounded))
-                    }
-                }
+        LaunchContent(
+            isLoading: state.isLoading,
+            isError: state.isError,
+            onRetryClicked: {
+                component.onEvent(event: LaunchViewEventOnReconnect())
             }
-            .padding(.horizontal)
-            .frame(maxWidth: .infinity, alignment: .bottom)
-        }
+        )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .toastBanner(
             isPresented: $showToast,

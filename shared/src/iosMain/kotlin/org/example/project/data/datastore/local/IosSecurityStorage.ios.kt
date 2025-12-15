@@ -1,11 +1,41 @@
 package org.example.project.data.datastore.local
 
-import kotlinx.cinterop.*
-import platform.CoreFoundation.*
-import platform.Foundation.*
-import platform.Security.*
+import kotlinx.cinterop.BetaInteropApi
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.alloc
+import kotlinx.cinterop.convert
+import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.ptr
+import kotlinx.cinterop.value
+import platform.CoreFoundation.CFAutorelease
+import platform.CoreFoundation.CFDictionaryAddValue
+import platform.CoreFoundation.CFDictionaryCreateMutable
+import platform.CoreFoundation.CFMutableDictionaryRef
+import platform.CoreFoundation.CFStringRef
+import platform.CoreFoundation.CFTypeRef
+import platform.CoreFoundation.CFTypeRefVar
+import platform.CoreFoundation.kCFBooleanTrue
+import platform.Foundation.CFBridgingRelease
+import platform.Foundation.CFBridgingRetain
+import platform.Foundation.NSData
+import platform.Foundation.NSString
+import platform.Foundation.NSUTF8StringEncoding
+import platform.Foundation.create
+import platform.Foundation.dataUsingEncoding
+import platform.Security.SecItemAdd
+import platform.Security.SecItemCopyMatching
+import platform.Security.SecItemDelete
+import platform.Security.errSecDuplicateItem
+import platform.Security.errSecItemNotFound
+import platform.Security.errSecSuccess
+import platform.Security.kSecAttrAccount
+import platform.Security.kSecClass
+import platform.Security.kSecClassGenericPassword
+import platform.Security.kSecMatchLimit
+import platform.Security.kSecMatchLimitOne
+import platform.Security.kSecReturnData
+import platform.Security.kSecValueData
 import platform.UIKit.UIDevice
-import kotlin.run
 
 class IosSecurityStorage: SecurityStorage {
     private var deviceId: String? = null
@@ -36,7 +66,7 @@ class IosSecurityStorage: SecurityStorage {
 
     override fun getDeviceId(): String {
         if (deviceId == null) {
-            deviceId = UIDevice.currentDevice.systemName() + "_" + UIDevice.currentDevice.systemVersion()
+            deviceId = UIDevice.currentDevice.identifierForVendor?.UUIDString
         }
         return deviceId!!
     }

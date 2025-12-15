@@ -7,22 +7,17 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
@@ -41,6 +36,7 @@ import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
@@ -71,7 +67,6 @@ fun HomeContent(
     onPersonClicked: () -> Unit = {},
     onOrderClicked: (Long) -> Unit = {},
 ) {
-    val lazyGridState = rememberLazyGridState()
     val interactionSource = remember {
         MutableInteractionSource()
     }
@@ -105,7 +100,7 @@ fun HomeContent(
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.primaryContainer)
                     .statusBarsPadding()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .padding(horizontal = 16.dp, vertical = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Column(
@@ -117,16 +112,21 @@ fun HomeContent(
                         ) {
                             onChangeAddressClicked()
                         },
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    FlowRow(
+                    Text(
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        style = MaterialTheme.typography.titleMedium,
+                        text = addressString,
+                    )
+                    Row(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
+                            style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            style = MaterialTheme.typography.titleMedium,
-                            text = addressString,
+                            text = deliveryInfo,
                         )
                         Text(
                             modifier = Modifier
@@ -141,11 +141,6 @@ fun HomeContent(
                             text = "Изменить",
                         )
                     }
-                    Text(
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        text = deliveryInfo,
-                    )
                 }
                 IconButton(
                     onClick = {
@@ -167,7 +162,6 @@ fun HomeContent(
                 columns = GridCells.Fixed(3),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                state = lazyGridState
             ) {
                 if (userName != null) {
                     item(
@@ -210,34 +204,6 @@ fun HomeContent(
                         )
                     }
                 }
-//                item(
-//                    span = {
-//                        GridItemSpan(3)
-//                    }
-//                ) {
-//                    OutlinedTextField(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .height(40.dp)
-//                            .focusRequester(focusRequester),
-//                        contentPadding = PaddingValues(vertical = 8.dp),
-//                        state = textState,
-//                        shape = RoundedCornerShape(16.dp),
-//                        textStyle = MaterialTheme.typography.bodyLarge,
-//                        placeholder = {
-//                            Text(
-//                                style = MaterialTheme.typography.bodyLarge,
-//                                text = "Поиск"
-//                            )
-//                        },
-//                        leadingIcon = {
-//                            Icon(
-//                                imageVector = ImageVector.vectorResource(R.drawable.ic_loupe_16),
-//                                contentDescription = null,
-//                            )
-//                        }
-//                    )
-//                }
                 items(
                     count = categories.size,
                     key = {
@@ -258,48 +224,6 @@ fun HomeContent(
                         title = categories[it].title,
                         image = categories[it].imageUrl,
                     )
-                }
-                for (category in categories) {
-                    item(span = {
-                        GridItemSpan(3)
-                    }) {
-                        Text(
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onBackground,
-                            text = category.title
-                        )
-                    }
-                    item(
-                        span = {
-                            GridItemSpan(3)
-                        }
-                    ) {
-                        LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            items(
-                                count = category.products.size
-                            ) {
-                                val product = category.products[it]
-                                ProductCard(
-                                    modifier = Modifier
-                                        .height(166.dp)
-                                        .width(166.dp),
-                                    imageUrl = product.imageUrl,
-                                    title = product.title,
-                                    price = "${product.price.toInt()} ₽",
-                                    weight = "100g",
-                                    count = product.count,
-                                    onAddToCart = {
-                                        onAddToCart(product)
-                                    },
-                                    onRemoveFromCart = {
-                                        onRemoveFromCart(product)
-                                    }
-                                )
-                            }
-                        }
-                    }
                 }
             }
             if (totalAmount > 0) {

@@ -21,7 +21,6 @@ fun LaunchScreen(component: LaunchComponent) {
             .fillMaxSize(),
         isLoading = state.isLoading,
         isError = state.isError,
-        errorMessage = null
     ) {
         component.onEvent(LaunchViewEvent.OnReconnect)
     }

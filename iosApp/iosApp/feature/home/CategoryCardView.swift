@@ -23,9 +23,13 @@ struct CategoryCardView: View {
                 .shadow(color: Color("LightGrey"), radius: 4)
             
             Text(title)
-                .font(.system(size: 15, weight: .bold, design: .rounded))
-                .foregroundColor(Color("DarkGrayColor"))
-                .padding(.horizontal, 20)
+                .font(AppTypography.bodyMedium)
+                .foregroundColor(Color.onBackground)
+            Spacer()
         }
     }
+}
+
+#Preview {
+    CategoryCardView(title: "String", imageUrl: "")
 }
