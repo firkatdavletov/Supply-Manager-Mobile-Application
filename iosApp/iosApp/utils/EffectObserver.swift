@@ -9,7 +9,7 @@ import SwiftUI
 import Shared
 
 class EffectObserver : ObservableObject {
-    @Published var effect: ReducerViewEffect? = nil
+    @Published var effect: String? = nil
 
     private var disposer: (() -> Void)? = nil
 

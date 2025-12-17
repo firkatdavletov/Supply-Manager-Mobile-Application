@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.DeliveryAppTheme
+import com.example.ui.theme.AppTypography
 import org.example.project.R
 import org.example.project.domain.models.CartItemModel
 import org.example.project.domain.models.DeliveryType
@@ -99,6 +100,7 @@ fun CartContent(
                         ) {
                             Column {
                                 Text(
+                                    style = AppTypography.titleMedium,
                                     color = MaterialTheme.colorScheme.onBackground,
                                     text = it.title
                                 )

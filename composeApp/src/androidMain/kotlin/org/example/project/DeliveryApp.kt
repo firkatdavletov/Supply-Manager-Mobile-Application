@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.compose.DeliveryAppTheme
-import org.example.project.features.SnackBarManager
 import org.example.project.navigation.RootComponent
 import org.example.project.navigation.RootContent
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -25,12 +24,11 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 @Preview
 fun DeliveryApp(
-    snackBarManager: SnackBarManager,
-    rootComponent: RootComponent
+    rootComponent: RootComponent,
 ) {
     val snackbarHostState = SnackbarHostState()
     LaunchedEffect(rootComponent) {
-        snackBarManager.messages.collect {
+        rootComponent.snackBarManager.messages.collect {
             snackbarHostState.showSnackbar(
                 object : SnackbarVisuals {
                     override val message: String = it

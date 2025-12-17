@@ -11,6 +11,10 @@ struct iOSApp: App {
     
     var rootHolder: RootHolder { appDelegate.rootHolder }
     
+    init() {
+        HelperKtKt.doInitKoin()
+    }
+    
     var body: some Scene {
         WindowGroup {
             RootView(root: rootHolder.root)
@@ -23,9 +27,5 @@ struct iOSApp: App {
                     }
                 }
         }
-    }
-    
-    init() {
-        HelperKtKt.doInitKoin()
     }
 }

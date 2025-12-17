@@ -15,7 +15,7 @@ class ProfileViewReducer : Reducer<ProfileViewState, ProfileViewEvent, ProfileVi
                 name = event.name
             )
             is ProfileViewEvent.OnUserLoaded -> {
-                val phone = event.user.phone
+                val phone = event.user.phone.filter { it.isDigit() }
                 val phoneString = if (event.user.phone.length == 11) buildString {
                     append("+${phone[0]}")
                     append("(${phone.substring(1, 4)})-${phone.substring(4, 7)}-${phone.substring(7,9)}-${phone.substring(9)}")

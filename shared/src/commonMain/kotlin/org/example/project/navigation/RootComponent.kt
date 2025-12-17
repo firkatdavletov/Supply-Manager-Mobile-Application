@@ -4,10 +4,12 @@ import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import kotlinx.coroutines.flow.SharedFlow
 import org.example.project.features.DialogComponent
+import org.example.project.features.SnackBarManager
 import org.example.project.features.app_introduction.AppIntroductionComponent
 import org.example.project.features.authorization.AuthorizationComponent
 import org.example.project.features.authorization.sign_in_component.SignInComponent
 import org.example.project.features.authorization.verification_component.VerificationComponent
+import org.example.project.features.base.IosComponent
 import org.example.project.features.launch.LaunchComponent
 import org.example.project.features.main_tabs.MainTabsComponent
 import org.example.project.features.home.HomeComponent
@@ -22,7 +24,7 @@ import org.example.project.features.search_address.SearchAddressComponent
 
 interface RootComponent {
     val childStack: Value<ChildStack<*, Child>>
-    val snackBarMessage: SharedFlow<String>
+    val snackBarManager: SnackBarManager
 
     fun onBackClicked(toIndex: Int)
 

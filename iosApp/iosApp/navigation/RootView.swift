@@ -4,6 +4,11 @@ import Shared
 struct RootView: View {
     let root: RootComponent
     
+    @StateObject private var effectObserver = EffectObserver()
+    @State private var showToast = false
+    @State private var toastMessage = ""
+    
+    
     var body: some View {
         StackView(
             stackValue: StateValue(root.childStack),
@@ -20,9 +25,32 @@ struct RootView: View {
                 case let child as RootComponentChild.Authorization: AuthorizationView(root: child.component)
                 case let child as RootComponentChild.SelectAddress: MapView(component: child.component)
                 case let child as RootComponentChild.Home: HomeView(component: child.component)
+                case let child as RootComponentChild.Catalog: CatalogView(component: child.component)
+                case let child as RootComponentChild.Cart: CartView(component: child.component)
+                case let child as RootComponentChild.Payment: PaymentView(component: child.component)
+                case let child as RootComponentChild.SignIn: SignInView(component: child.component)
+                case let child as RootComponentChild.Verification: VerificationView(component: child.component)
+                case let child as RootComponentChild.Profile: ProfileView(component: child.component)
                 default: EmptyView()
                 }
             }
         )
+        .toastBanner(
+            isPresented: $showToast,
+            message: toastMessage,
+            type: ToastType.error
+        )
+        .onAppear {
+            effectObserver.start(component: root.snackBarManager)
+        }
+        .onDisappear {
+            effectObserver.stop()
+        }
+        .onReceive(effectObserver.$effect.dropFirst()) { effect in
+            guard let effect = effect else { return }
+        
+            toastMessage = effect
+            showToast = true
+        }
     }
 }

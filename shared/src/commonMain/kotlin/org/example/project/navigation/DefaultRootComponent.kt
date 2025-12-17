@@ -11,15 +11,20 @@ import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.pushToFront
 import com.arkivanov.decompose.value.Value
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import org.example.project.features.SnackBarManager
 import org.example.project.features.app_introduction.AppIntroCallbacks
 import org.example.project.features.app_introduction.AppIntroductionComponent
 import org.example.project.features.authorization.sign_in_component.SignInCallbacks
 import org.example.project.features.authorization.sign_in_component.SignInComponent
 import org.example.project.features.authorization.verification_component.VerificationComponent
 import org.example.project.features.authorization.verification_component.VerifyCallbacks
+import org.example.project.features.base.Reducer
 import org.example.project.features.cart.CartComponent
 import org.example.project.features.cart.CartViewCallbacks
 import org.example.project.features.catalog.CatalogCallbacks
@@ -56,10 +61,10 @@ import org.koin.core.parameter.parametersOf
 
 class DefaultRootComponent(
     componentContext: ComponentContext,
+    override val snackBarManager: SnackBarManager,
 ) : RootComponent, ComponentContext by componentContext, KoinComponent {
 
     private val navigation  = StackNavigation<Config>()
-    private val _snackBarMessage: MutableSharedFlow<String> = MutableSharedFlow()
 
     override val childStack: Value<ChildStack<*, RootComponent.Child>> = childStack(
         source = navigation,
@@ -71,8 +76,6 @@ class DefaultRootComponent(
     override fun onBackClicked(toIndex: Int) {
         navigation.popTo(toIndex)
     }
-
-    override val snackBarMessage: SharedFlow<String> = _snackBarMessage
 
     private fun createChild(
         config: Config,

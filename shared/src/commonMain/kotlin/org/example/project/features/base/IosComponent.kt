@@ -6,5 +6,5 @@ import kotlinx.coroutines.launch
 
 interface IosComponent {
     // --- API для iOS подписки на события ---
-    fun observeEvents(onEvent: (Reducer.ViewEffect) -> Unit): () -> Unit
+    fun observeEvents(onEvent: (String) -> Unit): () -> Unit
 }

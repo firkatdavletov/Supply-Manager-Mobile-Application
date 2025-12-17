@@ -30,27 +30,5 @@ struct LaunchView: View {
             }
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .toastBanner(
-            isPresented: $showToast,
-            message: "Что-то пошло не так",
-            type: .error
-        )
-        .onAppear {
-            effectObserver.start(component: component)
-        }
-        .onDisappear {
-            effectObserver.stop()
-        }
-        .onReceive(effectObserver.$effect.dropFirst()) { effect in
-            guard let effect = effect else { return }
-        
-            switch effect {
-            case is LaunchViewEffectShowError:
-                showToast = true
-                toastMessage = (effect as! LaunchViewEffectShowError).message
-            default:
-                break
-            }
-        }
     }
 }

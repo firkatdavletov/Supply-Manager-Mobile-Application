@@ -35,7 +35,6 @@ struct RemoteImageCircle: View {
 
 struct RemoteImage: View {
     let urlString: String
-    let height: CGFloat
     let cornerRadius: CGFloat
 
     private var imageURL: URL? {
@@ -50,21 +49,26 @@ struct RemoteImage: View {
                     image
                         .resizable()
                         .scaledToFill()
-                        .frame(height: height)
                         .clipped()
                 default:
                     placeholder
                 }
             }
             .cornerRadius(cornerRadius)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
             placeholder
                 .cornerRadius(cornerRadius)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 
     private var placeholder: some View {
         Color("IceBlue")
-            .frame(height: height)
     }
+}
+
+#Preview {
+    RemoteImage(urlString: "", cornerRadius: 16)
+        .frame(width: 100, height: 100)
 }

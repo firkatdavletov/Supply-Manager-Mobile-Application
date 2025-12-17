@@ -16,11 +16,9 @@ struct CategoryCardView: View {
         VStack(alignment: .leading, spacing: 8) {
             RemoteImage(
                 urlString: imageUrl ?? "",
-                height: 104,
-                cornerRadius: 15
+                cornerRadius: 16
             )
-                .clipShape(RoundedCorner(radius: 24))
-                .shadow(color: Color("LightGrey"), radius: 4)
+            .frame(height: 112)
             
             Text(title)
                 .font(AppTypography.bodyMedium)
@@ -32,4 +30,5 @@ struct CategoryCardView: View {
 
 #Preview {
     CategoryCardView(title: "String", imageUrl: "")
+        .frame(width: 200, height: 200)
 }

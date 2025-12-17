@@ -33,12 +33,13 @@ struct HomeContent: View {
 
                 ScrollView {
                     LazyVStack {
-                        greetingItem
-                            .frame(maxWidth: .infinity)
-                            .padding(.horizontal)
-                            .padding(.top)
+                        if (userName != nil && !userName!.isEmpty) {
+                            greetingItem
+                                .frame(maxWidth: .infinity)
+                                .padding(.horizontal)
+                                .padding(.top)
+                        }
                         ordersPagerItem
-                            .gridCellColumns(3)
                     }
                     LazyVGrid(
                         columns: [
@@ -89,16 +90,16 @@ extension HomeContent {
             VStack(alignment: .leading, spacing: 8) {
 
                 Text(addressString)
-                    .font(.title2)
+                    .font(AppTypography.titleMedium)
                     .foregroundColor(.onPrimaryContainer)
 
                 HStack(spacing: 16) {
                     Text(deliveryInfo)
-                        .font(.caption)
+                        .font(AppTypography.bodySmall)
                         .foregroundColor(.onPrimaryContainer)
 
                     Text("Изменить")
-                        .font(.caption)
+                        .font(AppTypography.bodySmall)
                         .padding(.vertical, 4)
                         .padding(.horizontal, 6)
                         .background(Color.primaryContainer)
@@ -129,7 +130,7 @@ extension HomeContent {
     private var greetingItem: some View {
         if let name = userName {
             Text("Привет, \(name)!")
-                .font(.title2)
+                .font(AppTypography.headlineSmall)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
     }

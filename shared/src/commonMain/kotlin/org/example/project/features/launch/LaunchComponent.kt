@@ -20,15 +20,8 @@ abstract class LaunchComponent(
     initialState,
     reducer,
     snackBarManager,
-), IosComponent {
+) {
     abstract override fun onEvent(event: LaunchViewEvent)
     override val state: Value<LaunchViewState>
         get() = super.state
-
-    override fun observeEvents(onEvent: (Reducer.ViewEffect) -> Unit): () -> Unit {
-        val job = CoroutineScope(Dispatchers.Main).launch {
-            effect.collect { onEvent(it) }
-        }
-        return { job.cancel() }
-    }
 }

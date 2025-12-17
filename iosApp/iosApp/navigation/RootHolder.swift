@@ -12,11 +12,13 @@ import Shared
 class RootHolder: ObservableObject {
     let lifeCycle: LifecycleRegistry
     let root: RootComponent
+    let snackBarManager = SnackBarManagerProvider().getSnackBarManager()
     
     init() {
         lifeCycle = LifecycleRegistryKt.LifecycleRegistry()
         root = DefaultRootComponent(
-            componentContext: DefaultComponentContext(lifecycle: lifeCycle)
+            componentContext: DefaultComponentContext(lifecycle: lifeCycle),
+            snackBarManager: snackBarManager
         )
     }
     

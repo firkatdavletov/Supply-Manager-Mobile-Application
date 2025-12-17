@@ -18,14 +18,7 @@ abstract class MapComponent(
     initialState = initialState,
     reducer = MapReducer(),
     snackBarManager = snackBarManager,
-), IosComponent {
+) {
 
     abstract override fun onEvent(event: MapViewEvent)
-
-    override fun observeEvents(onEvent: (Reducer.ViewEffect) -> Unit): () -> Unit {
-        val job = CoroutineScope(Dispatchers.Main).launch {
-            effect.collect { onEvent(it) }
-        }
-        return { job.cancel() }
-    }
 }

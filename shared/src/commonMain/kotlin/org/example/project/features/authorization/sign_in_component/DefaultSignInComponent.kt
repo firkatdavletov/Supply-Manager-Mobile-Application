@@ -83,13 +83,14 @@ class DefaultSignInComponent(
     }
 
     private fun verify(phone: String) {
-        if (!validatePhoneNumber(phone)) {
-            onEvent(SignInViewEvent.OnShowMessage("Введите правильный номер телефона"))
+        val formattedPhone =  phone.filter { it.isDigit() }
+        if (!validatePhoneNumber(formattedPhone)) {
+            onEvent(SignInViewEvent.OnError("Введите правильный номер телефона: $formattedPhone"))
             return
         }
         when (state.value.selectedAuthType) {
             "sms" -> {
-                sendVerificationCode("7$phone")
+                sendVerificationCode("7$formattedPhone")
             }
         }
     }
