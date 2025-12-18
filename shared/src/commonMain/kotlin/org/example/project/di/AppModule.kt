@@ -254,6 +254,14 @@ fun appModule() = module {
     single<HttpClient>(named("ws_orders")) {
         val securityStorage: SecurityStorage = get()
         val httpClient = HttpClient {
+            install(Logging) {
+                level = LogLevel.ALL // Уровень логирования (ALL, HEADERS, BODY, INFO, NONE)
+                logger = object : Logger {
+                    override fun log(message: String) {
+                        println("Ktorfit Log: $message") // Логирование в консоль
+                    }
+                }
+            }
             install(WebSockets) {
                 pingIntervalMillis = 20_000
             }
@@ -268,14 +276,6 @@ fun appModule() = module {
                     prettyPrint = true
                     isLenient = true
                 })
-            }
-            defaultRequest {
-                url {
-                    host = baseUrl
-                    if (isHttps) {
-                        protocol = URLProtocol.HTTPS
-                    }
-                }
             }
             expectSuccess = true
         }

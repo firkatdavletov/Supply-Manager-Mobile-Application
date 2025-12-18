@@ -78,11 +78,11 @@ class OrderApiImpl(
     }
 
     override suspend fun connect() {
-        reconnectJob?.cancel()
+        if (reconnectJob != null) return
         reconnectJob = scope.launch {
             while (isActive) {
                 try {
-                    wsClient.webSocket("/ws/orders") {
+                    wsClient.webSocket("wss://foodbox-service-firkat.amvera.io/ws/orders") {
                         wsSession = this
                         send("subscribe")
                         listenIncomingMessages()
@@ -121,5 +121,6 @@ class OrderApiImpl(
         wsSession?.close()
         wsSession = null
         reconnectJob?.cancel()
+        reconnectJob = null
     }
 }

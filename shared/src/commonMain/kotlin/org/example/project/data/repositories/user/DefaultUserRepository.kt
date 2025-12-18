@@ -5,7 +5,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import org.example.project.data.api.user_api.model.UpdateUserRequestBody
 import org.example.project.data.datastore.local.user.UserLocalDataStore
 import org.example.project.data.datastore.remote.user.UserRemoteDataStore

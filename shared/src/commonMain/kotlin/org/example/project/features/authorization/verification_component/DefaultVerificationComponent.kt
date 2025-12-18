@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.example.project.domain.models.ResultModel
+import org.example.project.domain.repositories.OrderRepository
 import org.example.project.domain.usecase.auth.VerifyCodeUseCase
 import org.example.project.domain.usecase.user.LoadUserUseCase
 import org.example.project.features.SnackBarManager
@@ -22,6 +23,7 @@ class DefaultVerificationComponent(
     private val authType: String,
     private val callbacks: VerifyCallbacks,
     private val fromScreen: String?,
+    private val orderRepository: OrderRepository,
 ) : VerificationComponent(
     componentContext = componentContext,
     snackBarManager = snackBarManager,
@@ -99,6 +101,7 @@ class DefaultVerificationComponent(
                     }
                     is ResultModel.Success<Boolean> -> {
                         if (resultModel.data) {
+                            orderRepository.connect()
                             withContext(Dispatchers.Main) {
                                 when (fromScreen) {
                                     CartComponent::class.simpleName -> {

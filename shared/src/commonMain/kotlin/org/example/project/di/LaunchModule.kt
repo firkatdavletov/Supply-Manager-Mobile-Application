@@ -14,7 +14,8 @@ fun launchModule() = module {
             loadCatalogUseCase = get(),
             loadCartUseCase = get(),
             callbacks = callbacks,
-            snackBarManager = get()
+            snackBarManager = get(),
+            orderRepository = get()
         )
     }
 }

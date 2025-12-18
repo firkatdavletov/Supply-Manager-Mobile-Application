@@ -12,7 +12,6 @@ import Shared
 
 
 struct PaymentContent: View {
-
     let deliveryType: DeliveryType
     let addressString: String?
     let departmentName: String?
@@ -37,161 +36,52 @@ struct PaymentContent: View {
     let onCommentChanged: (String) -> Void
 
     var body: some View {
-        ZStack(alignment: .bottom) {
+        VStack {
+            header
             ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-
-                    header()
-
-                    deliveryTypeSelector()
-
-                    if deliveryType == .delivery {
-                        deliverySection()
-                    } else {
-                        pickupSection()
-                    }
-
-                    paymentSection()
+                if (deliveryType == DeliveryType.delivery) {
+                    deliverySection
+                } else {
+                    pickupSection
                 }
-                .padding(.bottom, 160) // пространство под нижнюю панель
+                paymentSection
             }
-
-            bottomSummary()
+            bottomSummary
         }
-        .edgesIgnoringSafeArea(.top)
     }
 }
 
 extension PaymentContent {
-    private func header() -> some View {
-        ZStack {
-            HStack {
-                Button(action: onBackButtonClicked) {
-                    Image("ic_arrow_back_16")
-                        .renderingMode(.template)
-                        .foregroundColor(.white)
-                }
-                Spacer()
+    private var header: some View {
+        HStack {
+            Button(action: onBackButtonClicked) {
+                Image(systemName: "chevron.left")
+                    .foregroundColor(Color.onPrimaryContainer)
             }
+            Spacer()
             Text("Оформление заказа")
-                .font(.title2)
-                .foregroundColor(.white)
+                .font(AppTypography.titleLarge)
+                .bold()
+                .foregroundColor(Color.onPrimaryContainer)
+            Spacer()
         }
-        .padding(.horizontal, 8)
-        .padding(.top, UIApplication.shared.safeTop)
-        .frame(maxWidth: .infinity)
+        .padding()
         .background(Color.primaryContainer)
     }
 }
 
-extension PaymentContent {
-    private func deliveryTypeSelector() -> some View {
-        HStack(spacing: 16) {
-            SelectedButton(
-                title: "Самовывоз",
-                selected: deliveryType == .pickup,
-                action: {
-                    if deliveryType == .delivery { onChangeDeliveryType(.pickup) }
-                }
-            )
-            SelectedButton(
-                title: "Доставка",
-                selected: deliveryType == .delivery,
-                action: {
-                    if deliveryType == .pickup { onChangeDeliveryType(.delivery) }
-                }
-            )
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-    }
-}
 
 extension PaymentContent {
-
-    private func deliverySection() -> some View {
-        VStack(alignment: .leading, spacing: 16) {
-
-            Text("Куда")
-                .font(.title2)
-                .padding(.horizontal, 16)
-
-            HStack {
-                if let addr = addressString {
-                    Text(addr)
-                        .font(.title3)
-                        .foregroundColor(.primary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-
-                SelectedButton(
-                    title: addressString == nil ? "Выбрать адрес" : "Изменить адрес",
-                    selected: false,
-                    action: onSelectAddress
-                )
-            }
-            .padding(.horizontal, 16)
-
-            if addressString != nil {
-                HStack(spacing: 8) {
-                    SelectedButton(
-                        title: "Частный дом",
-                        selected: isPrivateHome,
-                        action: {
-                            if !isPrivateHome { onIsPrivateHouseChanged(true) }
-                        }
-                    )
-                    SelectedButton(
-                        title: "Квартира/офис",
-                        selected: !isPrivateHome,
-                        action: {
-                            if isPrivateHome { onIsPrivateHouseChanged(false) }
-                        }
-                    )
-                }
-                .padding(.horizontal, 16)
-
-                if !isPrivateHome {
-                    HStack(spacing: 8) {
-                        StyledTextField(
-                            value: entrance,
-                            placeholder: "Подъезд",
-                            isError: entranceInputError != nil,
-                            onChange: onEntranceChanged
-                        )
-
-                        StyledTextField(
-                            value: flat,
-                            placeholder: "Квартира/офис",
-                            isError: flatInputError != nil,
-                            onChange: onFlatChanged
-                        )
-                    }
-                    .padding(.horizontal, 16)
-                }
-
-                StyledTextField(
-                    value: comment,
-                    placeholder: "Комментарий",
-                    isError: false,
-                    onChange: onCommentChanged
-                )
-                .padding(.horizontal, 16)
-            }
-        }
-    }
-}
-
-extension PaymentContent {
-    private func pickupSection() -> some View {
+    private var pickupSection: some View {
         VStack(alignment: .leading, spacing: 8) {
 
             Text("Откуда")
-                .font(.title2)
+                .font(AppTypography.headlineSmall)
 
             if let department = departmentName {
                 Text(department)
-                    .font(.title3)
+                    .font(AppTypography.titleLarge)
+                    .foregroundStyle(Color.onBackground)
             }
 
             StyledTextField(
@@ -208,7 +98,57 @@ extension PaymentContent {
 }
 
 extension PaymentContent {
-    private func paymentSection() -> some View {
+    private var deliverySection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+
+            Text("Куда")
+                .font(AppTypography.headlineSmall)
+
+            if let department = departmentName {
+                Text(addressString ?? "Ошибка загрузки адреса")
+                    .font(AppTypography.titleLarge)
+                    .foregroundStyle(Color.onBackground)
+            }
+            
+            SelectedButton(
+                title: "Частный дом",
+                selected: isPrivateHome) {
+                    onIsPrivateHouseChanged(!isPrivateHome)
+                }
+            if (!isPrivateHome) {
+                HStack {
+                    StyledTextField(
+                        value: entrance,
+                        placeholder: "Подъезд",
+                        isError: entranceInputError != nil,
+                        onChange: onEntranceChanged
+                    )
+                    .padding(.vertical, 8)
+                    StyledTextField(
+                        value: flat,
+                        placeholder: "Квартира",
+                        isError: flatInputError != nil,
+                        onChange: onFlatChanged
+                    )
+                    .padding(.vertical, 8)
+                }
+            }
+
+            StyledTextField(
+                value: comment,
+                placeholder: "Комментарий",
+                isError: false,
+                onChange: onCommentChanged
+            )
+            .padding(.vertical, 8)
+
+        }
+        .padding(.horizontal, 16)
+    }
+}
+
+extension PaymentContent {
+    private var paymentSection: some View {
         VStack(alignment: .leading) {
 
             Text("Оплата")
@@ -233,63 +173,94 @@ extension PaymentContent {
 }
 
 extension PaymentContent {
-    private func bottomSummary() -> some View {
+    private var bottomSummary: some View {
         VStack(spacing: 12) {
 
             HStack {
                 Text("Стоимость продуктов:")
+                    .font(AppTypography.bodyLarge)
+                    .foregroundStyle(Color.onBackground)
                 Spacer()
-                Text("\(productPrice) ₽")
+                Text("\(productPrice) руб")
+                    .font(AppTypography.titleLarge)
+                    .foregroundStyle(Color.onBackground)
             }
             .font(.title3)
 
             if deliveryType == .delivery {
                 HStack {
                     Text("Стоимость доставки:")
+                        .font(AppTypography.bodyLarge)
+                        .foregroundStyle(Color.onBackground)
                     Spacer()
-                    Text(deliveryPrice == 0 ? "бесплатно" : "\(deliveryPrice) ₽")
+                    Text(deliveryPrice == 0 ? "бесплатно" : "\(deliveryPrice) руб")
+                        .font(AppTypography.titleLarge)
+                        .foregroundStyle(Color.onBackground)
                 }
-                .font(.title3)
             }
 
             HStack {
                 Text("Итого:")
+                    .font(AppTypography.bodyLarge)
+                    .foregroundStyle(Color.onBackground)
                 Spacer()
-                Text("\(totalAmount) ₽")
-                    .font(.title3)
+                Text("\(totalAmount) руб")
+                    .font(AppTypography.titleLarge)
+                    .foregroundStyle(Color.onBackground)
             }
-
-            Button(action: onConfirmClicked) {
-                Text("Заказать")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-            }
-            .buttonStyle(.borderedProminent)
-            .disabled(deliveryType == .delivery && addressString == nil)
+            
+            RoundedButton(
+                title: "Заказать",
+                onClick: onConfirmClicked,
+                background: Color.primaryContainer,
+                foreground: Color.onPrimaryContainer,
+                enabled: deliveryType != .delivery || addressString != nil
+            )
         }
         .padding(.horizontal, 16)
-        .padding(.bottom, UIApplication.shared.safeBottom)
-        .background(Color(.systemBackground))
     }
 }
 
-extension UIApplication {
-    var safeTop: CGFloat {
-        let window = UIApplication.shared.connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .flatMap { $0.windows }
-            .first { $0.isKeyWindow }
-
-        return window?.safeAreaInsets.bottom ?? 0
-    }
-
-    var safeBottom: CGFloat {
-        let window = UIApplication.shared.connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .flatMap { $0.windows }
-            .first { $0.isKeyWindow }
-
-        return window?.safeAreaInsets.bottom ?? 0
-    }
+#Preview {
+    PaymentContent(
+        deliveryType: DeliveryType.delivery,
+        addressString: "ул. Щербакова 150/2",
+        departmentName: "Точисского 20",
+        isPrivateHome: false,
+        entrance: "2",
+        entranceInputError: nil,
+        flat: "20",
+        flatInputError: nil,
+        comment: "",
+        totalAmount: 1699,
+        deliveryPrice: 100,
+        productPrice: 1599,
+        paymentTypes: [
+            PaymentTypeModel(id: "1", title: "Cash", selected: true)
+        ],
+        onChangeDeliveryType: { deliveryType in
+            
+        },
+        onBackButtonClicked: {
+           
+        },
+        onSelectAddress: {
+      
+        },
+        onConfirmClicked: {
+            
+        },
+        onIsPrivateHouseChanged: { value in
+          
+        },
+        onEntranceChanged: { entrance in
+      
+        },
+        onFlatChanged: { flat in
+        
+        },
+        onCommentChanged: { comment in
+          
+        }
+    )
 }
-

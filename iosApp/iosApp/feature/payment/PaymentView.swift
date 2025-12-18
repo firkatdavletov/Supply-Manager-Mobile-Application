@@ -63,6 +63,7 @@ struct PaymentView: View {
                 component.onEvent(event: PaymentViewEventOnCommentChanged(value: comment))
             }
         )
+        .navigationBarBackButtonHidden(true)
     }
 }
 

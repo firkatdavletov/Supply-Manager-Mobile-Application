@@ -46,9 +46,6 @@ class DefaultCurrentOrderComponent(
 
     private fun initData() {
         coroutineScope.launch {
-            orderRepository.connect()
-        }
-        coroutineScope.launch {
             orderRepository.ordersSubject.collect {
                 val currentOrder = it.firstOrNull { orderModel -> orderModel.id == orderId }
                 if (currentOrder != null) {
@@ -78,12 +75,6 @@ class DefaultCurrentOrderComponent(
                         }
                     }
                 }
-        }
-    }
-
-    override fun onDispose() {
-        coroutineScope.launch {
-            orderRepository.disconnect()
         }
     }
 }

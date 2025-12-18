@@ -31,6 +31,7 @@ fun authorizationModule() = module {
             callbacks = callbacks,
             fromScreen = config.fromScreen,
             loadUserUseCase = get(),
+            orderRepository = get()
         )
     }
 }

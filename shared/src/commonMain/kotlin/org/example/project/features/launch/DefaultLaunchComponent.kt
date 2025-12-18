@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.example.project.data.HttpException
 import org.example.project.domain.models.ResultModel
+import org.example.project.domain.repositories.OrderRepository
 import org.example.project.domain.usecase.cart.LoadCartUseCase
 import org.example.project.domain.usecase.catalog.LoadCatalogUseCase
 import org.example.project.domain.usecase.user.LoadUserUseCase
@@ -22,6 +23,7 @@ class DefaultLaunchComponent(
     private val loadUserUseCase: LoadUserUseCase,
     private val loadCatalogUseCase: LoadCatalogUseCase,
     private val loadCartUseCase: LoadCartUseCase,
+    private val orderRepository: OrderRepository,
     private val callbacks: LaunchNavigationCallbacks,
     snackBarManager: SnackBarManager,
 ): LaunchComponent(
@@ -55,7 +57,17 @@ class DefaultLaunchComponent(
         coroutineScope.launch {
             loadUserUseCase(Unit)
                 .catch {}
-                .collect {}
+                .collect { resultModel ->
+                    when (resultModel) {
+                        is ResultModel.Error -> {}
+                        ResultModel.Loading -> {}
+                        is ResultModel.Success<Boolean> -> {
+                            if (resultModel.data) {
+                                orderRepository.connect()
+                            }
+                        }
+                    }
+                }
         }
         coroutineScope.launch { loadProductData() }
     }

@@ -49,11 +49,6 @@ class DefaultHomeComponent(
     private var job: Job? = null
     private var _user: UserModel? = null
 
-    init {
-        subscribeToSubjects()
-        getCurrentOrders()
-    }
-
     override fun onEvent(event: HomeViewEvent) {
         when (event) {
             HomeViewEvent.OnCartButtonClicked -> {
@@ -105,9 +100,8 @@ class DefaultHomeComponent(
 
     override fun onStarted() {
         super.onStarted()
-        coroutineScope.launch {
-            orderRepository.connect()
-        }
+        subscribeToSubjects()
+        getCurrentOrders()
     }
 
     private fun getCurrentOrders() {
@@ -175,12 +169,6 @@ class DefaultHomeComponent(
                         showError(resultModel.message)
                     }
                 }
-        }
-    }
-
-    override fun onDispose() {
-        coroutineScope.launch {
-            orderRepository.disconnect()
         }
     }
 }
