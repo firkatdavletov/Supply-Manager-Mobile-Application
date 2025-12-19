@@ -3,13 +3,10 @@ package org.example.project.features.launch
 import com.arkivanov.decompose.ComponentContext
 import io.ktor.client.plugins.ClientRequestException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.example.project.data.HttpException
 import org.example.project.domain.models.ResultModel
 import org.example.project.domain.repositories.OrderRepository
 import org.example.project.domain.usecase.cart.LoadCartUseCase
@@ -75,12 +72,8 @@ class DefaultLaunchComponent(
     private suspend fun loadProductData() {
         val catalogFlow = loadCatalogUseCase(Unit)
         val cartFlow = loadCartUseCase(Unit)
-        val timerFlow = flow {
-            delay(3_000)
-            emit(Unit)
-        }
 
-        val combinedFlow = combine(cartFlow, catalogFlow, timerFlow) { cartResult, catalogResult, _ ->
+        val combinedFlow = combine(cartFlow, catalogFlow) { cartResult, catalogResult ->
             Pair(cartResult, catalogResult)
         }
 

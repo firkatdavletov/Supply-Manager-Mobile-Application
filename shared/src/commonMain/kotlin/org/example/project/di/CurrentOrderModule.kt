@@ -7,7 +7,7 @@ import org.example.project.features.current_order.DefaultCurrentOrderComponent
 import org.koin.dsl.module
 
 fun currentOrderModule() = module {
-    factory <CurrentOrderComponent> { (componentContext: ComponentContext, callbacks: CurrentOrderCallbacks, orderId: Long) ->
-        DefaultCurrentOrderComponent(componentContext, callbacks, get(), orderId, get())
+    factory <CurrentOrderComponent> { (componentContext: ComponentContext, fromScreen: String?, callbacks: CurrentOrderCallbacks, orderId: Long) ->
+        DefaultCurrentOrderComponent(componentContext, fromScreen, callbacks, get(), orderId, get())
     }
 }

@@ -53,7 +53,8 @@ struct MapView: View {
                     component.onEvent(event: MapViewEventOnMoveToLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude))
                 }
             },
-            showBackButton: true,
+            showBackButton: state.showBackButton,
+            showSearchButton: state.showSearchButton,
             showMap: true
         )
         .navigationBarBackButtonHidden(true)

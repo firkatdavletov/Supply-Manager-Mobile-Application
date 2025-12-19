@@ -11,6 +11,19 @@ data class GeoAddressModel(
     val longitude: Double,
     val uri: String?,
 ) {
+    val addressString: String
+        get() {
+            return buildString {
+                append(street)
+                append(", ")
+                append(house)
+                if (entrance != null) {
+                    append(", подъезд ")
+                    append(entrance)
+                }
+            }
+        }
+
     override fun toString(): String {
         return buildString {
             append(street)

@@ -184,20 +184,26 @@ struct HomeOrderView: View {
 
     var body: some View {
         HStack {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 8) {
                 Text("Заказ №\(orderNumber)")
+                    .font(AppTypography.bodyMedium)
+                    .foregroundStyle(Color.onSecondaryContainer)
                 Text(status)
+                    .font(AppTypography.titleMedium)
+                    .foregroundStyle(Color.onSecondaryContainer)
             }
             Spacer()
-            Text("\(amount) ₽")
+            Text("\(amount) руб")
+                .font(AppTypography.titleLarge)
+                .foregroundStyle(Color.onSecondaryContainer)
         }
-        .padding(8)
+        .padding(12)
         .frame(maxWidth: .infinity)
         .background(Color.background)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .overlay(
             RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.primaryContainer, lineWidth: 1)
+                .stroke(Color.primaryContainer, lineWidth: 0)
         )
         .padding(.horizontal)
     }

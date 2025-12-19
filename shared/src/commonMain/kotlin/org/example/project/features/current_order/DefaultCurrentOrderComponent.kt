@@ -8,9 +8,12 @@ import org.example.project.domain.models.OrderModel
 import org.example.project.domain.models.ResultModel
 import org.example.project.domain.repositories.OrderRepository
 import org.example.project.domain.usecase.order.GetOrderByIdUseCase
+import org.example.project.features.home.HomeComponent
+import org.example.project.features.payment.PaymentComponent
 
 class DefaultCurrentOrderComponent(
     componentContext: ComponentContext,
+    private val fromScreen: String?,
     private val callbacks: CurrentOrderCallbacks,
     private val getOrderByIdUseCase: GetOrderByIdUseCase,
     private val orderId: Long,
@@ -39,7 +42,15 @@ class DefaultCurrentOrderComponent(
         when (event) {
             is CurrentOrderViewEvent.OnOrderLoaded -> reduce(event)
             CurrentOrderViewEvent.OnBackClicked -> {
-                callbacks.navigateToBack()
+                when (fromScreen) {
+                    HomeComponent::class.simpleName -> {
+                        callbacks.navigateToBack()
+                    }
+
+                    PaymentComponent::class.simpleName -> {
+                        callbacks.navigateToHome()
+                    }
+                }
             }
         }
     }

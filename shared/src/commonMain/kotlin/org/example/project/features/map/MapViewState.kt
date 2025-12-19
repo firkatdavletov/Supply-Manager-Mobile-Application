@@ -20,5 +20,6 @@ data class MapViewState(
     val confirmEnabled: Boolean,
     val showLocation: Boolean,
     val showBackButton: Boolean,
+    val showSearchButton: Boolean,
     val errorMessage: String?
 ): Reducer.ViewState

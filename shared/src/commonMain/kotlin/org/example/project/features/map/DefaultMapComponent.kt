@@ -20,7 +20,6 @@ import org.example.project.domain.usecase.cart.UpdateDeliveryAddressUseCase
 import org.example.project.domain.usecase.departments.GetDepartmentsUseCase
 import org.example.project.domain.usecase.geo.GetGeoAddressUseCase
 import org.example.project.features.SnackBarManager
-import org.example.project.features.cart.CartViewEvent
 import org.example.project.features.home.HomeComponent
 import org.example.project.features.launch.LaunchComponent
 import org.example.project.features.map.MapViewEvent.OnBackClicked
@@ -62,6 +61,7 @@ class DefaultMapComponent(
         showLocation = false,
         selectedDepartment = null,
         showBackButton = fromScreen != LaunchComponent::class.simpleName,
+        showSearchButton = fromScreen == LaunchComponent::class.simpleName,
         errorMessage = null
     ),
     snackBarManager = snackBarManager,

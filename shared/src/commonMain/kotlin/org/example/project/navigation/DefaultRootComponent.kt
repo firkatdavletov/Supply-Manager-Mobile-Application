@@ -7,9 +7,11 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.popTo
+import com.arkivanov.decompose.router.stack.popToFirst
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.pushToFront
+import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -102,7 +104,7 @@ class DefaultRootComponent(
             }
 
             is Config.CurrentOrder -> {
-                CurrentOrder(getCurrentOrderComponent(componentContext, config.orderId))
+                CurrentOrder(getCurrentOrderComponent(componentContext, config.fromScreen, config.orderId))
             }
 
             is Config.Catalog -> {
@@ -178,7 +180,7 @@ class DefaultRootComponent(
                 navigation.pushToFront(Config.Profile)
             },
             navigateToOrder = {
-                navigation.pushNew(Config.CurrentOrder(it))
+                navigation.pushNew(Config.CurrentOrder(HomeComponent::class.simpleName, it))
             },
             navigateToAuthorization = {
                 navigation.pushToFront(Config.SignIn(HomeComponent::class.simpleName))
@@ -206,18 +208,21 @@ class DefaultRootComponent(
     private fun getPaymentComponent(componentContext: ComponentContext): PaymentComponent {
         val callbacks = PaymentCallbacks(
             navigateBack = { navigation.pop() },
-            navigateToOrder = { navigation.push(Config.CurrentOrder(it)) },
+            navigateToOrder = { navigation.push(Config.CurrentOrder(PaymentComponent::class.simpleName, it)) },
             navigateToMap = { navigation.pushToFront(Config.SearchAddress(PaymentComponent::class.simpleName)) }
         )
         return get { parametersOf(componentContext, callbacks) }
     }
 
-    private fun getCurrentOrderComponent(context: ComponentContext, orderId: Long): CurrentOrderComponent {
+    private fun getCurrentOrderComponent(context: ComponentContext, fromScreen: String?, orderId: Long): CurrentOrderComponent {
         val callbacks = CurrentOrderCallbacks(
-            navigateToBack = { navigation.pop() }
+            navigateToBack = { navigation.pop() },
+            navigateToHome = {
+                navigation.pushToFront(Config.Home)
+            }
         )
         return get {
-            parametersOf(context, callbacks, orderId)
+            parametersOf(context, fromScreen, callbacks, orderId)
         }
     }
 
@@ -332,7 +337,10 @@ class DefaultRootComponent(
         data object Payment: Config()
 
         @Serializable
-        data class CurrentOrder(val orderId: Long): Config()
+        data class CurrentOrder(
+            val fromScreen: String?,
+            val orderId: Long
+        ): Config()
 
         @Serializable
         data class Catalog(

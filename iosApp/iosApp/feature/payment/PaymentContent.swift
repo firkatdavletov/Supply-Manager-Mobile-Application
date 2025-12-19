@@ -45,8 +45,16 @@ struct PaymentContent: View {
                     pickupSection
                 }
                 paymentSection
+                bottomSummary
             }
-            bottomSummary
+            RoundedButton(
+                title: "Заказать",
+                onClick: onConfirmClicked,
+                background: Color.primaryContainer,
+                foreground: Color.onPrimaryContainer,
+                enabled: deliveryType != .delivery || addressString != nil
+            )
+            .padding(.horizontal)
         }
     }
 }
@@ -208,14 +216,6 @@ extension PaymentContent {
                     .font(AppTypography.titleLarge)
                     .foregroundStyle(Color.onBackground)
             }
-            
-            RoundedButton(
-                title: "Заказать",
-                onClick: onConfirmClicked,
-                background: Color.primaryContainer,
-                foreground: Color.onPrimaryContainer,
-                enabled: deliveryType != .delivery || addressString != nil
-            )
         }
         .padding(.horizontal, 16)
     }

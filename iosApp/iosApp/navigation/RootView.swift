@@ -31,6 +31,8 @@ struct RootView: View {
                 case let child as RootComponentChild.SignIn: SignInView(component: child.component)
                 case let child as RootComponentChild.Verification: VerificationView(component: child.component)
                 case let child as RootComponentChild.Profile: ProfileView(component: child.component)
+                case let child as RootComponentChild.CurrentOrder: CurrentOrderView(component: child.component)
+                case let child as RootComponentChild.SearchAddress: SearchAddressView(component: child.component)
                 default: EmptyView()
                 }
             }

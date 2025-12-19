@@ -21,12 +21,12 @@ struct YandexMapView: UIViewRepresentable {
     var onSelectDepartments: ((KotlinInt) -> Void)? = nil
 
     func makeUIView(context: Context) -> YMKMapView {
-        let mapView = YMKMapView(frame: .zero)
+        let mapView = YMKMapView()
         context.coordinator.mapView = mapView
         context.coordinator.listener = CameraListener(onMapMoved: onMapMoved)
         context.coordinator.tapListener = TapListener(onTap: onSelectDepartments)
-        mapView!.mapWindow.map.addCameraListener(with: context.coordinator.listener!)
-        return mapView!
+        mapView.mapWindow.map.addCameraListener(with: context.coordinator.listener!)
+        return mapView
     }
 
     func updateUIView(_ uiView: YMKMapView, context: Context) {

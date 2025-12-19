@@ -26,6 +26,7 @@ struct MapContent: View {
     let onSelectDepartment: (KotlinInt) -> Void
     let onRequestLocation: () -> Void
     let showBackButton: Bool
+    let showSearchButton: Bool
     let showMap: Bool
     
     var body: some View {
@@ -64,6 +65,7 @@ struct MapContent: View {
                     Text(addressString!)
                         .font(AppTypography.headlineLarge)
                         .foregroundStyle(Color.onBackground)
+                        .multilineTextAlignment(.center)
                 }
                 if (deliveryInfo != nil) {
                     Text(deliveryInfo!)
@@ -85,6 +87,7 @@ struct MapContent: View {
             }
             
             VStack {
+                Spacer()
                 IconButton(
                     systemName: "location",
                     tint: Color.secondaryContainer,
@@ -92,34 +95,36 @@ struct MapContent: View {
                     action: onRequestLocation
                 )
                     .frame(maxWidth: .infinity, alignment: .trailing)
+                    .padding()
                     .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
-                HStack {
-                    SelectedButton(
-                        title: "Самовывоз",
-                        selected: deliveryType == DeliveryType.pickup,
-                        action: {
-                            onSelectDeliveryType(DeliveryType.pickup)
-                        }
+                VStack {
+                    HStack {
+                        SelectedButton(
+                            title: "Самовывоз",
+                            selected: deliveryType == DeliveryType.pickup,
+                            action: {
+                                onSelectDeliveryType(DeliveryType.pickup)
+                            }
+                        )
+                        SelectedButton(
+                            title: "Доставка",
+                            selected: deliveryType == DeliveryType.delivery,
+                            action: {
+                                onSelectDeliveryType(DeliveryType.delivery)
+                            }
+                        )
+                    }
+                    RoundedButton(
+                        title: "Подтвердить",
+                        onClick: onConfirm,
+                        background: Color.primaryContainer,
+                        foreground: Color.onPrimaryContainer,
+                        enabled: isConfirmEnabled
                     )
-                    SelectedButton(
-                        title: "Доставка",
-                        selected: deliveryType == DeliveryType.delivery,
-                        action: {
-                            onSelectDeliveryType(DeliveryType.delivery)
-                        }
-                    )
+                    .disabled(!isConfirmEnabled)
                 }
-                RoundedButton(
-                    title: "Подтвердить",
-                    onClick: onConfirm,
-                    background: Color.secondaryContainer,
-                    foreground: Color.onSecondaryContainer,
-                    enabled: isConfirmEnabled
-                )
-            }
-                .frame(maxHeight: .infinity, alignment: .bottom)
                 .padding(.horizontal)
-                .background(Color.background)
+            }
         }
     }
 }
@@ -143,6 +148,7 @@ struct MapContent: View {
         onSelectDepartment: {_ in },
         onRequestLocation: {},
         showBackButton: true,
-        showMap: false
+        showSearchButton: true,
+        showMap: true
     )
 }

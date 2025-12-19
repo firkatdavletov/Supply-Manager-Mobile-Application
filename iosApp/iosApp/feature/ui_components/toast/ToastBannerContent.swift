@@ -13,11 +13,7 @@ struct ToastBannerContent: View {
     let type: ToastType
     
     var body: some View {
-        HStack(spacing: 12) {
-            type.icon
-                .font(.system(size: 18))
-                .foregroundColor(.white)
-            
+        HStack {
             Text(message)
                 .foregroundColor(.white)
                 .font(.system(size: 16, weight: .medium))

@@ -16,7 +16,7 @@ struct LaunchContent: View {
             // Center circle with image
             ZStack {
                 Circle()
-                    .fill(Color.black)
+                    .fill(Color.white)
                     .frame(width: 196, height: 196)
 
                 Image.logo
