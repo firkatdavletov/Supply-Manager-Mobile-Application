@@ -24,6 +24,7 @@ struct LaunchContent: View {
                     .scaledToFit()
                     .padding(.horizontal, 16)
                     .frame(width: 196, height: 196)
+                    .clipShape(Circle())
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
 

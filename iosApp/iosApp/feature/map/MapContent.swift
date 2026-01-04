@@ -23,7 +23,7 @@ struct MapContent: View {
     let onConfirm: () -> Void
     let onBackButtonClicked: () -> Void
     let onMapMoved: (Double, Double, UInt, Bool) -> Void
-    let onSelectDepartment: (KotlinInt) -> Void
+    let onSelectDepartment: (Int64) -> Void
     let onRequestLocation: () -> Void
     let showBackButton: Bool
     let showSearchButton: Bool
@@ -38,7 +38,9 @@ struct MapContent: View {
                     showDepartments: deliveryType == DeliveryType.pickup,
                     selectedDepartment: selectedDepartment,
                     departments: departments,
+                    deliveryType: deliveryType,
                     onMapMoved: onMapMoved,
+                    onSelectDepartments: onSelectDepartment
                 )
                 .edgesIgnoringSafeArea(.all)
             }
@@ -64,7 +66,7 @@ struct MapContent: View {
                 if (addressString != nil) {
                     Text(addressString!)
                         .font(AppTypography.headlineLarge)
-                        .foregroundStyle(Color.onBackground)
+                        .foregroundStyle(Color.black)
                         .multilineTextAlignment(.center)
                 }
                 if (deliveryInfo != nil) {

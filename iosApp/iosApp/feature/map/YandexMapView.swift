@@ -17,8 +17,9 @@ struct YandexMapView: UIViewRepresentable {
     let showDepartments: Bool
     let selectedDepartment: KotlinInt?
     let departments: Array<DepartmentModel>
+    let deliveryType: DeliveryType
     var onMapMoved: ((Double, Double, UInt, Bool) -> Void)? = nil
-    var onSelectDepartments: ((KotlinInt) -> Void)? = nil
+    var onSelectDepartments: ((Int64) -> Void)? = nil
 
     func makeUIView(context: Context) -> YMKMapView {
         let mapView = YMKMapView()
@@ -39,6 +40,20 @@ struct YandexMapView: UIViewRepresentable {
                     animation: YMKAnimation(type: .smooth, duration: 0.8),
                     cameraCallback: nil
                 )
+                self.removePlacemarks(mapView: uiView)
+                
+                if (deliveryType == DeliveryType.pickup) {
+                    departments.forEach { department in
+                        let point = YMKPoint(latitude: department.latitude, longitude: department.longitude)
+                        self.addPlacemark(
+                            mapView: uiView,
+                            point: point,
+                            selected: department.selected,
+                            id: Int64(department.id),
+                            listener: context.coordinator.tapListener!
+                        )
+                    }
+                }
             }
         }
     }
@@ -46,32 +61,18 @@ struct YandexMapView: UIViewRepresentable {
     
     private func addPlacemark(mapView: YMKMapView, point: YMKPoint, selected: Bool, id: Int64, listener: YMKMapObjectTapListener) {
         let placemark = mapView.mapWindow.map.mapObjects.addPlacemark()
-        placemark.geometry = point
-        placemark.userData = id
-        let image = if (selected) {
-            drawRingImage(diameter: 24, ringWidth: 6, color: UIColor(Color("PrimaryColor")))
-        } else {
-            drawRingImage(diameter: 20, ringWidth: 5, color: UIColor(Color("PrimaryColor")))
-        }
-        placemark.setIconWith(image)
-        placemark.addTapListener(with: listener)
+            placemark.geometry = point
+            placemark.userData = id
+
+            let imageName = selected ? "Box" : "BoxSmall"
+            guard let image = UIImage(named: imageName) else { return }
+
+            placemark.setIconWith(image)
+            placemark.addTapListener(with: listener)
     }
     
     private func removePlacemarks(mapView: YMKMapView) {
         mapView.mapWindow.map.mapObjects.clear()
-    }
-    
-    func drawRingImage(diameter: CGFloat, ringWidth: CGFloat, color: UIColor) -> UIImage {
-        let size = CGSize(width: diameter, height: diameter)
-        let renderer = UIGraphicsImageRenderer(size: size)
-
-        return renderer.image { context in
-            let rect = CGRect(origin: .zero, size: size)
-            let path = UIBezierPath(ovalIn: rect.insetBy(dx: ringWidth / 2, dy: ringWidth / 2))
-            color.setStroke()
-            path.lineWidth = ringWidth
-            path.stroke()
-        }
     }
 
     func makeCoordinator() -> Coordinator {
@@ -88,7 +89,7 @@ struct YandexMapView: UIViewRepresentable {
 
         init(
             onMapMoved: ((Double, Double, UInt, Bool) -> Void)?,
-            onTap: ((KotlinInt) -> Void)?
+            onTap: ((Int64) -> Void)?
         ) {
             self.listener = CameraListener(onMapMoved: onMapMoved)
             self.tapListener = TapListener(onTap: onTap)
@@ -114,13 +115,13 @@ struct YandexMapView: UIViewRepresentable {
     }
     
     class TapListener: NSObject, YMKMapObjectTapListener {
-        let onTap: ((KotlinInt) -> Void)?
+        let onTap: ((Int64) -> Void)?
         
-        init(onTap: ((KotlinInt) -> Void)?) {
+        init(onTap: ((Int64) -> Void)?) {
             self.onTap = onTap
         }
         func onMapObjectTap(with mapObject: YMKMapObject, point: YMKPoint) -> Bool {
-            let id = mapObject.userData as! KotlinInt
+            let id = mapObject.userData as! Int64
             onTap?(id)
             return true
         }

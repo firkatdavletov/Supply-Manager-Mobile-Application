@@ -14,14 +14,14 @@ struct CategoryCardView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            RemoteImage(
-                urlString: imageUrl ?? "",
-                cornerRadius: 16
-            )
-            .frame(height: 112)
-            
+            RemoteImage(urlString: imageUrl)
+                .frame(height: 112)
+                .clipShape(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                )
+
             Text(title)
-                .font(AppTypography.bodyMedium)
+                .font(AppTypography.titleMedium.weight(.semibold))
                 .foregroundColor(Color.onBackground)
             Spacer()
         }

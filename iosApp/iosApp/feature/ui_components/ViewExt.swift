@@ -40,3 +40,15 @@ extension View {
     }
 }
 
+extension View {
+    func elevation(_ level: CGFloat) -> some View {
+        self
+            .shadow(
+                color: Color.black.opacity(0.12),
+                radius: level,
+                x: 0,
+                y: level / 2
+            )
+    }
+}
+

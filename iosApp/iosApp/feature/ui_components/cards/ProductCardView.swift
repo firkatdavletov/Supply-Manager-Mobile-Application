@@ -15,25 +15,12 @@ struct ProductCardView: View {
     let onRemove: (Int64) -> Void
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            ZStack(alignment: .bottomTrailing) {
-                RemoteImage(
-                    urlString: product.imageUrl ?? "",
-                    cornerRadius: 16
+        VStack(alignment: .leading, spacing: 8) {
+            RemoteImage(urlString: product.imageUrl)
+                .frame(height: 112)
+                .clipShape(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
                 )
-                .frame(maxWidth: .infinity)
-                
-                CartButton(
-                    quantity: Int(product.count),
-                    onAdd: { onAddToCart(product.id) },
-                    onRemove: { onRemove(product.id) },
-                    foregroundColor: Color("BlackColor")
-                )
-                .padding(8)
-                .frame(maxWidth: .infinity)
-            }
-            .frame(height: 150)
-            .padding(.bottom, 8)
             
             Text("\(Int(product.price)) руб")
                 .font(.system(size: 16, weight: .bold, design: .rounded))
@@ -42,10 +29,17 @@ struct ProductCardView: View {
             Text(product.title)
                 .font(AppTypography.bodyMedium)
                 .foregroundColor(Color.onBackground)
-                .padding(.bottom, 4)
+            
             Spacer()
             
+            CartButton(
+                quantity: Int(product.count),
+                onAdd: { onAddToCart(product.id) },
+                onRemove: { onRemove(product.id) },
+                foregroundColor: Color.onPrimaryContainer
+            )
         }
+        .frame(height: 234)
     }
 }
 

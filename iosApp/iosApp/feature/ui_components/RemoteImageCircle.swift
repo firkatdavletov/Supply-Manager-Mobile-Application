@@ -34,41 +34,33 @@ struct RemoteImageCircle: View {
 }
 
 struct RemoteImage: View {
-    let urlString: String
-    let cornerRadius: CGFloat
+    let urlString: String?
 
     private var imageURL: URL? {
-        URL(string: urlString)
+        urlString.flatMap(URL.init(string:))
     }
 
     var body: some View {
-        if let imageURL = imageURL {
-            AsyncImage(url: imageURL) { phase in
-                switch phase {
-                case .success(let image):
-                    image
-                        .resizable()
-                        .scaledToFill()
-                        .clipped()
-                default:
-                    placeholder
+        Group {
+            if let imageURL {
+                AsyncImage(url: imageURL) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    default:
+                        placeholder
+                    }
                 }
+            } else {
+                placeholder
             }
-            .cornerRadius(cornerRadius)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        } else {
-            placeholder
-                .cornerRadius(cornerRadius)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+        .clipped()
     }
 
     private var placeholder: some View {
         Color("IceBlue")
     }
-}
-
-#Preview {
-    RemoteImage(urlString: "", cornerRadius: 16)
-        .frame(width: 100, height: 100)
 }

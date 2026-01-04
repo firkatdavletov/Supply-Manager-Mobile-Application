@@ -19,9 +19,9 @@ struct CatalogContent: View {
     let onBackButtonClicked: () -> Void
     
     let columns = [
-            GridItem(.flexible(), spacing: 16),
-            GridItem(.flexible(), spacing: 16)
-        ]
+        GridItem(.flexible()),
+        GridItem(.flexible())
+    ]
     
     init(
         title: String,
@@ -61,18 +61,15 @@ struct CatalogContent: View {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(products, id: \.id) { product in
-                        ProductCardView(
-                            product: product,
-                            onAddToCart: { id in
+                        ProductCardView(product: product) { id  in
                                 onAddToCart(product)
-                            },
-                            onRemove: { id in
+                            } onRemove: { id in
                                 onRemove(product)
                             }
-                        )
+
                     }
                 }
-                .padding()
+                .padding(.horizontal)
             }
             if amount > 0 {
                 RoundedButton(

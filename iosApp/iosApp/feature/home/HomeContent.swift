@@ -24,59 +24,48 @@ struct HomeContent: View {
     let onOrderClicked: (Int64) -> Void
 
     @State private var focused: Bool = false
+    
+    var columns = [
+      GridItem(.flexible()),
+      GridItem(.flexible()),
+    ]
 
     var body: some View {
-        ZStack {
-            VStack(spacing: 0) {
-
-                headerView
-
-                ScrollView {
-                    LazyVStack {
-                        if (userName != nil && !userName!.isEmpty) {
-                            greetingItem
-                                .frame(maxWidth: .infinity)
-                                .padding(.horizontal)
-                                .padding(.top)
-                        }
-                        ordersPagerItem
+        VStack {
+            headerView
+            
+            ScrollView {
+                LazyVGrid(
+                    columns: columns,
+                ) {
+                    Section(header: ordersPagerItem) {
+                        
                     }
-                    LazyVGrid(
-                        columns: [
-                            GridItem(.flexible(minimum: 0, maximum: .infinity)),
-                            GridItem(.flexible(minimum: 0, maximum: .infinity)),
-                            GridItem(.flexible(minimum: 0, maximum: .infinity))
-                        ],
-                        spacing: 8
-                    ) {
-                        ForEach(categories, id: \.id) { category in
-                            CategoryCardView(
-                                title: category.title,
-                                imageUrl: category.imageUrl
-                            )
-                            .onTapGesture { onCategoryClicked(category) }
-                            .gridCellColumns(Int(category.span))
-                        }
+                    ForEach(categories, id: \.id) { category in
+                        CategoryCardView(title: category.title, imageUrl: category.imageUrl)
+                            .onTapGesture {
+                                onCategoryClicked(category)
+                            }
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
                 }
+                .padding(.horizontal)
+            }
 
-                if totalAmount > 0 {
-                    RoundedButton(
-                        title: "\(Int(totalAmount)) ₽",
-                        onClick: {
-                            onCartButtonClicked()
-                        },
-                        background: Color.primaryContainer,
-                        foreground: Color.onPrimaryContainer,
-                        enabled: true
-                    )
-                    .padding(.horizontal)
-                }
+            Spacer()
+            
+            if totalAmount > 0 {
+                RoundedButton(
+                    title: "\(Int(totalAmount)) руб",
+                    onClick: {
+                        onCartButtonClicked()
+                    },
+                    background: Color.primaryContainer,
+                    foreground: Color.onPrimaryContainer,
+                    enabled: true
+                )
+                .padding(.horizontal)
             }
         }
-        .contentShape(Rectangle())
         .onTapGesture {
             focused = false
         }
@@ -90,12 +79,12 @@ extension HomeContent {
             VStack(alignment: .leading, spacing: 8) {
 
                 Text(addressString)
-                    .font(AppTypography.titleMedium)
+                    .font(AppTypography.titleLarge)
                     .foregroundColor(.onPrimaryContainer)
 
                 HStack(spacing: 16) {
                     Text(deliveryInfo)
-                        .font(AppTypography.bodySmall)
+                        .font(AppTypography.bodyMedium)
                         .foregroundColor(.onPrimaryContainer)
 
                     Text("Изменить")
@@ -147,7 +136,7 @@ extension HomeContent {
                         amount: Int(order.amount)
                     )
                     .padding(.vertical, 2)
-                    .frame(width: UIScreen.main.bounds.width)
+                    .frame(width: UIScreen.main.bounds.width - 32)
                     .onTapGesture {
                         onOrderClicked(order.id)
                     }
@@ -205,7 +194,6 @@ struct HomeOrderView: View {
             RoundedRectangle(cornerRadius: 12)
                 .stroke(Color.primaryContainer, lineWidth: 0)
         )
-        .padding(.horizontal)
     }
 }
 

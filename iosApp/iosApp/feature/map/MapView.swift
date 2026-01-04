@@ -46,7 +46,7 @@ struct MapView: View {
                 component.onEvent(event: MapViewEventOnMapMoved(latitude: lat, longitude: lng, reason: Int32(reason), finished: finished))
             },
             onSelectDepartment: { id in
-                component.onEvent(event: MapViewEventOnDepartmentSelected(id: Int32(truncating: id)))
+                component.onEvent(event: MapViewEventOnDepartmentSelected(id: Int32(id)))
             },
             onRequestLocation: {
                 locationManager.requestLocation { location in

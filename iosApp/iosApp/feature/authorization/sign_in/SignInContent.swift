@@ -53,7 +53,9 @@ struct SignInContent: View {
                             },
                             set: { value in
                                 phoneNumber = value
-                                onPhoneNumberEntered(value)
+                                if (value.count < 14) {
+                                    onPhoneNumberEntered(value)
+                                }
                             }
                         )
                     )

@@ -44,7 +44,7 @@ class HomeReducer(
                             append(deliveryAddress?.street)
                             append(", ")
                             append(deliveryAddress?.house)
-                        } to "Доставка ${event.cartModel.deliveryInfo.deliveryPrice.toInt()} ₽"
+                        } to "Доставка ${event.cartModel.deliveryInfo.deliveryPrice.toInt()} руб"
                     }
                 }
 

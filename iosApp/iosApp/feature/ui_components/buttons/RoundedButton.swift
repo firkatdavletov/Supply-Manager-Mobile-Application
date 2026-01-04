@@ -24,7 +24,7 @@ struct RoundedButton: View {
             },
             label: {
                 Text(title)
-                    .font(AppTypography.titleMedium)
+                    .font(AppTypography.titleMedium.bold())
                     .frame(maxWidth: .infinity)
                     .padding(12)
                     .background(enabled ? background : Color.secondaryContainer)

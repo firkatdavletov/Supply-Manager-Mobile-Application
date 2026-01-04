@@ -95,35 +95,6 @@ fun PaymentContent(
                     text = "Оформление заказа"
                 )
             }
-            Row(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                SelectedButton(
-                    modifier = Modifier
-                        .weight(1f),
-                    title = "Самовывоз",
-                    selected = deliveryType == DeliveryType.PICKUP,
-                    onClick = {
-                        if (deliveryType == DeliveryType.DELIVERY) {
-                            onChangeDeliveryType(DeliveryType.PICKUP)
-                        }
-                    }
-                )
-                SelectedButton(
-                    modifier = Modifier
-                        .weight(1f),
-                    title = "Доставка",
-                    selected = deliveryType == DeliveryType.DELIVERY,
-                    onClick = {
-                        if (deliveryType == DeliveryType.PICKUP) {
-                            onChangeDeliveryType(DeliveryType.DELIVERY)
-                        }
-                    }
-                )
-            }
 
             if (deliveryType == DeliveryType.DELIVERY) {
                 Column(

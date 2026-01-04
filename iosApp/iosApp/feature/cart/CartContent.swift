@@ -29,7 +29,7 @@ struct CartContent: View {
             cartItemList
             // Bottom info and button
             infoView
-                .padding(16)
+                .padding(.horizontal)
         }
     }
 }
