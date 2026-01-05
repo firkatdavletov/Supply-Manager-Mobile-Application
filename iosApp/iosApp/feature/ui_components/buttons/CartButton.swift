@@ -21,36 +21,38 @@ struct CartButton: View {
                 Button(action: onAdd) {
                     Image(systemName: "plus")
                         .foregroundColor(.onPrimaryContainer)
-                        .frame(width: 30, height: 30)
+                        .frame(width: 40, height: 40)
                 }
                 .background(Color.primaryContainer)
-                .clipShape(RoundedCorner(radius: 15))
+                .clipShape(RoundedCorner(radius: 20))
             } else {
                 HStack(spacing: 8) {
                     Button(action: onRemove) {
                         Image(systemName: "minus")
                             .foregroundColor(.onPrimaryContainer)
-                            .frame(width: 30, height: 30)
+                            .frame(width: 40, height: 40)
                     }
-                    
+                    .background(Color.primaryContainer)
+                    .clipShape(RoundedCorner(radius: 20))
+
                     Spacer()
 
                     Text("\(quantity)")
                         .font(.system(size: 16, weight: .medium))
                         .frame(minWidth: 20)
-                        .foregroundColor(.onPrimaryContainer)
-                    
+                        .foregroundColor(.onBackground)
+
                     Spacer()
 
                     Button(action: onAdd) {
                         Image(systemName: "plus")
                             .foregroundColor(.onPrimaryContainer)
-                            .frame(width: 30, height: 30)
+                            .frame(width: 40, height: 40)
                     }
+                    .background(Color.primaryContainer)
+                    .clipShape(RoundedCorner(radius: 20))
                 }
                 .frame(maxWidth: .infinity)
-                .background(Color.primaryContainer)
-                .clipShape(RoundedCorner(radius: 15))
             }
         }
     }

@@ -34,7 +34,7 @@ struct CartItemView: View {
                 },
                 foregroundColor: Color(.white)
             )
-            .frame(width: 100)
+            .frame(width: 120)
         }
         .padding(.horizontal, 16)
     }

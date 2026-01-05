@@ -173,7 +173,7 @@ fun appModule() = module {
     factory<RemoveFromCartUseCase> { RemoveFromCartUseCase(get()) }
     factory<GetGeoAddressUseCase> { GetGeoAddressUseCase(get()) }
     factory<UpdateDeliveryAddressUseCase> { UpdateDeliveryAddressUseCase(get()) }
-    factory<GetDepartmentsUseCase> { GetDepartmentsUseCase(get()) }
+    factory<GetDepartmentsUseCase> { GetDepartmentsUseCase(get(), get()) }
     factory<GetProductUseCase> { GetProductUseCase(get()) }
     factory<LoadCatalogUseCase> { LoadCatalogUseCase(get()) }
     factory<CreateOrderUseCase> { CreateOrderUseCase(get()) }

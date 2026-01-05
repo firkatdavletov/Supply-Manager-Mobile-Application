@@ -28,7 +28,7 @@ struct RemoteImageCircle: View {
 
     private var placeholder: some View {
         Circle()
-            .fill(Color("IceBlue"))
+            .fill(Color.surface)
             .frame(width: 44, height: 44)
     }
 }
@@ -61,6 +61,6 @@ struct RemoteImage: View {
     }
 
     private var placeholder: some View {
-        Color("IceBlue")
+        Color.surface
     }
 }

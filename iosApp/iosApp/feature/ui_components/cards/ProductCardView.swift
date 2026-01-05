@@ -21,24 +21,30 @@ struct ProductCardView: View {
                 .clipShape(
                     RoundedRectangle(cornerRadius: 16, style: .continuous)
                 )
-            
+
             Text("\(Int(product.price)) руб")
                 .font(.system(size: 16, weight: .bold, design: .rounded))
                 .foregroundColor(Color.onBackground)
-            
+                .padding(.horizontal, 8)
+
             Text(product.title)
                 .font(AppTypography.bodyMedium)
                 .foregroundColor(Color.onBackground)
-            
+                .padding(.horizontal, 8)
+
             Spacer()
-            
+
             CartButton(
                 quantity: Int(product.count),
                 onAdd: { onAddToCart(product.id) },
                 onRemove: { onRemove(product.id) },
                 foregroundColor: Color.onPrimaryContainer
             )
+                .padding(.horizontal, 8)
+                .padding(.bottom, 8)
         }
+        .background(Color.surface)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
         .frame(height: 234)
     }
 }

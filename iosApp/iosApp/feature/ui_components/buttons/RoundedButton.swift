@@ -27,8 +27,8 @@ struct RoundedButton: View {
                     .font(AppTypography.titleMedium.bold())
                     .frame(maxWidth: .infinity)
                     .padding(12)
-                    .background(enabled ? background : Color.secondaryContainer)
-                    .foregroundColor(enabled ? foreground : Color.onSecondaryContainer)
+                    .background(enabled ? background : Color.primaryContainer)
+                    .foregroundColor(enabled ? foreground : Color.onPrimaryContainer)
                     .cornerRadius(25)
             }
         )

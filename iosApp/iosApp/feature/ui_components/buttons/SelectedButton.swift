@@ -22,8 +22,6 @@ struct SelectedButton: View {
                 .background(selected ? Color.primaryContainer : Color.secondaryContainer)
                 .foregroundColor(selected ? .onPrimaryContainer : .onSecondaryContainer)
                 .cornerRadius(25)
-                .padding(1)
-                .background(Color.primaryContainer)
                 .cornerRadius(25)
         }
     }
