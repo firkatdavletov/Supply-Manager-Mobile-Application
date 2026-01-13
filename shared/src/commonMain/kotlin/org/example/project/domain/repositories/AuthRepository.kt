@@ -3,9 +3,14 @@ package org.example.project.domain.repositories
 import kotlinx.coroutines.flow.Flow
 import org.example.project.domain.models.AuthTypesModel
 import org.example.project.domain.models.ResultModel
+import org.example.project.domain.models.VerifyPhoneNumberModel
 
 interface AuthRepository {
+    val updates: Flow<Boolean>
     fun getAuthTypes(): Flow<ResultModel<AuthTypesModel>>
-    fun sendVerification(phone: String): Flow<Boolean>
+    fun verifyPhoneNumber(phone: String, type: String): Flow<ResultModel<VerifyPhoneNumberModel>>
     fun verifyCode(phone: String, code: String): Flow<Boolean>
+
+    suspend fun connect(checkId: String)
+    suspend fun disconnect()
 }

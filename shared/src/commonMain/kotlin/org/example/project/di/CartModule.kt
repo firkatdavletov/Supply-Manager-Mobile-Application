@@ -4,12 +4,12 @@ import com.arkivanov.decompose.ComponentContext
 import org.example.project.features.cart.CartComponent
 import org.example.project.features.cart.CartViewCallbacks
 import org.example.project.features.cart.DefaultCartComponent
-import org.example.project.navigation.DefaultRootComponent
+import org.example.project.navigation.Config
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 fun cartModule(): Module = module {
-    single <CartComponent> { (componentContext: ComponentContext, config: DefaultRootComponent.Config.Cart ,callbacks: CartViewCallbacks) ->
+    single <CartComponent> { (componentContext: ComponentContext, config: Config.Cart ,callbacks: CartViewCallbacks) ->
         DefaultCartComponent(
             componentContext = componentContext,
             callbacks = callbacks,

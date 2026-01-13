@@ -1,14 +1,17 @@
 package org.example.project.data.datastore.remote.auth
 
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 import org.example.project.data.api.auth_api.model.GetAuthTypesResponseBody
-import org.example.project.data.api.auth_api.model.SendSmsRequestBody
-import org.example.project.data.api.auth_api.model.SendSmsResponseBody
-import org.example.project.data.api.auth_api.model.VerificationResponseBody
-import org.example.project.data.entities.VerifyPhoneResponseModel
+import org.example.project.data.api.auth_api.model.VerifyPhoneNumberRequestBody
+import org.example.project.data.api.auth_api.model.VerifyPhoneNumberResponseBody
+import org.example.project.data.api.auth_api.model.CheckSmsCodeResponseBody
+import org.example.project.data.entities.TokenPairEntity
 
 interface AuthRemoteDataStore {
+    val updates: SharedFlow<TokenPairEntity>
     suspend fun getAuthTypes(): GetAuthTypesResponseBody
-    suspend fun sendVerificationCode(request: SendSmsRequestBody): SendSmsResponseBody
-    suspend fun verify(phone: String, code: String): VerificationResponseBody
+    suspend fun verifyPhoneNumber(request: VerifyPhoneNumberRequestBody): VerifyPhoneNumberResponseBody
+    suspend fun checkSmsCode(phone: String, code: String): CheckSmsCodeResponseBody
+    suspend fun connect(checkId: String)
+    suspend fun disconnect()
 }

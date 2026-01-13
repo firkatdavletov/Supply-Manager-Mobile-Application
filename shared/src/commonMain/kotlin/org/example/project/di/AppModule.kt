@@ -70,6 +70,7 @@ import org.example.project.data.mapper.OrderItemMapper
 import org.example.project.data.mapper.OrderMapper
 import org.example.project.data.mapper.PaymentMapper
 import org.example.project.data.mapper.ProductMapper
+import org.example.project.data.mapper.TokenPairMapper
 import org.example.project.data.mapper.UserMapper
 import org.example.project.data.mapper.WorkingHoursMapper
 import org.example.project.data.repositories.auth.DefaultAuthRepository
@@ -94,7 +95,7 @@ import org.example.project.domain.repositories.TokenRepository
 import org.example.project.domain.repositories.UserRepository
 import org.example.project.domain.usecase.auth.GetAccessTokenUseCase
 import org.example.project.domain.usecase.auth.GetAuthTypesUseCase
-import org.example.project.domain.usecase.auth.SendVerificationCodeUseCase
+import org.example.project.domain.usecase.auth.VerifyPhoneNumberUseCase
 import org.example.project.domain.usecase.auth.VerifyCodeUseCase
 import org.example.project.domain.usecase.cart.AddToCartUseCase
 import org.example.project.domain.usecase.cart.ClearCartUseCase
@@ -103,6 +104,7 @@ import org.example.project.domain.usecase.cart.LoadCartUseCase
 import org.example.project.domain.usecase.cart.RemoveFromCartUseCase
 import org.example.project.domain.usecase.cart.UpdateDeliveryAddressUseCase
 import org.example.project.domain.usecase.catalog.GetCategoriesUseCase
+import org.example.project.domain.usecase.catalog.GetProductCardUseCase
 import org.example.project.domain.usecase.catalog.GetProductUseCase
 import org.example.project.domain.usecase.catalog.GetProductsUseCase
 import org.example.project.domain.usecase.catalog.LoadCatalogUseCase
@@ -149,7 +151,7 @@ fun appModule() = module {
     single<OrderRemoteDataStore> { DefaultOrderRemoteDataStore(get()) }
 
     //Repositories
-    single<AuthRepository> { DefaultAuthRepository(get(), get(), get()) }
+    single<AuthRepository> { DefaultAuthRepository(get(), get(), get(), get()) }
     single<UserRepository> { DefaultUserRepository(get(), get(), get()) }
     single<CatalogRepository> { DefaultCatalogRepository(get(), get(), get(), get()) }
     single<TokenRepository> { DefaultTokenRepository(get()) }
@@ -164,7 +166,7 @@ fun appModule() = module {
     factory<LoadUserUseCase> { LoadUserUseCase(get()) }
     factory<GetAuthTypesUseCase> { GetAuthTypesUseCase(get()) }
     factory<GetAccessTokenUseCase> { GetAccessTokenUseCase(get()) }
-    factory<SendVerificationCodeUseCase> { SendVerificationCodeUseCase(get()) }
+    factory<VerifyPhoneNumberUseCase> { VerifyPhoneNumberUseCase(get()) }
     factory<VerifyCodeUseCase> { VerifyCodeUseCase(get()) }
     factory<GetCategoriesUseCase> { GetCategoriesUseCase(get()) }
     factory<GetProductsUseCase> { GetProductsUseCase(get()) }
@@ -188,6 +190,7 @@ fun appModule() = module {
     factory<DeleteUserUseCase> { DeleteUserUseCase(get(), get(), get()) }
     factory<LogoutUserUseCase> { LogoutUserUseCase(get(), get(), get()) }
     factory<UpdateUserUseCase> { UpdateUserUseCase(get()) }
+    factory { GetProductCardUseCase(get()) }
 
     //Mappers
     factory<AuthTypesMapper> { AuthTypesMapper() }
@@ -207,6 +210,7 @@ fun appModule() = module {
     factory { BankInfoMapper() }
     factory { PaymentMapper(get()) }
     factory { OrderUIModelMapper() }
+    factory { TokenPairMapper() }
 
     single<HttpClient>(named("cart")) {
         val securityStorage: SecurityStorage = get()
@@ -270,6 +274,30 @@ fun appModule() = module {
                     val token = securityStorage.getAccessToken()
                     token
                 }
+            }
+            install(ContentNegotiation) {
+                json(Json {
+                    prettyPrint = true
+                    isLenient = true
+                })
+            }
+            expectSuccess = true
+        }
+        httpClient
+    }
+
+    single<HttpClient>(named("ws_callcheck")) {
+        val httpClient = HttpClient {
+            install(Logging) {
+                level = LogLevel.ALL
+                logger = object : Logger {
+                    override fun log(message: String) {
+                        println("Ktorfit Log: $message")
+                    }
+                }
+            }
+            install(WebSockets) {
+                pingIntervalMillis = 5_000
             }
             install(ContentNegotiation) {
                 json(Json {
@@ -383,11 +411,6 @@ fun appModule() = module {
                 }
             }
 
-//            install(HttpRequestRetry) {
-//                retryOnServerErrors(maxRetries = 5)
-//                exponentialDelay()
-//            }
-
             expectSuccess = true
         }
         httpClient
@@ -396,7 +419,8 @@ fun appModule() = module {
     //Api
     single<AuthApi> {
         val httpClient = get<HttpClient>(named("no_auth"))
-        AuthApiImpl(httpClient)
+        val wsClient = get<HttpClient>(named("ws_callcheck"))
+        AuthApiImpl(httpClient, wsClient)
     }
 
     single<UserApi> {

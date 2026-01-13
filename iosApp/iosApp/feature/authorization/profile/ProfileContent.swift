@@ -63,18 +63,17 @@ struct ProfileContent: View {
             RoundedButton(
                 title: "Сохранить",
                 onClick: onSave,
-                background: Color.primaryContainer,
-                foreground: Color.onPrimaryContainer,
                 enabled: !isLoading
             )
             .padding(.horizontal)
             
-            RoundedButton(
-                title: "Удалить",
-                onClick: onDelete,
-                background: Color.errorContainer,
-                foreground: Color.onErrorContainer,
-                enabled: !isLoading
+            Button(
+                action: onDelete,
+                label: {
+                    Text("ВУдалить")
+                        .font(AppTypography.bodyMedium)
+                        .foregroundStyle(Color.primaryContainer)
+                }
             )
             .padding(.horizontal)
         }

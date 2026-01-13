@@ -5,7 +5,7 @@ import org.example.project.data.api.ResponseModel
 import org.example.project.data.entities.VerifyPhoneResponseModel
 
 @Serializable
-data class VerificationResponseBody(
+data class CheckSmsCodeResponseBody(
     val tokens: VerifyPhoneResponseModel?,
     override val success: Boolean,
     override val error: String?,

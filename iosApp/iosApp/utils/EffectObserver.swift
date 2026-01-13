@@ -14,15 +14,15 @@ class EffectObserver : ObservableObject {
     private var disposer: (() -> Void)? = nil
 
     func start(component: IosComponent) {
-            disposer = component.observeEvents { event in
-                DispatchQueue.main.async {
-                    self.effect = event
-                }
+        disposer = component.observeEvents { event in
+            DispatchQueue.main.async {
+                self.effect = event
             }
         }
+    }
 
-        func stop() {
-            disposer?()
-            disposer = nil
-        }
+    func stop() {
+        disposer?()
+        disposer = nil
+    }
 }

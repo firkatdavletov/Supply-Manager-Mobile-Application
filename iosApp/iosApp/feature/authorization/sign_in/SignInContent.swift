@@ -14,6 +14,7 @@ struct SignInContent: View {
     let authTypes: [String]
     let onAuthTypeClicked: (String) -> Void
     let onLoginButtonClicked: (String) -> Void
+    let onBackClicked: () -> Void
     
     @State private var phoneNumber: String = ""
     @StateObject private var keyboard = KeyboardResponder()
@@ -27,11 +28,12 @@ struct SignInContent: View {
                 .bold()
                 .padding(.top, 132)
             
-            Text("Пожалуйста, подтвердите номер телефона")
+            Text("Выберите способ подтверждения номера телефона")
                 .foregroundColor(.white)
                 .font(AppTypography.titleMedium)
                 .bold()
                 .padding(.vertical, 16)
+                .multilineTextAlignment(.center)
             
             VStack {
                 Text("Номер телефона:")
@@ -97,20 +99,28 @@ struct SignInContent: View {
                         .frame(height: 46)
                 } else {
                     VStack(spacing: 8) {
-                        ForEach(authTypes, id: \.self) { type in
-                            let title = switch (type) {
-                                case "sms": "СМС"
-                                case "call": "Телеграм"
-                                default: ""
+                        Text("Выбирая способ подтверждения, вы соглашаетесь с условиями использования и политикой конфиденциальности.")
+                            .font(.footnote)
+                            .foregroundColor(Color("DarkGrayColor"))
+                            .multilineTextAlignment(.leading)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Button(
+                            action: onBackClicked,
+                            label: {
+                                Text("Вернуться назад")
+                                    .font(AppTypography.bodyMedium)
+                                    .foregroundStyle(Color.primaryContainer)
                             }
-                            
+                        )
+                        .padding(.vertical)
+                    
+                        ForEach(authTypes, id: \.self) { type in
                             RoundedButton(
-                                title: title,
+                                title: type == "sms" ? "СМС" :
+                                    type == "call" ? "По звонку" : "",
                                 onClick: {
                                     onAuthTypeClicked(type)
                                 },
-                                background: Color.primaryContainer,
-                                foreground: Color.onPrimaryContainer,
                                 enabled: true
                             )
                         }
@@ -118,12 +128,6 @@ struct SignInContent: View {
                 }
                 
                 Spacer()
-                
-                Text("Нажимая \"Подтвердить\", вы соглашаетесь с условиями использования и политикой конфиденциальности.")
-                    .font(.footnote)
-                    .foregroundColor(Color("DarkGrayColor"))
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
             }
             .padding()
             .background(
@@ -152,6 +156,8 @@ struct SignInContent: View {
         authTypes: ["sms"]) { String in
             
         } onLoginButtonClicked: { String in
+            
+        } onBackClicked: {
             
         }
 }

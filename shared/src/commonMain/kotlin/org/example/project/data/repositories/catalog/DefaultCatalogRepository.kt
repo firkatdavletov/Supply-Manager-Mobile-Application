@@ -53,7 +53,7 @@ class DefaultCatalogRepository(
         }
     }
 
-    override fun getProduct(productId: Long): Flow<ProductModel?> {
+    override fun getProductCard(productId: Long): Flow<ProductModel?> {
         return flow {
             val catalog = catalogSubject.replayCache.firstOrNull()
             val product = catalog?.flatMap { it.products }?.firstOrNull { it.id == productId }
@@ -69,6 +69,19 @@ class DefaultCatalogRepository(
                 val model = categoryMapper.toModel(response.catalog)
                 _catalogSubject.emit(model)
                 emit(ResultModel.Success(true))
+            } else {
+                emit(ResultModel.Error(response.error, response.code))
+            }
+        }
+    }
+
+    override fun getProductCard(id: Int): Flow<ResultModel<ProductModel>> {
+        return flow {
+            emit(ResultModel.Loading)
+            val response =  catalogRemoteDataStore.getProduct(id)
+
+            if (response.success && response.product != null) {
+                emit(ResultModel.Success(productMapper.toModel(response.product)))
             } else {
                 emit(ResultModel.Error(response.error, response.code))
             }

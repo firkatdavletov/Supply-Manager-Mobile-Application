@@ -10,8 +10,6 @@ import SwiftUI
 struct RoundedButton: View {
     let title: String
     let onClick: () -> Void
-    let background: Color
-    let foreground: Color
     let enabled: Bool
     
     
@@ -27,11 +25,13 @@ struct RoundedButton: View {
                     .font(AppTypography.titleMedium.bold())
                     .frame(maxWidth: .infinity)
                     .padding(12)
-                    .background(enabled ? background : Color.primaryContainer)
-                    .foregroundColor(enabled ? foreground : Color.onPrimaryContainer)
+                    .frame(height: 50)
+                    .background(enabled ? Color.primaryContainer : Color.surface)
+                    .foregroundColor(Color.onPrimaryContainer)
                     .cornerRadius(25)
             }
         )
+        .disabled(!enabled)
     }
 }
 
@@ -41,8 +41,6 @@ struct RoundedButton: View {
         onClick: {
             
         },
-        background: Color.primaryContainer,
-        foreground: Color.onPrimaryContainer,
         enabled: false
     )
     .padding(.horizontal)

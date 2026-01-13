@@ -4,8 +4,10 @@ import kotlinx.serialization.Serializable
 import org.example.project.data.api.ResponseModel
 
 @Serializable
-data class SendSmsResponseBody(
-    val status: Int,
+data class VerifyPhoneNumberResponseBody(
+    val status: Int?,
+    val checkId: String?,
+    val callPhone: String?,
     override val success: Boolean,
     override val error: String?,
     override val code: Int?,

@@ -6,6 +6,7 @@ import org.example.project.di.authorizationModule
 import org.example.project.di.cartModule
 import org.example.project.di.catalogModule
 import org.example.project.di.currentOrderModule
+import org.example.project.di.dialogsModule
 import org.example.project.di.homeModule
 import org.example.project.di.launchModule
 import org.example.project.di.mapModule
@@ -28,7 +29,8 @@ fun initKoin() {
             platformModule(),
             currentOrderModule(),
             catalogModule(),
-            profileModule()
+            profileModule(),
+            dialogsModule(),
         )
     }
 }

@@ -17,6 +17,7 @@ struct CatalogContent: View {
     let onRemove: (Shared.ProductModel) -> Void
     let onCartButtonClicked: () -> Void
     let onBackButtonClicked: () -> Void
+    let onProductCardClicked: (Shared.ProductModel) -> Void
     
     let columns = [
         GridItem(.flexible()),
@@ -30,7 +31,8 @@ struct CatalogContent: View {
         onAddToCart: @escaping (Shared.ProductModel) -> Void,
         onRemove: @escaping (Shared.ProductModel) -> Void,
         onCartButtonClicked: @escaping () -> Void,
-        onBackButtonClicked: @escaping () -> Void
+        onBackButtonClicked: @escaping () -> Void,
+        onProductCardClicked: @escaping (Shared.ProductModel) -> Void
     ) {
         self.title = title
         self.products = products
@@ -39,6 +41,7 @@ struct CatalogContent: View {
         self.onRemove = onRemove
         self.onCartButtonClicked = onCartButtonClicked
         self.onBackButtonClicked = onBackButtonClicked
+        self.onProductCardClicked = onProductCardClicked
     }
     
     var body: some View {
@@ -62,11 +65,12 @@ struct CatalogContent: View {
                 LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(products, id: \.id) { product in
                         ProductCardView(product: product) { id  in
-                                onAddToCart(product)
-                            } onRemove: { id in
-                                onRemove(product)
-                            }
-
+                            onAddToCart(product)
+                        } onRemove: { id in
+                            onRemove(product)
+                        } onShowDetails: { id in
+                            onProductCardClicked(product)
+                        }
                     }
                 }
                 .padding(.horizontal)
@@ -75,8 +79,6 @@ struct CatalogContent: View {
                 RoundedButton(
                     title: "\(amount) руб",
                     onClick: onCartButtonClicked,
-                    background: Color.primaryContainer,
-                    foreground: Color.onPrimaryContainer,
                     enabled: true
                 )
                 .padding(.horizontal)
@@ -126,6 +128,7 @@ struct CatalogContent: View {
             
         } onBackButtonClicked: {
             
-        }
+        } onProductCardClicked: { ProductModel in
 
+    }
 }

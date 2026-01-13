@@ -33,7 +33,8 @@ struct CatalogView: View {
                 component.onEvent(event: CatalogViewEventOnCartButtonClicked())
             } onBackButtonClicked: {
                 component.onEvent(event: CatalogViewEventOnBackClicked())
+            } onProductCardClicked: { product in
+                component.onEvent(event: CatalogViewEventOnProductCardClicked(product: product))
             }
     }
-    
 }

@@ -45,7 +45,6 @@ class DefaultMainTabsComponent(
             key = KEY,
             childFactory = { config, context ->
                 val childKey = when (config) {
-                    is Config.Catalog -> "Catalog_${config.categoryId}"
                     is Config.Map -> "Map"
                     is Config.Cart -> "Cart"
                     is Config.SbpBanks -> "SbpBanks"
@@ -74,10 +73,6 @@ class DefaultMainTabsComponent(
 //                MapChild(getMapComponent(componentContext))
             }
 
-            is Config.Catalog -> {
-                CatalogChild(getCatalogComponent(componentContext, config.categoryId, config.title))
-            }
-
             is Config.SbpBanks -> {
                 SbpBanksChild(getSbpBanksComponent(componentContext, config.qrLink, config.canStoreToken))
             }
@@ -93,12 +88,6 @@ class DefaultMainTabsComponent(
         @Serializable
         data object Map: Config()
         @Serializable
-        data class Catalog @OptIn(ExperimentalUuidApi::class) constructor(
-            val categoryId: Long,
-            val title: String,
-            val instanceId: String = Uuid.random().toString()
-        ): Config()
-        @Serializable
         data object Cart: Config()
         @Serializable
         data class SbpBanks(
@@ -111,20 +100,6 @@ class DefaultMainTabsComponent(
 
     override val scope: Scope by lazy { createScope(this)}
 
-
-    private fun getCatalogComponent(context: ComponentContext, categoryId: Long, title: String): CatalogComponent {
-        val callbacks = CatalogCallbacks(
-            onBack = {
-                navigation.pop()
-            },
-            onNavigateToCart = {
-                navigation.pushNew(Config.Cart)
-            }
-        )
-        return scope.get {
-            parametersOf(context, categoryId, title, callbacks)
-        }
-    }
 
     private fun getCartComponent(context: ComponentContext): CartComponent {
         val callbacks = CartViewCallbacks(

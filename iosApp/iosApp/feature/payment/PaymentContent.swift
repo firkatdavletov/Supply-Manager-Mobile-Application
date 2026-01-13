@@ -50,8 +50,6 @@ struct PaymentContent: View {
             RoundedButton(
                 title: "Заказать",
                 onClick: onConfirmClicked,
-                background: Color.primaryContainer,
-                foreground: Color.onPrimaryContainer,
                 enabled: deliveryType != .delivery || addressString != nil
             )
             .padding(.horizontal)

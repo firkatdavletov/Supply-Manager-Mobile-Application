@@ -1,8 +1,10 @@
 package org.example.project.navigation
 
+import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import kotlinx.coroutines.flow.SharedFlow
+import org.example.project.dialogs.product_card.ProductCardComponent
 import org.example.project.features.DialogComponent
 import org.example.project.features.SnackBarManager
 import org.example.project.features.app_introduction.AppIntroductionComponent
@@ -24,9 +26,11 @@ import org.example.project.features.search_address.SearchAddressComponent
 
 interface RootComponent {
     val childStack: Value<ChildStack<*, Child>>
+    val dialogStack: Value<ChildSlot<*, BottomChild>>
     val snackBarManager: SnackBarManager
 
     fun onBackClicked(toIndex: Int)
+    fun dismissDialog()
 
     sealed class DialogChild {
         class SimpleDialog(val component: DialogComponent): DialogChild()
@@ -47,5 +51,9 @@ interface RootComponent {
         class SignIn(val component: SignInComponent) : Child()
         class Verification(val component: VerificationComponent) : Child()
         class SearchAddress(val component: SearchAddressComponent) : Child()
+    }
+
+    sealed class BottomChild(val id: String) {
+        class ProductCard(val component: ProductCardComponent) : BottomChild("ProductCard")
     }
 }

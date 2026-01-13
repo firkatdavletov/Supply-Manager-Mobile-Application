@@ -117,8 +117,6 @@ extension CartContent {
             RoundedButton(
                 title: "Перейти к заказу",
                 onClick: onConfirm,
-                background: Color.primaryContainer,
-                foreground: Color.onPrimaryContainer,
                 enabled: true
             )
         }

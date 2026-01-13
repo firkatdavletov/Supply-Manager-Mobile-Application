@@ -5,11 +5,21 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.http.path
 import org.example.project.data.api.catalog.model.GetCatalogResponseBody
+import org.example.project.data.api.catalog.model.GetProductResponseBody
 import org.example.project.data.api.catalog.model.GetProductsResponseBody
 
 class CatalogApiImpl(private val httpClient: HttpClient) : CatalogApi {
     override suspend fun getCatalog(): GetCatalogResponseBody {
         return httpClient.get("catalog/categories").body()
+    }
+
+    override suspend fun getProduct(productId: Int): GetProductResponseBody {
+        return httpClient.get {
+            url {
+                path("catalog/product")
+                parameters.append("id", productId.toString())
+            }
+        }.body()
     }
 
     override suspend fun getProductsByCategory(categoryId: Long): GetProductsResponseBody {

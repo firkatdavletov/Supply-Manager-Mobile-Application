@@ -1,28 +1,41 @@
 package org.example.project.data.datastore.remote.auth
 
+import kotlinx.coroutines.flow.SharedFlow
 import org.example.project.data.api.auth_api.AuthApi
 import org.example.project.data.api.auth_api.model.GetAuthTypesResponseBody
-import org.example.project.data.api.auth_api.model.SendSmsRequestBody
-import org.example.project.data.api.auth_api.model.SendSmsResponseBody
-import org.example.project.data.api.auth_api.model.VerificationRequestBody
-import org.example.project.data.api.auth_api.model.VerificationResponseBody
+import org.example.project.data.api.auth_api.model.VerifyPhoneNumberRequestBody
+import org.example.project.data.api.auth_api.model.VerifyPhoneNumberResponseBody
+import org.example.project.data.api.auth_api.model.CheckSmsCodeRequestBody
+import org.example.project.data.api.auth_api.model.CheckSmsCodeResponseBody
+import org.example.project.data.entities.TokenPairEntity
 
 class DefaultAuthRemoteDatStore(
     private val authApi: AuthApi,
 ): AuthRemoteDataStore {
+    override val updates: SharedFlow<TokenPairEntity>
+        get() = authApi.updates
+
     override suspend fun getAuthTypes(): GetAuthTypesResponseBody {
         return authApi.getAuthTypes()
     }
 
-    override suspend fun sendVerificationCode(request: SendSmsRequestBody): SendSmsResponseBody {
-        return authApi.sendVerificationCode(request)
+    override suspend fun verifyPhoneNumber(request: VerifyPhoneNumberRequestBody): VerifyPhoneNumberResponseBody {
+        return authApi.verifyPhoneNumber(request)
     }
 
-    override suspend fun verify(
+    override suspend fun checkSmsCode(
         phone: String,
         code: String
-    ): VerificationResponseBody {
-        val request = VerificationRequestBody(phone, code)
-        return authApi.verify(request)
+    ): CheckSmsCodeResponseBody {
+        val request = CheckSmsCodeRequestBody(phone, code)
+        return authApi.checkSmsCode(request)
+    }
+
+    override suspend fun connect(checkId: String) {
+        authApi.connect(checkId)
+    }
+
+    override suspend fun disconnect() {
+        authApi.disconnect()
     }
 }

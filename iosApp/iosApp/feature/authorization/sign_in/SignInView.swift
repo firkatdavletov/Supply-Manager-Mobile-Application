@@ -31,6 +31,8 @@ struct SignInView: View {
                 component.onEvent(event: SignInViewEventAuthTypeClicked(authType: type))
             } onLoginButtonClicked: { value in
                 component.onEvent(event: SignInViewEventLoginClicked(phoneNumber: value))
+            } onBackClicked: {
+                component.onEvent(event: SignInViewEventOnBackClicked())
             }
     }
 }

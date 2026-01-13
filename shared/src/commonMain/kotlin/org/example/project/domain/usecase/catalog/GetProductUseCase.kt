@@ -9,6 +9,6 @@ class GetProductUseCase(
     private val catalogRepository: CatalogRepository,
 ): IOUseCase<Long, ProductModel?>() {
     override fun execute(param: Long): Flow<ProductModel?> {
-        return catalogRepository.getProduct(param)
+        return catalogRepository.getProductCard(param)
     }
 }

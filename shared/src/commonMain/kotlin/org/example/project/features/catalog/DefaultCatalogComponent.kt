@@ -65,6 +65,10 @@ class DefaultCatalogComponent(
             CatalogViewEvent.OnCartButtonClicked -> {
                 callbacks.onNavigateToCart()
             }
+
+            is CatalogViewEvent.OnProductCardClicked -> {
+                callbacks.showProductCard(event.product.id.toInt())
+            }
         }
     }
 
@@ -107,5 +111,4 @@ class DefaultCatalogComponent(
             }
         }
     }
-
 }

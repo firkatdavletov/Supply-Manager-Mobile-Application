@@ -17,6 +17,10 @@ class VerifyReducer : Reducer<VerifyViewState, VerifyViewEvent, VerifyViewEffect
             is VerifyViewEvent.OnError -> {
                 state.copy(alert = event.message, isLoading = false)
             }
+
+            VerifyViewEvent.OnCallPhoneClicked -> state.copy(
+                isLoading = true
+            )
             else -> state
         }
     }

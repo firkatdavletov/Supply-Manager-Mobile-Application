@@ -42,8 +42,6 @@ struct SearchAddressContent: View {
             RoundedButton(
                 title: "Выбрать на карте",
                 onClick: onMapButtonClicked,
-                background: Color.primaryContainer,
-                foreground: Color.onPrimaryContainer,
                 enabled: true
             )
             .padding()

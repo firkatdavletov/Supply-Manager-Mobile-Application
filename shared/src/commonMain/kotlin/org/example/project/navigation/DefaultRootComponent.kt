@@ -2,23 +2,21 @@ package org.example.project.navigation
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DelicateDecomposeApi
+import com.arkivanov.decompose.router.slot.ChildSlot
+import com.arkivanov.decompose.router.slot.SlotNavigation
+import com.arkivanov.decompose.router.slot.activate
+import com.arkivanov.decompose.router.slot.childSlot
+import com.arkivanov.decompose.router.slot.dismiss
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.popTo
-import com.arkivanov.decompose.router.stack.popToFirst
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.pushToFront
-import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
+import org.example.project.dialogs.product_card.ProductCardComponent
 import org.example.project.features.SnackBarManager
 import org.example.project.features.app_introduction.AppIntroCallbacks
 import org.example.project.features.app_introduction.AppIntroductionComponent
@@ -26,7 +24,6 @@ import org.example.project.features.authorization.sign_in_component.SignInCallba
 import org.example.project.features.authorization.sign_in_component.SignInComponent
 import org.example.project.features.authorization.verification_component.VerificationComponent
 import org.example.project.features.authorization.verification_component.VerifyCallbacks
-import org.example.project.features.base.Reducer
 import org.example.project.features.cart.CartComponent
 import org.example.project.features.cart.CartViewCallbacks
 import org.example.project.features.catalog.CatalogCallbacks
@@ -67,6 +64,7 @@ class DefaultRootComponent(
 ) : RootComponent, ComponentContext by componentContext, KoinComponent {
 
     private val navigation  = StackNavigation<Config>()
+    private val dialogNavigation = SlotNavigation<DialogConfig>()
 
     override val childStack: Value<ChildStack<*, RootComponent.Child>> = childStack(
         source = navigation,
@@ -75,8 +73,19 @@ class DefaultRootComponent(
         childFactory = ::createChild
     )
 
+    override val dialogStack: Value<ChildSlot<*, RootComponent.BottomChild>> = childSlot(
+        source = dialogNavigation,
+        serializer = DialogConfig.serializer(),
+        handleBackButton = true,
+        childFactory = ::createBottomChild
+    )
+
     override fun onBackClicked(toIndex: Int) {
         navigation.popTo(toIndex)
+    }
+
+    override fun dismissDialog() {
+        dialogNavigation.dismiss()
     }
 
     private fun createChild(
@@ -124,6 +133,17 @@ class DefaultRootComponent(
 
             is Config.SearchAddress -> {
                 SearchAddress(getSearchAddressComponent(componentContext, config))
+            }
+        }
+    }
+
+    private fun createBottomChild(
+        dialogConfig: DialogConfig,
+        componentContext: ComponentContext
+    ): RootComponent.BottomChild {
+        return when (dialogConfig) {
+            is DialogConfig.ProductCard -> {
+                RootComponent.BottomChild.ProductCard(getProductCardComponent(componentContext, dialogConfig))
             }
         }
     }
@@ -233,6 +253,9 @@ class DefaultRootComponent(
             },
             onNavigateToCart = {
                 navigation.pushToFront(Config.Cart)
+            },
+            showProductCard = {
+                dialogNavigation.activate(DialogConfig.ProductCard(it))
             }
         )
         return get {
@@ -255,8 +278,8 @@ class DefaultRootComponent(
             navigateToHome = {
                 navigation.pushToFront(Config.Home)
             },
-            navigateToVerify = { phoneNumber, authType, fromScreen ->
-                navigation.pushToFront(Config.Verification(fromScreen, phoneNumber, authType))
+            navigateToVerify = { phoneNumber, authType, fromScreen, checkId, callPhone ->
+                navigation.pushNew(Config.Verification(fromScreen, phoneNumber, authType, checkId, callPhone))
             },
             onBack = {
                 navigation.pop()
@@ -316,54 +339,10 @@ class DefaultRootComponent(
         }
     }
 
-    @Serializable
-    sealed class Config {
-        @Serializable
-        data object AppIntroduction : Config()
+    private fun getProductCardComponent(componentContent: ComponentContext, dialogConfig: DialogConfig): ProductCardComponent {
 
-        @Serializable
-        data class SelectAddress(val fromScreen: String?): Config()
-
-        @Serializable
-        data object Home: Config()
-
-        @Serializable
-        data object Launch: Config()
-
-        @Serializable
-        data object Cart: Config()
-
-        @Serializable
-        data object Payment: Config()
-
-        @Serializable
-        data class CurrentOrder(
-            val fromScreen: String?,
-            val orderId: Long
-        ): Config()
-
-        @Serializable
-        data class Catalog(
-            val categoryId: Long,
-            val title: String,
-        ): Config()
-
-        @Serializable
-        data object Profile : Config()
-
-        @Serializable
-        data class SignIn(
-            val fromScreen: String?
-        ) : Config()
-
-        @Serializable
-        data class Verification(
-            val fromScreen: String?,
-            val phoneNumber: String,
-            val authType: String,
-        ) : Config()
-
-        @Serializable
-        data class SearchAddress(val fromScreen: String?) : Config()
+        return get {
+            parametersOf(componentContent, dialogConfig)
+        }
     }
 }

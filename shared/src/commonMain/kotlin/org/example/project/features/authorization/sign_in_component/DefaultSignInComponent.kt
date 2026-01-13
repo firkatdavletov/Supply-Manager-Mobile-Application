@@ -7,15 +7,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.example.project.domain.models.AuthTypesModel
 import org.example.project.domain.models.ResultModel
+import org.example.project.domain.models.VerifyPhoneNumberModel
 import org.example.project.domain.usecase.auth.GetAuthTypesUseCase
-import org.example.project.domain.usecase.auth.SendVerificationCodeUseCase
+import org.example.project.domain.usecase.auth.VerifyPhoneNumberUseCase
 import org.example.project.features.SnackBarManager
 
 class DefaultSignInComponent(
     componentContext: ComponentContext,
     snackBarManager: SnackBarManager,
     private val getAuthTypesUseCase: GetAuthTypesUseCase,
-    private val sendVerificationCodeUseCase: SendVerificationCodeUseCase,
+    private val verifyPhoneNumberUseCase: VerifyPhoneNumberUseCase,
     private val callbacks: SignInCallbacks,
     private val fromScreen: String?,
 ) : SignInComponent(componentContext, snackBarManager) {
@@ -88,30 +89,39 @@ class DefaultSignInComponent(
             onEvent(SignInViewEvent.OnError("Введите правильный номер телефона: $formattedPhone"))
             return
         }
-        when (state.value.selectedAuthType) {
-            "sms" -> {
-                sendVerificationCode("7$formattedPhone")
+        when (val type = state.value.selectedAuthType) {
+            "sms", "call" -> {
+                verifyPhoneNumber("7$formattedPhone", type)
             }
         }
     }
 
-    private fun sendVerificationCode(phone: String) {
+    private fun verifyPhoneNumber(phone: String, type: String) {
+        val params = VerifyPhoneNumberUseCase.Params(phone, type)
         coroutineScope.launch {
-            sendVerificationCodeUseCase.invoke(phone)
+            verifyPhoneNumberUseCase.invoke(params)
                 .catch {
                     onEvent(SignInViewEvent.OnThrowError(it))
                 }
-                .collect { status ->
-                    if (status) {
-                        withContext(Dispatchers.Main) {
-                            callbacks.navigateToVerify(
-                                phone,
-                                state.value.selectedAuthType,
-                                fromScreen
-                            )
+                .collect { resultModel ->
+                    when (resultModel) {
+                        is ResultModel.Error -> {
+                            onEvent(SignInViewEvent.OnError(resultModel.message))
                         }
-                    } else {
-                        onEvent(SignInViewEvent.OnError(null))
+                        ResultModel.Loading -> {}
+                        is ResultModel.Success<VerifyPhoneNumberModel> -> {
+                            if (resultModel.data.success) {
+                                withContext(Dispatchers.Main) {
+                                    callbacks.navigateToVerify(
+                                        phone,
+                                        type,
+                                        fromScreen,
+                                        resultModel.data.checkId,
+                                        resultModel.data.callPhone,
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
         }

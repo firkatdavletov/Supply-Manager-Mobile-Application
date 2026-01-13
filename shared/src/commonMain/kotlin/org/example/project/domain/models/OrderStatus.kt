@@ -13,11 +13,11 @@ enum class OrderStatus {
     companion object {
         fun getTitle(status: OrderStatus): String {
             return when (status) {
-                PENDING -> "В ожидании"
-                AWAITING_PAYMENT -> "Ожидает оплаты"
-                AWAITING_CASH_PAYMENT -> "Ожидает оплаты наличными"
-                PAID -> "Готовится"
-                PROCESSING -> "В пути"
+                PENDING -> "Ожидаем подтверждения"
+                AWAITING_PAYMENT -> "Ожидаем оплаты"
+                AWAITING_CASH_PAYMENT -> "Ожидаем оплаты наличными"
+                PAID -> "Ресторан готовит заказ"
+                PROCESSING -> "Заказ в доставка"
                 FAILED -> "Ошибка"
                 CANCELLED -> "Отменен"
                 DELIVERED -> "Доставлен"

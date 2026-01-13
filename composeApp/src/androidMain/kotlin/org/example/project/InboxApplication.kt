@@ -8,6 +8,7 @@ import org.example.project.di.authorizationModule
 import org.example.project.di.cartModule
 import org.example.project.di.catalogModule
 import org.example.project.di.currentOrderModule
+import org.example.project.di.dialogsModule
 import org.example.project.di.homeModule
 import org.example.project.di.launchModule
 import org.example.project.di.mapModule
@@ -36,7 +37,8 @@ class InboxApplication: Application(), KoinComponent {
                 platformModule(),
                 currentOrderModule(),
                 catalogModule(),
-                profileModule()
+                profileModule(),
+                dialogsModule()
             )
         }
         MapKitFactory.setApiKey("ae6b93e5-52ca-4ab3-879c-34d8728b59b5")

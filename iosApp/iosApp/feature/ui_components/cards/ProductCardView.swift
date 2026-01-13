@@ -13,13 +13,14 @@ struct ProductCardView: View {
     let product: Shared.ProductModel
     let onAddToCart: (Int64) -> Void
     let onRemove: (Int64) -> Void
+    let onShowDetails: (Int64) -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             RemoteImage(urlString: product.imageUrl)
                 .frame(height: 112)
                 .clipShape(
-                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    RoundedRectangle(cornerRadius: 25, style: .continuous)
                 )
 
             Text("\(Int(product.price)) руб")
@@ -32,8 +33,6 @@ struct ProductCardView: View {
                 .foregroundColor(Color.onBackground)
                 .padding(.horizontal, 8)
 
-            Spacer()
-
             CartButton(
                 quantity: Int(product.count),
                 onAdd: { onAddToCart(product.id) },
@@ -42,10 +41,15 @@ struct ProductCardView: View {
             )
                 .padding(.horizontal, 8)
                 .padding(.bottom, 8)
+                .allowsHitTesting(true)
         }
         .background(Color.surface)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: 25))
         .frame(height: 234)
+        .contentShape(RoundedRectangle(cornerRadius: 25))
+        .onTapGesture {
+            onShowDetails(product.id)
+        }
     }
 }
 
@@ -62,6 +66,8 @@ struct ProductCardView: View {
         )) { Int64 in
             
         } onRemove: { Int64 in
+            
+        } onShowDetails: { id in
             
         }
         .padding()

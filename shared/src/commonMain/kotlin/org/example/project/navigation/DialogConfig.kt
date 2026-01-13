@@ -1,0 +1,8 @@
+package org.example.project.navigation
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+sealed class DialogConfig {
+    data class ProductCard(val productId: Int) : DialogConfig()
+}

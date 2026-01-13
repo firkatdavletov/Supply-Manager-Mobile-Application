@@ -17,4 +17,5 @@ sealed interface CatalogViewEvent: Reducer.ViewEvent {
     data class OnAddToCart(val product: ProductModel): CatalogViewEvent
     data class OnRemoveFromCart(val product: ProductModel): CatalogViewEvent
     data object OnCartButtonClicked: CatalogViewEvent
+    data class OnProductCardClicked(val product: ProductModel): CatalogViewEvent
 }

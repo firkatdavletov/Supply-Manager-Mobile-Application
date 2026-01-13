@@ -116,6 +116,8 @@ extension HomeContent2 {
                             
                         } onRemove: { Int64 in
                             
+                        } onShowDetails: { Int64 in
+                            
                         }
 
                 }

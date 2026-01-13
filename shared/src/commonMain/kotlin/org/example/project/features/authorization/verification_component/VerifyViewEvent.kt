@@ -7,4 +7,6 @@ sealed interface VerifyViewEvent : Reducer.ViewEvent {
     data class OnError(val message: String?): VerifyViewEvent
     data class OnThrowError(val throwable: Throwable) : VerifyViewEvent
     data object OnBackClicked: VerifyViewEvent
+    data object OnCallPhoneClicked: VerifyViewEvent
+    data object OnAppBecameActive: VerifyViewEvent
 }

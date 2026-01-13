@@ -7,9 +7,20 @@ struct RootView: View {
     @StateObject private var effectObserver = EffectObserver()
     @State private var showToast = false
     @State private var toastMessage = ""
+    @State private var activeDialog: RootComponentBottomChild?
+
+    
+    @StateValue
+    private var dialogSlot: ChildSlot<AnyObject, RootComponentBottomChild>
+
+    init(root: RootComponent) {
+        self.root = root
+        _dialogSlot = StateValue(root.dialogStack)
+    }
     
     
     var body: some View {
+        
         StackView(
             stackValue: StateValue(root.childStack),
             getTitle: { a in
@@ -53,6 +64,27 @@ struct RootView: View {
         
             toastMessage = effect
             showToast = true
+        }
+        .sheet(
+            isPresented: .constant(dialogSlot.child != nil),
+            onDismiss: {
+                root.dismissDialog()
+            }
+        ) {
+            if let dialog = dialogSlot.child?.instance {
+                dialogView(dialog)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func dialogView(_ dialog: RootComponentBottomChild) -> some View {
+        switch dialog {
+        case let dialog as RootComponentBottomChild.ProductCard:
+            ProductCardDialog(component: dialog.component)
+
+        default:
+            EmptyView()
         }
     }
 }

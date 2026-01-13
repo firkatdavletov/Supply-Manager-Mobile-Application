@@ -1,0 +1,6 @@
+package org.example.project.dialogs.product_card
+
+import org.example.project.features.base.Reducer
+
+interface ProductCardViewEffect : Reducer.ViewEffect {
+}

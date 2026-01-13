@@ -59,8 +59,6 @@ struct HomeContent: View {
                     onClick: {
                         onCartButtonClicked()
                     },
-                    background: Color.primaryContainer,
-                    foreground: Color.onPrimaryContainer,
                     enabled: true
                 )
                 .padding(.horizontal)

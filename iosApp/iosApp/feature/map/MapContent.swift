@@ -119,8 +119,6 @@ struct MapContent: View {
                     RoundedButton(
                         title: "Подтвердить",
                         onClick: onConfirm,
-                        background: Color.primaryContainer,
-                        foreground: Color.onPrimaryContainer,
                         enabled: isConfirmEnabled
                     )
                     .disabled(!isConfirmEnabled)

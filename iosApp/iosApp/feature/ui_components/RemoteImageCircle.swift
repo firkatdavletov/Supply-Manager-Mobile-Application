@@ -61,6 +61,11 @@ struct RemoteImage: View {
     }
 
     private var placeholder: some View {
-        Color.surface
+        ZStack {
+            Color.gray.opacity(0.2)
+            Image(systemName: "photo")
+                .font(.largeTitle)
+                .foregroundColor(.gray)
+        }
     }
 }

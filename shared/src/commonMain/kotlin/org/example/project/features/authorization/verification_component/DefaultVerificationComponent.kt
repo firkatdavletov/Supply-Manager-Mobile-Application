@@ -2,17 +2,20 @@ package org.example.project.features.authorization.verification_component
 
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.example.project.domain.models.ResultModel
+import org.example.project.domain.repositories.AuthRepository
 import org.example.project.domain.repositories.OrderRepository
 import org.example.project.domain.usecase.auth.VerifyCodeUseCase
 import org.example.project.domain.usecase.user.LoadUserUseCase
 import org.example.project.features.SnackBarManager
 import org.example.project.features.cart.CartComponent
 import org.example.project.features.home.HomeComponent
-import org.example.project.features.map.MapViewEvent
 
 class DefaultVerificationComponent(
     componentContext: ComponentContext,
@@ -23,21 +26,34 @@ class DefaultVerificationComponent(
     private val authType: String,
     private val callbacks: VerifyCallbacks,
     private val fromScreen: String?,
+    private val checkId: String?,
+    callPhone: String?,
     private val orderRepository: OrderRepository,
+    private val authRepository: AuthRepository,
 ) : VerificationComponent(
     componentContext = componentContext,
     snackBarManager = snackBarManager,
     initialState = VerifyViewState(
         isLoading = false,
+        authType = authType,
+        callPhone = callPhone,
         phoneNumber = phoneNumber,
         code = "",
         confirmEnabled = false
     )
 ) {
+    private var _callNumberClicked = false
+    private var socketIsConnected = false
+    private var job: Job? = null
 
-    override fun initDataLoad() {
-
+    init {
+        coroutineScope.launch {
+            println("[DefaultVerificationComponent] : subscribe")
+            subscribeToUpdates()
+        }
     }
+
+    override fun initDataLoad() {}
 
     override fun onEvent(event: VerifyViewEvent) {
         when (event) {
@@ -54,7 +70,48 @@ class DefaultVerificationComponent(
                 showThrowError(event.throwable)
             }
             VerifyViewEvent.OnBackClicked -> callbacks.onBack()
+            VerifyViewEvent.OnCallPhoneClicked -> {
+                _callNumberClicked = true
+                reduce(event)
+            }
+            VerifyViewEvent.OnAppBecameActive -> onAppBecameActive()
         }
+    }
+
+    override fun onStarted() {
+        println("[DefaultVerificationComponent] : onStarted type: $authType, checkId: $checkId, $_callNumberClicked")
+        if (authType == "call" && checkId != null && _callNumberClicked && !socketIsConnected) {
+            job?.cancel()
+            job = coroutineScope.launch {
+                println("[DefaultVerificationComponent] : connect")
+                authRepository.connect(checkId)
+                socketIsConnected = true
+            }
+        }
+    }
+
+    override fun onStoped() {
+        println("[DefaultVerificationComponent] : onStoped")
+        coroutineScope.launch {
+            authRepository.disconnect()
+            job?.cancel()
+            job = null
+            socketIsConnected = false
+        }
+    }
+
+    private fun onAppBecameActive() {
+
+    }
+
+    private suspend fun subscribeToUpdates() {
+        authRepository.updates
+            .flowOn(Dispatchers.IO)
+            .collect {
+                if (it && checkId != null) {
+                    loadUser()
+                }
+            }
     }
 
     private fun handleCodeChanged(code: String) {
@@ -89,16 +146,18 @@ class DefaultVerificationComponent(
     private suspend fun loadUser() {
         loadUserUseCase.invoke(Unit)
             .catch {
-                onEvent(VerifyViewEvent.OnThrowError(it))
+                withContext(Dispatchers.Main) {
+                    onEvent(VerifyViewEvent.OnThrowError(it))
+                }
             }
             .collect { resultModel ->
                 when (resultModel) {
                     is ResultModel.Error -> {
-                        onEvent(VerifyViewEvent.OnError(resultModel.message))
+                        withContext(Dispatchers.Main) {
+                            onEvent(VerifyViewEvent.OnError(resultModel.message))
+                        }
                     }
-                    ResultModel.Loading -> {
-
-                    }
+                    ResultModel.Loading -> {}
                     is ResultModel.Success<Boolean> -> {
                         if (resultModel.data) {
                             orderRepository.connect()

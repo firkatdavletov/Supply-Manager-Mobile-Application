@@ -39,8 +39,6 @@ struct LaunchContent: View {
                     RoundedButton(
                         title: "Повторить",
                         onClick: onRetryClicked,
-                        background: Color.primaryContainer,
-                        foreground: Color.onPrimaryContainer,
                         enabled: true
                     )
                 }
