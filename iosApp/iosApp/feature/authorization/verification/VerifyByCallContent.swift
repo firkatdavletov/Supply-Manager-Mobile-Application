@@ -73,7 +73,7 @@ struct VerifyByCallContent: View {
         .edgesIgnoringSafeArea([.bottom, .top])
         .frame(maxWidth: .infinity)
         .navigationBarBackButtonHidden(true)
-        .background(Color.black)
+        .background(Color.darkCosmicBlue)
         .onChange(of: scenePhase) { newPhase in
             switch newPhase {
             case .active:

@@ -12,11 +12,12 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.popTo
+import com.arkivanov.decompose.router.stack.popWhile
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.pushToFront
 import com.arkivanov.decompose.value.Value
-import org.example.project.dialogs.product_card.ProductCardComponent
+import org.example.project.features.dialogs.product_card.ProductCardComponent
 import org.example.project.features.SnackBarManager
 import org.example.project.features.app_introduction.AppIntroCallbacks
 import org.example.project.features.app_introduction.AppIntroductionComponent
@@ -30,6 +31,10 @@ import org.example.project.features.catalog.CatalogCallbacks
 import org.example.project.features.catalog.CatalogComponent
 import org.example.project.features.current_order.CurrentOrderCallbacks
 import org.example.project.features.current_order.CurrentOrderComponent
+import org.example.project.features.dialogs.delete_user_dialog.DeleteUserComponent
+import org.example.project.features.dialogs.delete_user_dialog.DeleteUserDialogCallbacks
+import org.example.project.features.dialogs.logout_user_dialog.LogoutUserComponent
+import org.example.project.features.dialogs.logout_user_dialog.LogoutUserDialogCallbacks
 import org.example.project.features.home.HomeCallbacks
 import org.example.project.features.home.HomeComponent
 import org.example.project.features.launch.LaunchComponent
@@ -42,6 +47,7 @@ import org.example.project.features.profile.ProfileCallbacks
 import org.example.project.features.profile.ProfileComponent
 import org.example.project.features.search_address.SearchAddressCallbacks
 import org.example.project.features.search_address.SearchAddressComponent
+import org.example.project.navigation.RootComponent.BottomChild.*
 import org.example.project.navigation.RootComponent.Child.AppIntroduction
 import org.example.project.navigation.RootComponent.Child.Cart
 import org.example.project.navigation.RootComponent.Child.Catalog
@@ -143,7 +149,13 @@ class DefaultRootComponent(
     ): RootComponent.BottomChild {
         return when (dialogConfig) {
             is DialogConfig.ProductCard -> {
-                RootComponent.BottomChild.ProductCard(getProductCardComponent(componentContext, dialogConfig))
+                ProductCard(getProductCardComponent(componentContext, dialogConfig))
+            }
+            is DialogConfig.DeleteUser -> {
+                DeleteUser(getDeleteUserComponent(componentContext, dialogConfig))
+            }
+            is DialogConfig.LogoutUser -> {
+                LogoutUser(getLogoutUserComponent(componentContext, dialogConfig))
             }
         }
     }
@@ -227,7 +239,11 @@ class DefaultRootComponent(
     @OptIn(DelicateDecomposeApi::class)
     private fun getPaymentComponent(componentContext: ComponentContext): PaymentComponent {
         val callbacks = PaymentCallbacks(
-            navigateBack = { navigation.pop() },
+            navigateBack = {
+                navigation.popWhile( { config ->
+                    config != Config.Cart
+                } )
+            },
             navigateToOrder = { navigation.push(Config.CurrentOrder(PaymentComponent::class.simpleName, it)) },
             navigateToMap = { navigation.pushToFront(Config.SearchAddress(PaymentComponent::class.simpleName)) }
         )
@@ -265,7 +281,13 @@ class DefaultRootComponent(
 
     private fun getProfileComponent(context: ComponentContext): ProfileComponent {
         val callbacks = ProfileCallbacks(
-            navigateBack = {  navigation.pop() }
+            navigateBack = {  navigation.pop() },
+            showDeleteUserDialog = {
+                dialogNavigation.activate(DialogConfig.DeleteUser)
+            },
+            showLogoutUserDialog = {
+                dialogNavigation.activate(DialogConfig.LogoutUser)
+            }
         )
 
         return get {
@@ -339,10 +361,40 @@ class DefaultRootComponent(
         }
     }
 
-    private fun getProductCardComponent(componentContent: ComponentContext, dialogConfig: DialogConfig): ProductCardComponent {
+    private fun getProductCardComponent(componentContent: ComponentContext, dialogConfig: DialogConfig.ProductCard): ProductCardComponent {
 
         return get {
             parametersOf(componentContent, dialogConfig)
+        }
+    }
+
+    private fun getLogoutUserComponent(componentContent: ComponentContext, dialogConfig: DialogConfig.LogoutUser): LogoutUserComponent {
+        val callbacks = LogoutUserDialogCallbacks(
+            onDismiss = {
+                dialogNavigation.dismiss()
+            },
+            onSuccess = {
+                dialogNavigation.dismiss()
+                navigation.pop()
+            }
+        )
+        return get {
+            parametersOf(componentContent, dialogConfig, callbacks)
+        }
+    }
+
+    private fun getDeleteUserComponent(componentContent: ComponentContext, dialogConfig: DialogConfig.DeleteUser): DeleteUserComponent {
+        val callbacks = DeleteUserDialogCallbacks(
+            onDismiss = {
+                dialogNavigation.dismiss()
+            },
+            onSuccess = {
+                dialogNavigation.dismiss()
+                navigation.pop()
+            }
+        )
+        return get {
+            parametersOf(componentContent, dialogConfig, callbacks)
         }
     }
 }

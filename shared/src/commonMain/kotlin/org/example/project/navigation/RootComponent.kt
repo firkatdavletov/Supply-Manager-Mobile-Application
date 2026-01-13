@@ -3,22 +3,21 @@ package org.example.project.navigation
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
-import kotlinx.coroutines.flow.SharedFlow
-import org.example.project.dialogs.product_card.ProductCardComponent
+import org.example.project.features.dialogs.product_card.ProductCardComponent
 import org.example.project.features.DialogComponent
 import org.example.project.features.SnackBarManager
 import org.example.project.features.app_introduction.AppIntroductionComponent
 import org.example.project.features.authorization.AuthorizationComponent
 import org.example.project.features.authorization.sign_in_component.SignInComponent
 import org.example.project.features.authorization.verification_component.VerificationComponent
-import org.example.project.features.base.IosComponent
 import org.example.project.features.launch.LaunchComponent
 import org.example.project.features.main_tabs.MainTabsComponent
 import org.example.project.features.home.HomeComponent
 import org.example.project.features.cart.CartComponent
 import org.example.project.features.catalog.CatalogComponent
 import org.example.project.features.current_order.CurrentOrderComponent
-import org.example.project.features.main_tabs.MainTabsComponent.Child
+import org.example.project.features.dialogs.delete_user_dialog.DeleteUserComponent
+import org.example.project.features.dialogs.logout_user_dialog.LogoutUserComponent
 import org.example.project.features.map.MapComponent
 import org.example.project.features.payment.PaymentComponent
 import org.example.project.features.profile.ProfileComponent
@@ -55,5 +54,7 @@ interface RootComponent {
 
     sealed class BottomChild(val id: String) {
         class ProductCard(val component: ProductCardComponent) : BottomChild("ProductCard")
+        class LogoutUser(val component: LogoutUserComponent) : BottomChild("logout_user")
+        class DeleteUser(val component: DeleteUserComponent) : BottomChild("delete_user")
     }
 }

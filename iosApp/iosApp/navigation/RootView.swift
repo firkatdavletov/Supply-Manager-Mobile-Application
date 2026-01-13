@@ -82,6 +82,10 @@ struct RootView: View {
         switch dialog {
         case let dialog as RootComponentBottomChild.ProductCard:
             ProductCardDialog(component: dialog.component)
+        case let dialog as RootComponentBottomChild.DeleteUser:
+            DeleteUserDialog(component: dialog.component)
+        case let dialog as RootComponentBottomChild.LogoutUser:
+            LogoutUserDialog(component: dialog.component)
 
         default:
             EmptyView()

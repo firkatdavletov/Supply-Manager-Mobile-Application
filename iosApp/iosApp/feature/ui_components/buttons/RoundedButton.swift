@@ -26,7 +26,7 @@ struct RoundedButton: View {
                     .frame(maxWidth: .infinity)
                     .padding(12)
                     .frame(height: 50)
-                    .background(enabled ? Color.primaryContainer : Color.surface)
+                    .background(enabled ? Color.primaryContainer : Color.primaryContainer.opacity(0.2))
                     .foregroundColor(Color.onPrimaryContainer)
                     .cornerRadius(25)
             }

@@ -1,8 +1,14 @@
 package org.example.project.di
 
 import com.arkivanov.decompose.ComponentContext
-import org.example.project.dialogs.product_card.DefaultProductCardComponent
-import org.example.project.dialogs.product_card.ProductCardComponent
+import org.example.project.features.dialogs.delete_user_dialog.DefaultDeleteUserComponent
+import org.example.project.features.dialogs.delete_user_dialog.DeleteUserComponent
+import org.example.project.features.dialogs.delete_user_dialog.DeleteUserDialogCallbacks
+import org.example.project.features.dialogs.logout_user_dialog.DefaultLogoutUserComponent
+import org.example.project.features.dialogs.logout_user_dialog.LogoutUserComponent
+import org.example.project.features.dialogs.logout_user_dialog.LogoutUserDialogCallbacks
+import org.example.project.features.dialogs.product_card.DefaultProductCardComponent
+import org.example.project.features.dialogs.product_card.ProductCardComponent
 import org.example.project.navigation.DialogConfig
 import org.koin.dsl.module
 
@@ -16,6 +22,24 @@ fun dialogsModule() = module {
             addToCartUseCase = get(),
             removeFromCartUseCase = get(),
             cartRepository = get()
+        )
+    }
+
+    factory<DeleteUserComponent> { (componentContext: ComponentContext, config: DialogConfig.DeleteUser, callbacks: DeleteUserDialogCallbacks) ->
+        DefaultDeleteUserComponent(
+            componentContext = componentContext,
+            snackBarManager = get(),
+            deleteUserUseCase = get(),
+            callbacks = callbacks
+        )
+    }
+
+    factory<LogoutUserComponent> { (componentContext: ComponentContext, config: DialogConfig.LogoutUser, callbacks: LogoutUserDialogCallbacks) ->
+        DefaultLogoutUserComponent(
+            componentContext = componentContext,
+            snackBarManager = get(),
+            logoutUserUseCase = get(),
+            callbacks = callbacks
         )
     }
 }

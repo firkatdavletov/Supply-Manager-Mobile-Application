@@ -14,8 +14,6 @@ fun profileModule() = module {
             callback,
             get(),
             get(),
-            get(),
-            get()
         )
     }
 }

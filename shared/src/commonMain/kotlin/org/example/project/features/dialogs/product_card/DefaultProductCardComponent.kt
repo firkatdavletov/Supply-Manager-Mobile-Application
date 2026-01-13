@@ -1,4 +1,4 @@
-package org.example.project.dialogs.product_card
+package org.example.project.features.dialogs.product_card
 
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.Job
@@ -11,7 +11,6 @@ import org.example.project.domain.usecase.cart.AddToCartUseCase
 import org.example.project.domain.usecase.cart.RemoveFromCartUseCase
 import org.example.project.domain.usecase.catalog.GetProductCardUseCase
 import org.example.project.features.SnackBarManager
-import org.example.project.features.catalog.CatalogViewEvent
 
 class DefaultProductCardComponent(
     componentContent: ComponentContext,

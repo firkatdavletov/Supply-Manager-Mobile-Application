@@ -1,4 +1,4 @@
-package org.example.project.dialogs.product_card
+package org.example.project.features.dialogs.product_card
 
 import org.example.project.features.base.Reducer
 

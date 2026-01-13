@@ -1,4 +1,4 @@
-package org.example.project.dialogs.product_card
+package org.example.project.features.dialogs.product_card
 
 import com.arkivanov.decompose.ComponentContext
 import org.example.project.features.SnackBarManager

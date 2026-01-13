@@ -29,4 +29,6 @@ extension Color {
     static let onErrorContainer = Color("onErrorContainer")
     static let surface = Color("surface")
     static let onSurface = Color("onSurface")
+    
+    static let darkCosmicBlue = Color("DarkCosmicBlue")
 }

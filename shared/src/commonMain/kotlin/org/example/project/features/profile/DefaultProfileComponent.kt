@@ -20,8 +20,6 @@ class DefaultProfileComponent(
     private val callbacks: ProfileCallbacks,
     private val userRepository: UserRepository,
     private val updateUserUseCase: UpdateUserUseCase,
-    private val deleteUserUseCase: DeleteUserUseCase,
-    private val logoutUserUseCase: LogoutUserUseCase,
 ) : ProfileComponent(
     componentContext = componentContext,
     initialState = ProfileViewState(
@@ -50,7 +48,7 @@ class DefaultProfileComponent(
             }
             ProfileViewEvent.OnDelete -> {
                 reduce(event)
-                delete()
+                callbacks.showDeleteUserDialog()
             }
             ProfileViewEvent.OnSave -> {
                 reduce(event)
@@ -58,7 +56,7 @@ class DefaultProfileComponent(
             }
             ProfileViewEvent.OnLogout -> {
                 reduce(event)
-                logout()
+                callbacks.showLogoutUserDialog()
             }
             is ProfileViewEvent.OnError -> {
                 reduce(event)
@@ -70,56 +68,6 @@ class DefaultProfileComponent(
             }
             is ProfileViewEvent.OnNameChanged -> reduce(event)
             is ProfileViewEvent.OnUserLoaded -> reduce(event)
-        }
-    }
-
-    private fun logout() {
-        coroutineScope.launch {
-            logoutUserUseCase.invoke(Unit)
-                .catch {
-                    onEvent(ProfileViewEvent.OnThrowError(it))
-                }
-                .collect { resultModel ->
-                    when (resultModel) {
-                        is ResultModel.Error -> {
-                            onEvent(ProfileViewEvent.OnError(resultModel.message))
-                        }
-                        ResultModel.Loading -> {}
-                        is ResultModel.Success<Boolean> -> {
-                            if (resultModel.data) {
-                                withContext(Dispatchers.Main) {
-                                    callbacks.navigateBack()
-                                }
-                            } else {
-                                onEvent(ProfileViewEvent.OnError(null))
-                            }
-                        }
-                    }
-                }
-        }
-    }
-
-    private fun delete() {
-        coroutineScope.launch {
-            deleteUserUseCase.invoke(Unit)
-                .catch {
-                    onEvent(ProfileViewEvent.OnError(it.toUserMessage()))
-                }
-                .collect { resultModel ->
-                    when (resultModel) {
-                        is ResultModel.Error -> {
-                            onEvent(ProfileViewEvent.OnError(resultModel.message ?: "Что-то пошло не так"))
-                        }
-                        ResultModel.Loading -> {}
-                        is ResultModel.Success<Boolean> -> {
-                            if (resultModel.data) {
-                                withContext(Dispatchers.Main) {
-                                    callbacks.navigateBack()
-                                }
-                            }
-                        }
-                    }
-                }
         }
     }
 

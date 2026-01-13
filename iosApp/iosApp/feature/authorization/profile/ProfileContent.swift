@@ -38,25 +38,38 @@ struct ProfileContent: View {
             }
             .padding()
             .background(Color.primaryContainer)
-            
-            StyledTextField(
-                value: name,
-                placeholder: "Имя",
-                isError: false,
-                onChange: onNameChanged
-            )
-            .padding(.horizontal)
-            .padding(.top)
-            
-            StyledTextField(
-                value: phone,
-                placeholder: "Телефон",
-                isError: false,
-                onChange: { value in }
-            )
-            .disabled(true)
-            .padding(.horizontal)
-            .padding(.top, 4)
+            ScrollView {
+                VStack {
+                    StyledTextField(
+                        value: name,
+                        placeholder: "Имя",
+                        isError: false,
+                        onChange: onNameChanged
+                    )
+                    .padding(.horizontal)
+                    .padding(.top)
+                    
+                    StyledTextField(
+                        value: phone,
+                        placeholder: "Телефон",
+                        isError: false,
+                        onChange: { value in }
+                    )
+                    .disabled(true)
+                    .padding(.horizontal)
+                    .padding(.top, 4)
+                    
+                    Button(
+                        action: onDelete,
+                        label: {
+                            Text("Удалить профиль")
+                                .font(AppTypography.bodyMedium)
+                                .foregroundStyle(Color.primaryContainer)
+                        }
+                    )
+                    .padding()
+                }
+            }
             
             Spacer()
             
@@ -64,16 +77,6 @@ struct ProfileContent: View {
                 title: "Сохранить",
                 onClick: onSave,
                 enabled: !isLoading
-            )
-            .padding(.horizontal)
-            
-            Button(
-                action: onDelete,
-                label: {
-                    Text("ВУдалить")
-                        .font(AppTypography.bodyMedium)
-                        .foregroundStyle(Color.primaryContainer)
-                }
             )
             .padding(.horizontal)
         }

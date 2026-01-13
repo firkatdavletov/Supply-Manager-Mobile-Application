@@ -138,7 +138,7 @@ struct SignInContent: View {
         .edgesIgnoringSafeArea([.bottom, .top])
         .frame(maxWidth: .infinity)
         .navigationBarBackButtonHidden(true)
-        .background(Color("BlackColor"))
+        .background(Color.darkCosmicBlue)
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 isTextFieldFocused = true
