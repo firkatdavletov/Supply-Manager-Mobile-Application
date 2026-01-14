@@ -44,18 +44,7 @@ struct LaunchContent: View {
                 }
             }
             .padding(16)
-            .padding(.bottom, safeAreaBottomPadding()) // аналог navigationBarsPadding()
         }
-    }
-
-    /// Для корректной поддержки safe area, аналог navigationBarsPadding()
-    private func safeAreaBottomPadding() -> CGFloat {
-        let window = UIApplication.shared.connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .flatMap { $0.windows }
-            .first { $0.isKeyWindow }
-
-        return window?.safeAreaInsets.bottom ?? 0
     }
 }
 

@@ -12,7 +12,6 @@ struct RoundedButton: View {
     let onClick: () -> Void
     let enabled: Bool
     
-    
     var body: some View {
         Button(
             action: {
@@ -22,16 +21,19 @@ struct RoundedButton: View {
             },
             label: {
                 Text(title)
-                    .font(AppTypography.titleMedium.bold())
+                    .font(AppTypography.titleMedium)
                     .frame(maxWidth: .infinity)
                     .padding(12)
-                    .frame(height: 50)
+//                    .frame(height: 50)
                     .background(enabled ? Color.primaryContainer : Color.primaryContainer.opacity(0.2))
                     .foregroundColor(Color.onPrimaryContainer)
                     .cornerRadius(25)
             }
         )
         .disabled(!enabled)
+        .onAppear {
+            
+        }
     }
 }
 

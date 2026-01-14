@@ -18,8 +18,6 @@ import org.example.project.domain.usecase.cart.UpdateDeliveryAddressUseCase
 import org.example.project.domain.usecase.order.CreateOrderUseCase
 import org.example.project.domain.usecase.payment.GetPaymentTypesUseCase
 import org.example.project.features.SnackBarManager
-import org.example.project.features.authorization.sign_in_component.SignInViewEvent
-import org.example.project.features.map.MapViewEvent
 
 class DefaultPaymentComponent(
     componentContext: ComponentContext,
@@ -54,8 +52,8 @@ class DefaultPaymentComponent(
     private var deliveryInfoModel: DeliveryInfoModel? = null
 
 
-    override fun onStarted() {
-        super.onStarted()
+    override fun onStart() {
+        super.onStart()
         subscribeToCart()
     }
 

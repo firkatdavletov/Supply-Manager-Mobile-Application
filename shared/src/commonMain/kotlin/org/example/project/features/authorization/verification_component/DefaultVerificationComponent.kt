@@ -53,8 +53,6 @@ class DefaultVerificationComponent(
         }
     }
 
-    override fun initDataLoad() {}
-
     override fun onEvent(event: VerifyViewEvent) {
         when (event) {
             is VerifyViewEvent.OnCodeChanged -> {
@@ -78,7 +76,7 @@ class DefaultVerificationComponent(
         }
     }
 
-    override fun onStarted() {
+    override fun onStart() {
         println("[DefaultVerificationComponent] : onStarted type: $authType, checkId: $checkId, $_callNumberClicked")
         if (authType == "call" && checkId != null && _callNumberClicked && !socketIsConnected) {
             job?.cancel()
@@ -90,7 +88,7 @@ class DefaultVerificationComponent(
         }
     }
 
-    override fun onStoped() {
+    override fun onStop() {
         println("[DefaultVerificationComponent] : onStoped")
         coroutineScope.launch {
             authRepository.disconnect()

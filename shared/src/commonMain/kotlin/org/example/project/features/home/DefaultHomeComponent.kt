@@ -1,10 +1,12 @@
 package org.example.project.features.home
 
 import com.arkivanov.decompose.ComponentContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.example.project.domain.models.DeliveryType
 import org.example.project.domain.models.ProductModel
 import org.example.project.domain.models.ResultModel
@@ -95,11 +97,8 @@ class DefaultHomeComponent(
         }
     }
 
-
-    override fun initDataLoad() {}
-
-    override fun onStarted() {
-        super.onStarted()
+    override fun onStart() {
+        super.onStart()
         subscribeToSubjects()
         getCurrentOrders()
     }
@@ -109,7 +108,9 @@ class DefaultHomeComponent(
             getCurrentOrderUseCase.invoke(Unit)
                 .catch {  }
                 .collect {
-                    onEvent(HomeViewEvent.OnCurrentOrderLoaded(it))
+                    withContext(Dispatchers.Main) {
+                        onEvent(HomeViewEvent.OnCurrentOrderLoaded(it))
+                    }
                 }
         }
     }
@@ -119,19 +120,25 @@ class DefaultHomeComponent(
             combine(catalogRepository.catalogSubject, cartRepository.cartSubject) { catalog, cart ->
                 Pair(catalog, cart)
             }.collect { data ->
-                onEvent(HomeViewEvent.OnCategoriesLoaded(data.first, data.second.items))
-                onEvent(HomeViewEvent.OnCartLoaded(data.second))
+                withContext(Dispatchers.Main) {
+                    onEvent(HomeViewEvent.OnCategoriesLoaded(data.first, data.second.items))
+                    onEvent(HomeViewEvent.OnCartLoaded(data.second))
+                }
             }
         }
         coroutineScope.launch {
             orderRepository.ordersSubject.collect { orders ->
-                onEvent(HomeViewEvent.OnCurrentOrderLoaded(orders))
+                withContext(Dispatchers.Main) {
+                    onEvent(HomeViewEvent.OnCurrentOrderLoaded(orders))
+                }
             }
         }
         coroutineScope.launch {
             userRepository.userSubject.collect {  userModel ->
                 _user = userModel
-                onEvent(HomeViewEvent.OnUserLoaded(userModel))
+                withContext(Dispatchers.Main) {
+                    onEvent(HomeViewEvent.OnUserLoaded(userModel))
+                }
             }
         }
     }
@@ -144,11 +151,15 @@ class DefaultHomeComponent(
         job = coroutineScope.launch {
             addToCartUseCase.invoke(params)
                 .catch {
-                    showThrowError(it)
+                    withContext(Dispatchers.Main) {
+                        showThrowError(it)
+                    }
                 }
                 .collect { resultModel ->
                     if (resultModel is ResultModel.Error) {
-                        showError(resultModel.message)
+                        withContext(Dispatchers.Main) {
+                            showError(resultModel.message)
+                        }
                     }
                 }
         }
@@ -162,11 +173,15 @@ class DefaultHomeComponent(
         job = coroutineScope.launch {
             removeFromCartUseCase.invoke(params)
                 .catch {
-                    showThrowError(it)
+                    withContext(Dispatchers.Main) {
+                        showThrowError(it)
+                    }
                 }
                 .collect { resultModel ->
-                if (resultModel is ResultModel.Error) {
-                        showError(resultModel.message)
+                    if (resultModel is ResultModel.Error) {
+                        withContext(Dispatchers.Main) {
+                            showError(resultModel.message)
+                        }
                     }
                 }
         }

@@ -33,8 +33,8 @@ class DefaultCurrentOrderComponent(
     )
 ) {
 
-    override fun onStarted() {
-        super.onStarted()
+    override fun onStart() {
+        super.onStart()
         initData()
     }
 

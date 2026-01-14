@@ -20,10 +20,6 @@ import org.example.project.features.home.HomeViewEvent
 fun HomeScreen(component: HomeComponent) {
     val state by (component as DefaultHomeComponent).state.subscribeAsState()
 
-    LaunchedEffect(Unit) {
-        component.initDataLoad()
-    }
-
     HomeContent(
         modifier = Modifier
             .fillMaxSize()

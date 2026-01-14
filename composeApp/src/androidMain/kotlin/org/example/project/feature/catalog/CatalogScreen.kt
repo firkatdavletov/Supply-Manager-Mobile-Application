@@ -15,9 +15,6 @@ import org.example.project.features.catalog.CatalogViewEvent
 @Composable
 fun CatalogScreen(component: CatalogComponent) {
     val state by component.state.subscribeAsState()
-    LaunchedEffect(Unit) {
-        component.initDataLoad()
-    }
 
     BackHandler {
         component.onEvent(CatalogViewEvent.OnBackClicked)

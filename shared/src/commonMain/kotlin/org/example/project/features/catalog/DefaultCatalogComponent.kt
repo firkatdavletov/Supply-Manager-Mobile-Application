@@ -30,7 +30,7 @@ class DefaultCatalogComponent(
     reducer = CatalogReducer(),) {
     private var job: Job? = null
 
-    override fun initDataLoad() {
+    override fun onResume() {
         coroutineScope.launch {
             getProductsUseCase.invoke(categoryId)
                 .collect {

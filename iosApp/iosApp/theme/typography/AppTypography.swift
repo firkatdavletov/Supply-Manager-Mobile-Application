@@ -10,6 +10,7 @@ import SwiftUI
 enum AppTypography {
 
     static let displayLarge = Font.variable(
+        name: "Roboto-Bold",
         size: 57,
         weight: VFConfig.DisplayLarge.weight,
         width: VFConfig.DisplayLarge.width,
@@ -17,6 +18,7 @@ enum AppTypography {
     )
 
     static let displayMedium = Font.variable(
+        name: "Roboto-Bold",
         size: 45,
         weight: VFConfig.DisplayMedium.weight,
         width: VFConfig.DisplayMedium.width,
@@ -24,6 +26,7 @@ enum AppTypography {
     )
 
     static let displaySmall = Font.variable(
+        name: "Roboto-Bold",
         size: 36,
         weight: VFConfig.DisplaySmall.weight,
         width: VFConfig.DisplaySmall.width,
@@ -31,6 +34,7 @@ enum AppTypography {
     )
 
     static let headlineLarge = Font.variable(
+        name: "Roboto-SemiBold",
         size: 32,
         weight: VFConfig.HeadlineLarge.weight,
         width: VFConfig.HeadlineLarge.width,
@@ -38,6 +42,7 @@ enum AppTypography {
     )
 
     static let headlineMedium = Font.variable(
+        name: "Roboto-SemiBold",
         size: 28,
         weight: VFConfig.HeadlineMedium.weight,
         width: VFConfig.HeadlineMedium.width,
@@ -45,6 +50,7 @@ enum AppTypography {
     )
 
     static let headlineSmall = Font.variable(
+        name: "Roboto-SemiBold",
         size: 24,
         weight: VFConfig.HeadlineSmall.weight,
         width: VFConfig.HeadlineSmall.width,
@@ -52,6 +58,7 @@ enum AppTypography {
     )
 
     static let titleLarge = Font.variable(
+        name: "Roboto-Medium",
         size: 22,
         weight: VFConfig.TitleLarge.weight,
         width: VFConfig.TitleLarge.width,
@@ -59,6 +66,7 @@ enum AppTypography {
     )
 
     static let titleMedium = Font.variable(
+        name: "Roboto-Medium",
         size: 16,
         weight: VFConfig.TitleMedium.weight,
         width: VFConfig.TitleMedium.width,
@@ -66,6 +74,7 @@ enum AppTypography {
     )
 
     static let titleSmall = Font.variable(
+        name: "Roboto-Medium",
         size: 14,
         weight: VFConfig.TitleSmall.weight,
         width: VFConfig.TitleSmall.width,
@@ -73,6 +82,7 @@ enum AppTypography {
     )
 
     static let bodyLarge = Font.variable(
+        name: "Roboto-Regular",
         size: 16,
         weight: VFConfig.BodyLarge.weight,
         width: VFConfig.BodyLarge.width,
@@ -80,6 +90,7 @@ enum AppTypography {
     )
 
     static let bodyMedium = Font.variable(
+        name: "Roboto-Regular",
         size: 14,
         weight: VFConfig.BodyMedium.weight,
         width: VFConfig.BodyMedium.width,
@@ -87,6 +98,7 @@ enum AppTypography {
     )
 
     static let bodySmall = Font.variable(
+        name: "Roboto-Regular",
         size: 12,
         weight: VFConfig.BodySmall.weight,
         width: VFConfig.BodySmall.width,
@@ -94,6 +106,7 @@ enum AppTypography {
     )
 
     static let labelLarge = Font.variable(
+        name: "Roboto-Thin",
         size: 14,
         weight: VFConfig.LabelLarge.weight,
         width: VFConfig.LabelLarge.width,
@@ -101,6 +114,7 @@ enum AppTypography {
     )
 
     static let labelMedium = Font.variable(
+        name: "Roboto-Thin",
         size: 12,
         weight: VFConfig.LabelMedium.weight,
         width: VFConfig.LabelMedium.width,
@@ -108,6 +122,7 @@ enum AppTypography {
     )
 
     static let labelSmall = Font.variable(
+        name: "Roboto-Thin",
         size: 11,
         weight: VFConfig.LabelSmall.weight,
         width: VFConfig.LabelSmall.width,
@@ -118,7 +133,7 @@ enum AppTypography {
 extension Font {
 
     static func variable(
-        name: String = "Roboto",
+        name: String,
         size: CGFloat,
         weight: Double,
         width: Double,

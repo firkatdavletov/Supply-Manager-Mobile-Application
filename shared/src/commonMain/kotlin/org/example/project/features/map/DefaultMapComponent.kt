@@ -158,7 +158,6 @@ class DefaultMapComponent(
 
             MapViewEvent.OnDefaultError -> {
                 showError(null)
-                handleEvent(event)
             }
 
             is MapViewEvent.OnFindAddressError -> reduce(event)

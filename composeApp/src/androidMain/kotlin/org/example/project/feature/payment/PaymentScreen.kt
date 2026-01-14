@@ -20,10 +20,6 @@ fun PaymentScreen(component: PaymentComponent) {
         component.onEvent(PaymentViewEvent.OnBackButtonClicked)
     }
 
-    LaunchedEffect(true) {
-        component.initDataLoad()
-    }
-
     PaymentContent(
         modifier = Modifier
             .fillMaxSize()

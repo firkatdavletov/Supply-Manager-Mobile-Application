@@ -33,7 +33,7 @@ class DefaultLaunchComponent(
     snackBarManager = snackBarManager
 ) {
 
-    override fun initDataLoad() {
+    override fun onResume() {
         loadData()
     }
 
@@ -41,7 +41,6 @@ class DefaultLaunchComponent(
         when (event) {
             is LaunchViewEvent.OnError -> {
                 reduce(event)
-                handleEvent(event)
             }
             LaunchViewEvent.OnReconnect -> {
                 reduce(event)
@@ -93,26 +92,27 @@ class DefaultLaunchComponent(
                 val catalogResult = commonResult.second
 
                 if (catalogResult is ResultModel.Error) {
-                    onEvent(LaunchViewEvent.OnError)
-                    return@collect
-                }
-
-                when (cartResult) {
-                    is ResultModel.Error -> {
-                        if (cartResult.errorCode == 401) {
-                            withContext(Dispatchers.Main) {
-                                callbacks.navigateToSelectAddress()
-                            }
-                        } else {
-                            withContext(Dispatchers.Main) {
-                                callbacks.navigateToSelectAddress()
+                    withContext(Dispatchers.Main) {
+                        onEvent(LaunchViewEvent.OnError)
+                    }
+                } else {
+                    when (cartResult) {
+                        is ResultModel.Error -> {
+                            if (cartResult.errorCode == 401) {
+                                withContext(Dispatchers.Main) {
+                                    callbacks.navigateToSelectAddress()
+                                }
+                            } else {
+                                withContext(Dispatchers.Main) {
+                                    callbacks.navigateToSelectAddress()
+                                }
                             }
                         }
-                    }
-                    ResultModel.Loading -> {}
-                    is ResultModel.Success<Boolean> -> {
-                        withContext(Dispatchers.Main) {
-                            callbacks.navigateToHome()
+                        ResultModel.Loading -> {}
+                        is ResultModel.Success<Boolean> -> {
+                            withContext(Dispatchers.Main) {
+                                callbacks.navigateToHome()
+                            }
                         }
                     }
                 }

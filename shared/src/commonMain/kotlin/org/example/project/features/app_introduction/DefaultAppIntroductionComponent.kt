@@ -10,9 +10,6 @@ class DefaultAppIntroductionComponent(
     initialState = AppIntroductionViewState("Intro"),
     reducer = AppIntroductionReducer()
 ) {
-    override fun initDataLoad() {
-
-    }
     override fun onEvent(event: AppIntroductionViewEvent) {
         when (event) {
             AppIntroductionViewEvent.OnContinue -> callbacks.navigateToAuth()

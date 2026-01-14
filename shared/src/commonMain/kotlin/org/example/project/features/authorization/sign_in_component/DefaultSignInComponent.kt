@@ -45,10 +45,6 @@ class DefaultSignInComponent(
         }
     }
 
-    override fun initDataLoad() {
-
-    }
-
     override fun onEvent(event: SignInViewEvent) {
         when (event) {
             SignInViewEvent.OnBackClicked -> {

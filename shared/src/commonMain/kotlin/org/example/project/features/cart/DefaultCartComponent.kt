@@ -46,7 +46,7 @@ class DefaultCartComponent(
         subscribeToCart()
     }
 
-    override fun initDataLoad() {
+    override fun onResume() {
         getCart()
     }
 

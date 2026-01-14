@@ -13,7 +13,7 @@ fun Throwable.toUserMessage(): String = when (this) {
         404 -> "Не найдено"
         else -> "Ошибка запроса"
     }
-    is ServerResponseException -> "Проблемы на сервере. Попробуйте позже"
+    is ServerResponseException -> "Сервер не отвечает"
     is SocketTimeoutException -> "Превышено время ожидания"
     is IOException -> "Нет подключения к интернету"
     is HttpException -> {
@@ -22,7 +22,7 @@ fun Throwable.toUserMessage(): String = when (this) {
             HttpException.BadRequest -> "Ошибка запроса"
             HttpException.NotFound -> "Не найдено"
             HttpException.RequiredAuth -> "Необходимо войти в систему"
-            HttpException.ServerError -> "Проблемы на сервере. Попробуйте позже"
+            HttpException.ServerError -> "Сервер не отвечает"
             else -> "Что-то пошло не так"
         }
     }

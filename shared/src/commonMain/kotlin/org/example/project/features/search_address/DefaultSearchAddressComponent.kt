@@ -96,7 +96,7 @@ class DefaultSearchAddressComponent(
         }
     }
 
-    override fun initDataLoad() {
+    override fun onCreate() {
         subscribeToCart()
         subscribeToSearch()
     }

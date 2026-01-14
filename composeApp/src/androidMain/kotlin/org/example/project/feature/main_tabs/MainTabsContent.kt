@@ -33,7 +33,6 @@ fun MainTabsContent(
                 is MainTabsComponent.Child.CatalogChild -> CatalogScreen(child.component)
                 is MainTabsComponent.Child.CartChild -> CartScreen(child.component)
                 is MainTabsComponent.Child.SbpBanksChild -> TODO()
-                is MainTabsComponent.Child.OrdersChild -> TODO()
                 is MainTabsComponent.Child.SearchAddressChild -> TODO()
             }
         }

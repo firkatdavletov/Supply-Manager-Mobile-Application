@@ -55,7 +55,7 @@ class DefaultProductCardComponent(
         }
     }
 
-    override fun initDataLoad() {
+    override fun onResume() {
         loadProduct()
     }
 

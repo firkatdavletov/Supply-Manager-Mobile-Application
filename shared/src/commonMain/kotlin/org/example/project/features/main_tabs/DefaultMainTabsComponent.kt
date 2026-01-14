@@ -7,26 +7,17 @@ import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.popTo
-import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
 import org.example.project.features.cart.CartComponent
 import org.example.project.features.cart.CartViewCallbacks
 import org.example.project.features.main_tabs.MainTabsComponent.Child.*
-import org.example.project.features.catalog.CatalogCallbacks
-import org.example.project.features.catalog.CatalogComponent
-import org.example.project.features.main_tabs.orders.OrdersCallbacks
-import org.example.project.features.main_tabs.orders.OrdersComponent
 import org.example.project.features.main_tabs.sbp_banks.SbpBanksCallbacks
 import org.example.project.features.main_tabs.sbp_banks.SbpBanksComponent
-import org.example.project.features.search_address.SearchAddressCallbacks
-import org.example.project.features.search_address.SearchAddressComponent
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.component.createScope
 import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.Scope
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 class DefaultMainTabsComponent(
     private val componentContext: ComponentContext,
@@ -48,7 +39,6 @@ class DefaultMainTabsComponent(
                     is Config.Map -> "Map"
                     is Config.Cart -> "Cart"
                     is Config.SbpBanks -> "SbpBanks"
-                    Config.Orders -> "Orders"
                 }
                 val scopedContext = context.childContext(childKey)
                 createChild(config, scopedContext)
@@ -76,10 +66,6 @@ class DefaultMainTabsComponent(
             is Config.SbpBanks -> {
                 SbpBanksChild(getSbpBanksComponent(componentContext, config.qrLink, config.canStoreToken))
             }
-
-            Config.Orders -> {
-                OrdersChild(getOrdersComponent(componentContext))
-            }
         }
     }
 
@@ -94,8 +80,6 @@ class DefaultMainTabsComponent(
             val qrLink: String,
             val canStoreToken: Boolean,
         ): Config()
-        @Serializable
-        data object Orders : Config()
     }
 
     override val scope: Scope by lazy { createScope(this)}
@@ -125,16 +109,6 @@ class DefaultMainTabsComponent(
 
         return scope.get {
             parametersOf(context, callbacks, qrLink, canStoreToken)
-        }
-    }
-
-    private fun getOrdersComponent(context: ComponentContext): OrdersComponent {
-        val callbacks = OrdersCallbacks(
-            navigateBack = { navigation.pop() },
-            navigateToOrder = { }
-        )
-        return scope.get {
-            parametersOf(context, callbacks)
         }
     }
 

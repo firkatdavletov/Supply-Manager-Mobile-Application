@@ -13,14 +13,12 @@ struct PaymentView: View {
     let component: PaymentComponent
     
     @StateValue private var state: PaymentViewState
-    @StateValue private var dialogSlot: ChildSlot<AnyObject, DialogComponent>
    
     @State private var activeSheet: PaymentModalType?
     
     init(component: PaymentComponent) {
         self.component = component
         _state = StateValue(component.state)
-        _dialogSlot = StateValue(component.dialogSlot)
     }
     
     var body: some View {

@@ -32,7 +32,7 @@ class DefaultProfileComponent(
 ) {
     private var _user: UserModel? = null
 
-    override fun onStarted() {
+    override fun onStart() {
         coroutineScope.launch {
             userRepository.userSubject.collect { userModel ->
                 if (userModel == null) return@collect

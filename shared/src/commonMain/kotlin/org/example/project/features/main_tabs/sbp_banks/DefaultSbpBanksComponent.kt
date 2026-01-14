@@ -20,9 +20,7 @@ class DefaultSbpBanksComponent(
     initialEffect = SbpBanksViewEffect.None,
     reducer = SbpBanksReducer()
 ) {
-    init {
-        initDataLoad()
-    }
+
     override fun onEvent(event: SbpBanksViewEvent) {
         when (event) {
             is SbpBanksViewEvent.OnBanksLoaded -> reduce(event)
@@ -36,7 +34,7 @@ class DefaultSbpBanksComponent(
         }
     }
 
-    override fun initDataLoad() {
+    override fun onResume() {
         loadBanks()
     }
 
