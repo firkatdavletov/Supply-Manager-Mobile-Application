@@ -13,16 +13,10 @@ struct SelectedButton: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
-            Text(title)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 10)
-                .padding(.horizontal, 16)
-                .padding(2)
-                .background(selected ? Color.primaryContainer : Color.secondaryContainer)
-                .foregroundColor(selected ? .onPrimaryContainer : .onSecondaryContainer)
-                .cornerRadius(25)
-                .cornerRadius(25)
+        if (selected) {
+            PrimaryButton(title: title, onClick: action, enabled: true)
+        } else {
+            SecondaryButton(title: title, onClick: action, enabled: true)
         }
     }
 }

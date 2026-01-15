@@ -61,7 +61,7 @@ class DefaultMapComponent(
         showLocation = false,
         selectedDepartment = null,
         showBackButton = fromScreen != LaunchComponent::class.simpleName,
-        showSearchButton = fromScreen == LaunchComponent::class.simpleName,
+        showSearchButton = true,
         errorMessage = null
     ),
     snackBarManager = snackBarManager,
@@ -71,11 +71,22 @@ class DefaultMapComponent(
     private var selectedDeliveryAddress: AddressModel? = null
     private var deliveryInfo: DeliveryInfoModel? = null
     private var departments = emptyList<DepartmentModel>()
+    private var selectedCartDepartmentId: Int? = null
 
 
     init {
         subscribeToCartSubject()
         loadDepartments()
+    }
+
+    override fun onResume() {
+        if (fromScreen == LaunchComponent::class.simpleName) {
+            onEvent(OnMoveToLocation(53.967621, 58.410023))
+        } else {
+            coroutineScope.launch {
+                loadCart()
+            }
+        }
     }
 
     private fun loadDepartments() {
@@ -133,6 +144,7 @@ class DefaultMapComponent(
             }
 
             is MapViewEvent.OnDepartmentSelected -> {
+                selectedCartDepartmentId = event.id
                 deliveryInfo = DeliveryInfoModel(0.0, null)
                 reduce(event)
             }
@@ -148,6 +160,8 @@ class DefaultMapComponent(
                 )
                 selectedDeliveryAddress = addressModel
                 deliveryInfo = event.address.deliveryInfo
+                val department = findClosestDepartment(event.address.latitude, event.address.longitude, departments)
+                selectedCartDepartmentId = department?.id
                 reduce(event)
             }
 
@@ -241,18 +255,19 @@ class DefaultMapComponent(
         coroutineScope.launch {
             val deliveryType = state.value.deliveryType
             val deliveryAddress = selectedDeliveryAddress
-            val cartDepartment = state.value.cartDepartment
+            val cartDepartmentId = selectedCartDepartmentId
 
             val params = when (deliveryType) {
                 DeliveryType.PICKUP -> {
-                    if (cartDepartment != null) {
+                    if (cartDepartmentId != null) {
                         UpdateDeliveryAddressUseCase.Params(
                             deliveryType = DeliveryType.PICKUP,
-                            departmentId = cartDepartment.id,
+                            departmentId = cartDepartmentId,
                             deliveryInfo = DeliveryInfoModel(0.0, 0.0),
                         )
 
                     } else {
+                        onEvent(MapViewEvent.OnError("Не выбрал ресторан"))
                         null
                     }
                 }
@@ -266,6 +281,7 @@ class DefaultMapComponent(
                             departmentId = departments.first().id
                         )
                     } else {
+                        onEvent(MapViewEvent.OnError("Не выбран адрес доставки"))
                         null
                     }
                 }
@@ -315,26 +331,28 @@ class DefaultMapComponent(
         val deliveryType = state.value.deliveryType
         val deliveryInfo = deliveryInfo
         val deliveryAddress = selectedDeliveryAddress
-        val cartDepartment = state.value.cartDepartment
+        val cartDepartmentId = selectedCartDepartmentId
         val params = when (deliveryType) {
             DeliveryType.PICKUP -> {
-                if (cartDepartment != null) {
+                if (cartDepartmentId != null) {
                     CreateCartUseCase.Params(
-                        departmentId = cartDepartment.id,
+                        departmentId = cartDepartmentId,
                     )
                 } else {
+                    onEvent(MapViewEvent.OnError("Не выбран ресторан"))
                     null
                 }
             }
 
             DeliveryType.DELIVERY -> {
-                if (deliveryAddress != null && deliveryInfo != null) {
+                if (deliveryAddress != null && deliveryInfo != null && cartDepartmentId != null) {
                     CreateCartUseCase.Params(
                         deliveryAddress = deliveryAddress,
                         deliveryInfo = deliveryInfo,
-                        departmentId = cartDepartment?.id ?: 1
+                        departmentId = cartDepartmentId
                     )
                 } else {
+                    onEvent(MapViewEvent.OnError("Не выбран адрес доставки"))
                     null
                 }
             }
@@ -355,15 +373,17 @@ class DefaultMapComponent(
                             onEvent(MapViewEvent.OnLoading)
                         }
 
-                        is ResultModel.Success<*> -> {
-                            loadCart()
+                        is ResultModel.Success<Boolean> -> {
+                            loadCart {
+                                callbacks.navigateToHome()
+                            }
                         }
                     }
                 }
         }
     }
 
-    private suspend fun loadCart() {
+    private suspend fun loadCart(onSuccess: () -> Unit = {}) {
         loadCartUseCase(Unit)
             .catch {
                 onEvent(MapViewEvent.OnThrowError(it))
@@ -380,7 +400,7 @@ class DefaultMapComponent(
                         }
 
                         is ResultModel.Success<Boolean> -> {
-                            callbacks.navigateToHome()
+                            onSuccess()
                         }
                     }
                 }

@@ -56,7 +56,7 @@ struct HomeContent: View {
             Spacer()
             
             if totalAmount > 0 {
-                RoundedButton(
+                PrimaryButton(
                     title: "\(Int(totalAmount)) руб",
                     onClick: {
                         onCartButtonClicked()
@@ -64,6 +64,7 @@ struct HomeContent: View {
                     enabled: true
                 )
                 .padding(.horizontal)
+                .padding(.bottom)
             }
         }
         .onTapGesture {
@@ -115,17 +116,6 @@ extension HomeContent {
 }
 
 extension HomeContent {
-    @ViewBuilder
-    private var greetingItem: some View {
-        if let name = userName {
-            Text("Привет, \(name)!")
-                .font(AppTypography.headlineSmall)
-                .frame(maxWidth: .infinity, alignment: .leading)
-        }
-    }
-}
-
-extension HomeContent {
     private var ordersPagerItem: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHStack {
@@ -152,26 +142,6 @@ extension HomeContent {
             .font(AppTypography.headlineSmall)
             .foregroundStyle(Color.onBackground)
             .frame(maxWidth: .infinity, alignment: .center)
-    }
-}
-
-extension HomeContent {
-    private func safeAreaBottom() -> CGFloat {
-        let window = UIApplication.shared.connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .flatMap { $0.windows }
-            .first { $0.isKeyWindow }
-
-        return window?.safeAreaInsets.bottom ?? 0
-    }
-
-    private func safeAreaTop() -> CGFloat {
-        let window = UIApplication.shared.connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .flatMap { $0.windows }
-            .first { $0.isKeyWindow }
-
-        return window?.safeAreaInsets.bottom ?? 0
     }
 }
 

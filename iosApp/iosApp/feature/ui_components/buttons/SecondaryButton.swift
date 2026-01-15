@@ -9,31 +9,37 @@ import SwiftUI
 
 struct SecondaryButton: View {
     let title: String
-    let onConfirm: (() -> Void)?
-    let isLoading: Bool
-    let isDisabled: Bool
-
+    let onClick: () -> Void
+    let enabled: Bool
+    
     var body: some View {
-        Button(action: {
-            if !isLoading {
-                onConfirm?()
-            }
-        }) {
-            ZStack {
-                if isLoading {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                } else {
-                    Text(title)
-                        .foregroundColor(.white)
-                        .font(.system(size: 14, weight: .bold, design: .rounded))
+        Button(
+            action: {
+                if (enabled) {
+                    onClick()
                 }
+            },
+            label: {
+                Text(title)
+                    .font(AppTypography.titleMedium)
+                    .frame(maxWidth: .infinity)
+                    .padding(12)
+                    .background(enabled ? Color.background : Color.background.opacity(0.5))
+                    .foregroundColor(Color.primaryContainer)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 25)
+                            .stroke(Color.primaryContainer, lineWidth: 2)
+                    )
+                    .cornerRadius(25)
             }
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(isDisabled ? Color.gray : Color(".white"))
-            .cornerRadius(25)
+        )
+        .disabled(!enabled)
+        .onAppear {
+            
         }
-        .disabled(isDisabled || isLoading)
     }
+}
+
+#Preview {
+    SecondaryButton(title: "Test", onClick: {}, enabled: true)
 }

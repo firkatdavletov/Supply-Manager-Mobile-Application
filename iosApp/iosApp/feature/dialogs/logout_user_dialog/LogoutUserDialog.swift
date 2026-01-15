@@ -27,7 +27,7 @@ struct LogoutUserDialog: View {
                 .padding(.top, 32)
                 .padding(.horizontal)
             Spacer()
-            RoundedButton(
+            PrimaryButton(
                 title: "Выйти",
                 onClick: {
                     component.onEvent(event: LogoutUserDialogViewEventOnConfirm())
@@ -35,7 +35,7 @@ struct LogoutUserDialog: View {
                 enabled: !state.isLoading
             )
             .padding(.horizontal)
-            RoundedButton(
+            PrimaryButton(
                 title: "Отмена",
                 onClick: {
                     component.onEvent(event: LogoutUserDialogViewEventOnDismiss())

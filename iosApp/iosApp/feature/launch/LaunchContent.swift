@@ -36,7 +36,7 @@ struct LaunchContent: View {
                         .progressViewStyle(CircularProgressViewStyle())
                         .frame(width: 32, height: 32)
                 } else if isError {
-                    RoundedButton(
+                    PrimaryButton(
                         title: "Повторить",
                         onClick: onRetryClicked,
                         enabled: true

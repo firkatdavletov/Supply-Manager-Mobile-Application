@@ -200,7 +200,7 @@ class DefaultRootComponent(
     private fun getHomeComponent(componentContent: ComponentContext, config: Config.Home): HomeComponent {
         val callbacks = HomeCallbacks(
             navigateToMap = {
-                navigation.pushToFront(Config.SearchAddress(HomeComponent::class.simpleName))
+                navigation.pushToFront(Config.SelectAddress(HomeComponent::class.simpleName))
             },
             navigateToCart = {
                 navigation.pushToFront(Config.Cart)
@@ -245,7 +245,7 @@ class DefaultRootComponent(
                 } )
             },
             navigateToOrder = { navigation.push(Config.CurrentOrder(PaymentComponent::class.simpleName, it)) },
-            navigateToMap = { navigation.pushToFront(Config.SearchAddress(PaymentComponent::class.simpleName)) }
+            navigateToMap = { navigation.pushToFront(Config.SelectAddress(PaymentComponent::class.simpleName)) }
         )
         return get { parametersOf(componentContext, callbacks) }
     }

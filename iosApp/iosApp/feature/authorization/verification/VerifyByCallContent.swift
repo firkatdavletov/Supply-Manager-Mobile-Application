@@ -40,7 +40,7 @@ struct VerifyByCallContent: View {
                         .padding(.vertical)
                 }
                 
-                RoundedButton(
+                PrimaryButton(
                     title: "Позвонить",
                     onClick: {
                         onCallPhoneClicked()

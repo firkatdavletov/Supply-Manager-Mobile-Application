@@ -43,7 +43,7 @@ struct ProductContentView: View {
             VStack {
                 Spacer()
                 if (product.count == 0) {
-                    RoundedButton(
+                    PrimaryButton(
                         title: "Добавить в корзину",
                         onClick: {
                             onAddToCart()

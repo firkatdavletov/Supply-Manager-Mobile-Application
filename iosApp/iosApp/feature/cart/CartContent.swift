@@ -114,11 +114,12 @@ extension CartContent {
                     .font(AppTypography.titleLarge)
                     .foregroundColor(Color.onBackground)
             }
-            RoundedButton(
+            PrimaryButton(
                 title: "Перейти к заказу",
                 onClick: onConfirm,
                 enabled: true
             )
+            .padding(.vertical)
         }
     }
 }

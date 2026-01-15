@@ -76,7 +76,7 @@ struct CatalogContent: View {
                 .padding(.horizontal)
             }
             if amount > 0 {
-                RoundedButton(
+                PrimaryButton(
                     title: "\(amount) руб",
                     onClick: onCartButtonClicked,
                     enabled: true

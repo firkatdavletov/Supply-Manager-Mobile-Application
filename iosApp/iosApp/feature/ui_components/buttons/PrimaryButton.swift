@@ -7,7 +7,7 @@
 //
 import SwiftUI
 
-struct RoundedButton: View {
+struct PrimaryButton: View {
     let title: String
     let onClick: () -> Void
     let enabled: Bool
@@ -24,7 +24,6 @@ struct RoundedButton: View {
                     .font(AppTypography.titleMedium)
                     .frame(maxWidth: .infinity)
                     .padding(12)
-//                    .frame(height: 50)
                     .background(enabled ? Color.primaryContainer : Color.primaryContainer.opacity(0.5))
                     .foregroundColor(Color.onPrimaryContainer)
                     .cornerRadius(25)
@@ -38,7 +37,7 @@ struct RoundedButton: View {
 }
 
 #Preview {
-    RoundedButton(
+    PrimaryButton(
         title: "Кнопка",
         onClick: {
             

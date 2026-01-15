@@ -39,7 +39,7 @@ struct SearchAddressContent: View {
                 .padding()
             }
             
-            RoundedButton(
+            PrimaryButton(
                 title: "Выбрать на карте",
                 onClick: onMapButtonClicked,
                 enabled: true

@@ -73,7 +73,7 @@ struct ProfileContent: View {
             
             Spacer()
             
-            RoundedButton(
+            PrimaryButton(
                 title: "Сохранить",
                 onClick: onSave,
                 enabled: !isLoading

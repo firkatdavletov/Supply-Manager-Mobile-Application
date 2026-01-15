@@ -51,12 +51,12 @@ struct PaymentContent: View {
                 paymentSection
                 bottomSummary
             }
-            RoundedButton(
+            PrimaryButton(
                 title: "Заказать",
                 onClick: onConfirmClicked,
                 enabled: deliveryType != .delivery || addressString != nil
             )
-            .padding(.horizontal)
+            .padding()
         }
     }
 }
@@ -141,6 +141,7 @@ extension PaymentContent {
                         isError: entranceInputError != nil,
                         onChange: onEntranceChanged
                     )
+                    .keyboardType(.phonePad)
                     .padding(.vertical, 8)
                     StyledTextField(
                         value: flat,
@@ -148,6 +149,7 @@ extension PaymentContent {
                         isError: flatInputError != nil,
                         onChange: onFlatChanged
                     )
+                    .keyboardType(.phonePad)
                     .padding(.vertical, 8)
                 }
             }
@@ -178,7 +180,7 @@ extension PaymentContent {
                     ForEach(paymentTypes, id: \.id) { type in
                         SelectedButton(
                             title: type.title,
-                            selected: type.selected,
+                            selected: true,
                             action: {}
                         )
                     }

@@ -115,7 +115,7 @@ struct SignInContent: View {
                         .padding(.vertical)
                     
                         ForEach(authTypes, id: \.self) { type in
-                            RoundedButton(
+                            PrimaryButton(
                                 title: type == "sms" ? "СМС" :
                                     type == "call" ? "По звонку" : "",
                                 onClick: {

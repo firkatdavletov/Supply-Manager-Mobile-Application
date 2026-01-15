@@ -27,7 +27,7 @@ struct DeleteUserDialog: View {
                 .padding(.top, 32)
                 .padding(.horizontal)
             Spacer()
-            RoundedButton(
+            PrimaryButton(
                 title: "Удалить",
                 onClick: {
                     component.onEvent(event: DeleteUserDialogViewEventOnConfirm())
@@ -35,7 +35,7 @@ struct DeleteUserDialog: View {
                 enabled: !state.isLoading
             )
             .padding(.horizontal)
-            RoundedButton(
+            PrimaryButton(
                 title: "Отмена",
                 onClick: {
                     component.onEvent(event: DeleteUserDialogViewEventOnDismiss())

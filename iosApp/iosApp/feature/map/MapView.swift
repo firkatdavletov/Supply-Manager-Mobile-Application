@@ -42,6 +42,9 @@ struct MapView: View {
             onBackButtonClicked: {
                 component.onEvent(event: MapViewEventOnBackClicked())
             },
+            onSearchAddressClicked: {
+                component.onEvent(event: MapViewEventOnSearchAddressClicked())
+            },
             onMapMoved: { lat, lng, reason, finished in
                 component.onEvent(event: MapViewEventOnMapMoved(latitude: lat, longitude: lng, reason: Int32(reason), finished: finished))
             },
@@ -58,11 +61,6 @@ struct MapView: View {
             showMap: true
         )
         .navigationBarBackButtonHidden(true)
-        .onAppear {
-            locationManager.requestLocation { location in
-                component.onEvent(event: MapViewEventOnMoveToLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude))
-            }
-        }
     }
 }
 

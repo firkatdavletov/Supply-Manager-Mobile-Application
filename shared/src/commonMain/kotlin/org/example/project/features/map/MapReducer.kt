@@ -13,7 +13,7 @@ class MapReducer: Reducer<MapViewState, MapViewEvent, MapViewEffect> {
         return when (event) {
             is MapViewEvent.OnCartLoaded -> {
                 val cart = event.cartModel
-                val currentPosition = when (state.deliveryType) {
+                val newPosition = when (state.deliveryType) {
                     DeliveryType.PICKUP -> {
                         cart.department.let {
                             UiPoint(it.latitude, it.longitude)
@@ -21,6 +21,8 @@ class MapReducer: Reducer<MapViewState, MapViewEvent, MapViewEffect> {
                     }
                     DeliveryType.DELIVERY -> {
                         cart.deliveryAddress?.let {
+                            UiPoint(it.latitude, it.longitude)
+                        } ?: cart.department.let {
                             UiPoint(it.latitude, it.longitude)
                         }
                     }
@@ -30,7 +32,7 @@ class MapReducer: Reducer<MapViewState, MapViewEvent, MapViewEffect> {
                     isLoading = false,
                     deliveryType = cart.deliveryType,
                     cartDepartment = cart.department,
-                    currentPosition = currentPosition,
+                    currentPosition = newPosition,
                     departments = state.departments.map {
                         it.copy(selected = it.id == cart.department.id)
                     },

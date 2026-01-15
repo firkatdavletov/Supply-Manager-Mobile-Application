@@ -17,7 +17,7 @@ enum class OrderStatus {
                 AWAITING_PAYMENT -> "Ожидаем оплаты"
                 AWAITING_CASH_PAYMENT -> "Ожидаем оплаты наличными"
                 PAID -> "Ресторан готовит заказ"
-                PROCESSING -> "Заказ в доставка"
+                PROCESSING -> "В доставке"
                 FAILED -> "Ошибка"
                 CANCELLED -> "Отменен"
                 DELIVERED -> "Доставлен"

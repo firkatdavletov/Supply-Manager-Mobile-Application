@@ -22,6 +22,7 @@ struct MapContent: View {
     let onSelectDeliveryType: (DeliveryType) -> Void
     let onConfirm: () -> Void
     let onBackButtonClicked: () -> Void
+    let onSearchAddressClicked: () -> Void
     let onMapMoved: (Double, Double, UInt, Bool) -> Void
     let onSelectDepartment: (Int64) -> Void
     let onRequestLocation: () -> Void
@@ -55,12 +56,6 @@ struct MapContent: View {
                         )
                     }
                     Spacer()
-                    IconButton(
-                        systemName: "magnifyingglass",
-                        tint: Color.primaryContainer,
-                        foreground: Color.onPrimaryContainer,
-                        action: onBackButtonClicked
-                    )
                 }
                 
                 if (addressString != nil) {
@@ -90,6 +85,18 @@ struct MapContent: View {
             
             VStack {
                 Spacer()
+                if (deliveryType == DeliveryType.delivery) {
+                    IconButton(
+                        systemName: "magnifyingglass",
+                        tint: Color.primaryContainer,
+                        foreground: Color.onPrimaryContainer,
+                        action: onSearchAddressClicked
+                    )
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .padding()
+                    .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+                }
+                
                 IconButton(
                     systemName: "location",
                     tint: Color.primaryContainer,
@@ -101,22 +108,22 @@ struct MapContent: View {
                     .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
                 VStack {
                     HStack {
-                        RoundedButton(
+                        SelectedButton(
                             title: "Самовывоз",
-                            onClick: {
+                            selected: deliveryType == DeliveryType.pickup,
+                            action: {
                                 onSelectDeliveryType(DeliveryType.pickup)
                             },
-                            enabled: deliveryType != DeliveryType.pickup
                         )
-                        RoundedButton(
+                        SelectedButton(
                             title: "Доставка",
-                            onClick: {
+                            selected: deliveryType == DeliveryType.delivery,
+                            action: {
                                 onSelectDeliveryType(DeliveryType.delivery)
                             },
-                            enabled: deliveryType != DeliveryType.delivery
                         )
                     }
-                    RoundedButton(
+                    PrimaryButton(
                         title: "Подтвердить",
                         onClick: onConfirm,
                         enabled: isConfirmEnabled
@@ -144,6 +151,7 @@ struct MapContent: View {
         onSelectDeliveryType: { _ in },
         onConfirm: {},
         onBackButtonClicked: {},
+        onSearchAddressClicked: {},
         onMapMoved: {_,_,_,_ in },
         onSelectDepartment: {_ in },
         onRequestLocation: {},

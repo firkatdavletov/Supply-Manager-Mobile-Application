@@ -40,9 +40,15 @@ struct CurrentOrderContent: View {
         }
         ScrollView {
             orderStatus
+            Divider()
             deliveryInfo
-            commentView
+            Divider()
+            if (!comment.isEmpty) {
+                commentView
+                Divider()
+            }
             orderItemsView
+            Divider()
         }
         paymentInfo
     }
@@ -58,14 +64,6 @@ extension CurrentOrderContent {
                 .font(AppTypography.headlineSmall)
                 .foregroundColor(Color.onBackground)
         }
-        .padding(8)
-        .frame(maxWidth: .infinity)
-        .background(Color.background)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.primaryContainer, lineWidth: 1)
-        )
         .padding(.horizontal)
     }
 }
@@ -75,14 +73,14 @@ extension CurrentOrderContent {
         VStack(spacing: 16) {
             if (deliveryType == DeliveryType.delivery) {
                 HStack {
-                    Text("Доставка:")
+                    Text("Адрес доставки:")
                         .font(AppTypography.titleLarge)
                         .foregroundColor(Color.onBackground)
                     Spacer()
                 }
             } else {
                 HStack {
-                    Text("Самовывоз:")
+                    Text("Адрес самовывоза:")
                         .font(AppTypography.titleLarge)
                         .foregroundColor(Color.onBackground)
                     Spacer()
@@ -96,14 +94,6 @@ extension CurrentOrderContent {
                 Spacer()
             }
         }
-        .padding(8)
-        .frame(maxWidth: .infinity)
-        .background(Color.background)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.primaryContainer, lineWidth: 1)
-        )
         .padding(.horizontal)
     }
 }
@@ -124,7 +114,6 @@ extension CurrentOrderContent {
             ForEach(orderItems, id: \.productId) { item in
                 OrderItemView(orderItem: item)
                     .padding(.horizontal)
-                Divider()
             }
         }
     }
