@@ -73,12 +73,14 @@ class MapReducer: Reducer<MapViewState, MapViewEvent, MapViewEffect> {
                         UiPoint(it.latitude, it.longitude)
                     } ?: state.currentPosition
                 } else state.currentPosition
-                val workTimeStr = buildString {
-                    val workTime = department?.workingHours?.getOrNull(0)
-                    if (workTime != null) {
-                        append("с ${workTime.openTime} до ${workTime.closeTime}")
-                    } else {
-                        append("Не работает")
+                val workTimeStr = department?.let {
+                    buildString {
+                        val workingHours = department.currentWorkingHours
+                        if (department.isWorkingNow && workingHours != null) {
+                            append("с ${workingHours.openTime} до ${workingHours.closeTime}")
+                        } else {
+                            append("Не работает")
+                        }
                     }
                 }
                 state.copy(
@@ -101,12 +103,17 @@ class MapReducer: Reducer<MapViewState, MapViewEvent, MapViewEffect> {
             is MapViewEvent.OnDepartmentSelected -> {
                 val department = state.departments.firstOrNull { it.id == event.id }
                 if (department != null) {
-                    val workTimeStr = buildString {
-                        val workTime = department.workingHours.getOrNull(0)
-                        if (workTime != null) {
-                            append("с ${workTime.openTime} до ${workTime.closeTime}")
-                        } else {
-                            append("Не работает")
+                    if (department.isWorkingNow) {
+                        department.currentWorkingHours
+                    }
+                    val workTimeStr = department.let {
+                        buildString {
+                            val workingHours = department.currentWorkingHours
+                            if (department.isWorkingNow && workingHours != null) {
+                                append("с ${workingHours.openTime} до ${workingHours.closeTime}")
+                            } else {
+                                append("Не работает")
+                            }
                         }
                     }
                     state.copy(

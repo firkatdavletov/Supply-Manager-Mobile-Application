@@ -36,6 +36,7 @@ struct PaymentView: View {
             deliveryPrice: Int(state.deliveryPrice),
             productPrice: Int(state.productPrice),
             paymentTypes: state.paymentTypes,
+            storeIsClosed: state.storeIsClosed,
             onChangeDeliveryType: { deliveryType in
                 component.onEvent(event: PaymentViewEventOnChangeDeliveryType(deliveryType: deliveryType))
             },

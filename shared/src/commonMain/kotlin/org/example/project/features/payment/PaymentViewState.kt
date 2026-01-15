@@ -19,4 +19,5 @@ data class PaymentViewState(
     val paymentTypes: List<PaymentTypeModel>,
     val entranceInputError: String? = null,
     val flatInputError: String? = null,
+    val storeIsClosed: Boolean,
 ) : Reducer.ViewState

@@ -49,16 +49,16 @@ struct MapContent: View {
                     if (showBackButton) {
                         IconButton(
                             systemName: "arrow.backward",
-                            tint: Color.secondaryContainer,
-                            foreground: Color.onSecondaryContainer,
+                            tint: Color.primaryContainer,
+                            foreground: Color.onPrimaryContainer,
                             action: onBackButtonClicked
                         )
                     }
                     Spacer()
                     IconButton(
                         systemName: "magnifyingglass",
-                        tint: Color.secondaryContainer,
-                        foreground: Color.onSecondaryContainer,
+                        tint: Color.primaryContainer,
+                        foreground: Color.onPrimaryContainer,
                         action: onBackButtonClicked
                     )
                 }
@@ -66,7 +66,7 @@ struct MapContent: View {
                 if (addressString != nil) {
                     Text(addressString!)
                         .font(AppTypography.headlineLarge)
-                        .foregroundStyle(Color.black)
+                        .foregroundStyle(Color.darkCosmicBlue)
                         .multilineTextAlignment(.center)
                 }
                 if (deliveryInfo != nil) {
@@ -76,9 +76,9 @@ struct MapContent: View {
                         .padding(.vertical, 8)
                         .background(
                             RoundedRectangle(cornerRadius: 16)
-                                .fill(Color.secondaryContainer)
+                                .fill(Color.primaryContainer)
                         )
-                        .foregroundStyle(Color.onBackground)
+                        .foregroundStyle(Color.onPrimaryContainer)
                 }
                 Spacer()
             }
@@ -92,8 +92,8 @@ struct MapContent: View {
                 Spacer()
                 IconButton(
                     systemName: "location",
-                    tint: Color.secondaryContainer,
-                    foreground: Color.onSecondaryContainer,
+                    tint: Color.primaryContainer,
+                    foreground: Color.onPrimaryContainer,
                     action: onRequestLocation
                 )
                     .frame(maxWidth: .infinity, alignment: .trailing)
@@ -101,19 +101,19 @@ struct MapContent: View {
                     .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
                 VStack {
                     HStack {
-                        SelectedButton(
+                        RoundedButton(
                             title: "Самовывоз",
-                            selected: deliveryType == DeliveryType.pickup,
-                            action: {
+                            onClick: {
                                 onSelectDeliveryType(DeliveryType.pickup)
-                            }
+                            },
+                            enabled: deliveryType != DeliveryType.pickup
                         )
-                        SelectedButton(
+                        RoundedButton(
                             title: "Доставка",
-                            selected: deliveryType == DeliveryType.delivery,
-                            action: {
+                            onClick: {
                                 onSelectDeliveryType(DeliveryType.delivery)
-                            }
+                            },
+                            enabled: deliveryType != DeliveryType.delivery
                         )
                     }
                     RoundedButton(

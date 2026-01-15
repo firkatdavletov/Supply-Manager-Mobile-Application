@@ -6,8 +6,7 @@ data class DepartmentModel(
     val city: CityModel,
     val latitude: Double,
     val longitude: Double,
-    val workingHours: List<WorkingHoursModel>,
-    val currentWorkingHours: List<WorkingHoursModel>?,
+    val currentWorkingHours: WorkingHoursModel?,
     val isWorkingNow: Boolean,
     val selected: Boolean = false
 )

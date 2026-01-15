@@ -17,6 +17,7 @@ struct HomeContent: View {
     let currentOrders: [OrderUIModel]
     let categories: [CategoryModel]
     let totalAmount: Float
+    let storeIsClosed: Bool
     let onChangeAddressClicked: () -> Void
     let onCategoryClicked: (CategoryModel) -> Void
     let onCartButtonClicked: () -> Void
@@ -38,9 +39,10 @@ struct HomeContent: View {
                 LazyVGrid(
                     columns: columns,
                 ) {
-                    Section(header: ordersPagerItem) {
-                        
+                    if (storeIsClosed) {
+                        Section(header: storeIsClosedView) {}
                     }
+                    Section(header: ordersPagerItem) {}
                     ForEach(categories, id: \.id) { category in
                         CategoryCardView(title: category.title, imageUrl: category.imageUrl)
                             .onTapGesture {
@@ -141,6 +143,15 @@ extension HomeContent {
                 }
             }
         }
+    }
+}
+
+extension HomeContent {
+    private var storeIsClosedView: some View {
+        Text("Ресторан закрыт")
+            .font(AppTypography.headlineSmall)
+            .foregroundStyle(Color.onBackground)
+            .frame(maxWidth: .infinity, alignment: .center)
     }
 }
 
@@ -287,7 +298,8 @@ struct HomeCategoryView: View {
                 span: 2
             )
         ],
-        totalAmount: 100.0) {
+        totalAmount: 100.0,
+    storeIsClosed: false) {
             
         } onCategoryClicked: { CategoryModel in
             

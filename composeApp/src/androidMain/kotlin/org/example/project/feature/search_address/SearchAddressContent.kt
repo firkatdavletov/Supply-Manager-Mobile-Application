@@ -237,7 +237,6 @@ private fun SearchAddressContent_Preview() {
                     city = CityModel(id = 0, name = "fdf", subCities = emptyList(), latitude = 0.0, longitude = 0.0),
                     latitude = 0.0,
                     longitude = 0.0,
-                    workingHours = emptyList(),
                     currentWorkingHours = null,
                     isWorkingNow = true
                 )
@@ -274,7 +273,6 @@ private fun SearchAddressContent_Preview_Night() {
                     city = CityModel(id = 0, name = "fdf", subCities = emptyList(), latitude = 0.0, longitude = 0.0),
                     latitude = 0.0,
                     longitude = 0.0,
-                    workingHours = emptyList(),
                     currentWorkingHours = null,
                     isWorkingNow = true
                 )

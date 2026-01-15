@@ -54,10 +54,8 @@ class HomeReducer(
                     deliveryInfo = deliveryInfo,
                     deliveryAddress = addressString,
                     cartDepartment = event.cartModel.department,
+                    storeIsClosed = !event.cartModel.department.isWorkingNow
                 )
-            }
-            is HomeViewEvent.OnError -> {
-                state.copy(alert = event.text)
             }
             is HomeViewEvent.OnCurrentOrderLoaded -> state.copy(
                 currentOrders = event.orders.map { orderUIModelMapper.toUIModel(it) }

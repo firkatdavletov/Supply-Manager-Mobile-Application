@@ -64,10 +64,10 @@ struct YandexMapView: UIViewRepresentable {
             placemark.geometry = point
             placemark.userData = id
 
-            let imageName = selected ? "Box" : "BoxSmall"
+            let imageName = "Placemark"
             guard let image = UIImage(named: imageName) else { return }
 
-            placemark.setIconWith(image)
+        placemark.setIconWith(image.withTintColor(UIColor.orange))
             placemark.addTapListener(with: listener)
     }
     

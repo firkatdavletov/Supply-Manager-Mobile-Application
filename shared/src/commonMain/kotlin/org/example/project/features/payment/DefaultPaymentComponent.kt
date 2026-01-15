@@ -43,6 +43,7 @@ class DefaultPaymentComponent(
         deliveryPrice = 0,
         totalAmount = 0,
         paymentTypes = emptyList(),
+        storeIsClosed = false
     ),
     snackBarManager = snackBarManager
 ) {
@@ -180,7 +181,7 @@ class DefaultPaymentComponent(
                 .collect { result ->
                     when (result) {
                         is ResultModel.Error -> {
-                            PaymentViewEvent.OnError(result.message)
+                            onEvent(PaymentViewEvent.OnError(result.message))
                         }
                         ResultModel.Loading -> {
 
@@ -199,7 +200,7 @@ class DefaultPaymentComponent(
                                             onEvent(PaymentViewEvent.OnError(result.message))
                                         }
                                         ResultModel.Loading -> {}
-                                        is ResultModel.Success<*> -> {
+                                        is ResultModel.Success<Boolean> -> {
                                             updateDeliveryAddress(state.value.deliveryType)
                                             withContext(Dispatchers.Main) {
                                                 callbacks.navigateToOrder(order.id)

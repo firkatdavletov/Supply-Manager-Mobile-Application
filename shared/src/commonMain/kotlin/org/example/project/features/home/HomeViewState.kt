@@ -17,5 +17,5 @@ data class HomeViewState(
     val deliveryInfo: String,
     val deliveryAddress: String,
     val cartDepartment: DepartmentModel?,
-    val alert: String? = null,
+    val storeIsClosed: Boolean,
 ): Reducer.ViewState

@@ -25,6 +25,7 @@ struct PaymentContent: View {
     let deliveryPrice: Int
     let productPrice: Int
     let paymentTypes: [PaymentTypeModel]
+    let storeIsClosed: Bool
 
     let onChangeDeliveryType: (DeliveryType) -> Void
     let onBackButtonClicked: () -> Void
@@ -39,6 +40,9 @@ struct PaymentContent: View {
         VStack {
             header
             ScrollView {
+                if (storeIsClosed) {
+                    storeIsClosedView
+                }
                 if (deliveryType == DeliveryType.delivery) {
                     deliverySection
                 } else {
@@ -76,6 +80,14 @@ extension PaymentContent {
     }
 }
 
+extension PaymentContent {
+    private var storeIsClosedView: some View {
+        Text("Ресторан закрыт")
+            .font(AppTypography.headlineSmall)
+            .foregroundStyle(Color.onBackground)
+            .frame(maxWidth: .infinity, alignment: .center)
+    }
+}
 
 extension PaymentContent {
     private var pickupSection: some View {
@@ -236,6 +248,7 @@ extension PaymentContent {
         paymentTypes: [
             PaymentTypeModel(id: "1", title: "Cash", selected: true)
         ],
+        storeIsClosed: false,
         onChangeDeliveryType: { deliveryType in
             
         },

@@ -109,7 +109,7 @@ class DefaultOrderRepository(
 
                 emit(ResultModel.Success(orderModel))
             } else {
-                emit(ResultModel.Error("Ошибка обработки заказа"))
+                emit(ResultModel.Error(response.error, response.code))
             }
         }
     }

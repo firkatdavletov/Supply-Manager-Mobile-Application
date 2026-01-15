@@ -27,6 +27,7 @@ struct HomeView: View {
             currentOrders: state.currentOrders,
             categories: state.categories,
             totalAmount: Float(state.amount),
+            storeIsClosed: state.storeIsClosed,
             onChangeAddressClicked: {
                 component.onEvent(event: HomeViewEventOnAddressClicked())
             },

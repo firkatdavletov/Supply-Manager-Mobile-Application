@@ -15,7 +15,6 @@ class DepartmentMapper(
         latitude = entity.latitude,
         longitude = entity.longitude,
         city = cityMapper.toModel(entity.city),
-        workingHours = workingHoursMapper.toModel(entity.workingHours),
         currentWorkingHours = entity.currentWorkingHours?.let { workingHoursMapper.toModel(it) },
         isWorkingNow = entity.isWorkingNow,
     )

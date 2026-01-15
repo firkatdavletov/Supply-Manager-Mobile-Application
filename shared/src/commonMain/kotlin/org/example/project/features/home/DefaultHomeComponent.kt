@@ -45,6 +45,7 @@ class DefaultHomeComponent(
         deliveryAddress = "",
         cartDepartment = null,
         currentOrders = emptyList(),
+        storeIsClosed = false,
     ),
     reducer = HomeReducer(orderUIModelMapper),
 ) {

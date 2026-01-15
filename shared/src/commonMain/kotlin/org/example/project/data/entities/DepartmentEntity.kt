@@ -9,7 +9,6 @@ data class DepartmentEntity(
     val city: CityEntity,
     val latitude: Double,
     val longitude: Double,
-    val workingHours: List<WorkingHourEntity>,
-    val currentWorkingHours: List<WorkingHourEntity>?,
+    val currentWorkingHours: WorkingHourEntity?,
     val isWorkingNow: Boolean,
 )

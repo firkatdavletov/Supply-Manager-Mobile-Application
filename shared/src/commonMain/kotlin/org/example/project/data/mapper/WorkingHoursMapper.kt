@@ -7,7 +7,7 @@ class WorkingHoursMapper {
     fun toModel(entity: WorkingHourEntity) = WorkingHoursModel(
         dayWeek = entity.dayOfWeek,
         openTime = entity.openTime,
-        closeTime = entity.closeTime
+        closeTime = entity.closeTime,
     )
 
     fun toModel(entities: List<WorkingHourEntity>) = entities.map { toModel(it) }

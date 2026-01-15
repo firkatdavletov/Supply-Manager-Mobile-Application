@@ -31,6 +31,7 @@ class PaymentReducer : Reducer<PaymentViewState, PaymentViewEvent, PaymentViewEf
                     productPrice = productPrice,
                     deliveryPrice = deliveryPrice,
                     totalAmount = totalPrice,
+                    storeIsClosed = !department.isWorkingNow
                 )
             }
 
