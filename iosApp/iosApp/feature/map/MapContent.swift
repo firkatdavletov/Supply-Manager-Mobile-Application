@@ -85,7 +85,7 @@ struct MapContent: View {
             
             VStack {
                 Spacer()
-                if (deliveryType == DeliveryType.delivery) {
+                if (showBackButton && deliveryType == DeliveryType.delivery) {
                     IconButton(
                         systemName: "magnifyingglass",
                         tint: Color.primaryContainer,
@@ -113,14 +113,14 @@ struct MapContent: View {
                             selected: deliveryType == DeliveryType.pickup,
                             action: {
                                 onSelectDeliveryType(DeliveryType.pickup)
-                            },
+                            }
                         )
                         SelectedButton(
                             title: "Доставка",
                             selected: deliveryType == DeliveryType.delivery,
                             action: {
                                 onSelectDeliveryType(DeliveryType.delivery)
-                            },
+                            }
                         )
                     }
                     PrimaryButton(
