@@ -8,9 +8,6 @@ class ProfileViewReducer : Reducer<ProfileViewState, ProfileViewEvent, ProfileVi
         event: ProfileViewEvent
     ): ProfileViewState {
         return when (event) {
-            ProfileViewEvent.OnLogout, ProfileViewEvent.OnDelete, ProfileViewEvent.OnSave -> state.copy(
-                isLoading = true
-            )
             is ProfileViewEvent.OnNameChanged -> state.copy(
                 name = event.name
             )

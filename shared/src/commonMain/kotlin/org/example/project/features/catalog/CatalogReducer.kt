@@ -27,9 +27,14 @@ class CatalogReducer: Reducer<CatalogViewState, CatalogViewEvent, CatalogViewEff
                         productModel.copy(count = 0)
                     }
                 }
+                val productsPrice = event.cartModel.items.sumOf { it.price.toDouble() * it.quantity }
+
+                println("[CatalogReducer.kt productPrice: $productsPrice")
 
                 state.copy(
                     amount = event.cartModel.totalPrice,
+                    productsPrice = productsPrice,
+                    freeDeliveryPrice = event.cartModel.deliveryInfo.freeDeliveryPrice,
                     products = newProducts
                 )
             }

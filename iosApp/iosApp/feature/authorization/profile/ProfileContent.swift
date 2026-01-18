@@ -59,13 +59,10 @@ struct ProfileContent: View {
                     .padding(.horizontal)
                     .padding(.top, 4)
                     
-                    Button(
-                        action: onDelete,
-                        label: {
-                            Text("Удалить профиль")
-                                .font(AppTypography.bodyMedium)
-                                .foregroundStyle(Color.primaryContainer)
-                        }
+                    SecondaryButton(
+                        title: "Удалить профиль",
+                        onClick: onDelete,
+                        enabled: !isLoading
                     )
                     .padding()
                 }

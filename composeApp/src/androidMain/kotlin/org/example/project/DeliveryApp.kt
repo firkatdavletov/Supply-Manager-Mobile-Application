@@ -19,10 +19,8 @@ import androidx.compose.ui.unit.dp
 import com.example.compose.DeliveryAppTheme
 import org.example.project.navigation.RootComponent
 import org.example.project.navigation.RootContent
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-@Preview
 fun DeliveryApp(
     rootComponent: RootComponent,
 ) {

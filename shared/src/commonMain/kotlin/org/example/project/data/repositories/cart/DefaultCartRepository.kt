@@ -162,7 +162,15 @@ class DefaultCartRepository(
             )
         }
 
-        val totalPrice = updatedItems.sumOf { it.price.toDouble() * it.quantity } + cart.deliveryInfo.deliveryPrice
+        val itemsPrice = updatedItems.sumOf { it.price.toDouble() * it.quantity }
+        val freeDeliveryPrice = cart.deliveryInfo.freeDeliveryPrice
+        val deliveryPrice = cart.deliveryInfo.deliveryPrice
+        val totalDeliveryPrice = if (freeDeliveryPrice != null && itemsPrice >= freeDeliveryPrice) {
+            0.0
+        } else {
+            deliveryPrice
+        }
+        val totalPrice = itemsPrice + totalDeliveryPrice
 
         val updatedCart = cart.copy(
             items = updatedItems,

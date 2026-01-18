@@ -13,17 +13,22 @@ import kotlinx.coroutines.withContext
 import org.example.project.domain.models.AddressModel
 import org.example.project.domain.models.DeliveryInfoModel
 import org.example.project.domain.models.DeliveryType
+import org.example.project.domain.models.DepartmentModel
 import org.example.project.domain.models.GeoAddressModel
 import org.example.project.domain.models.ResultModel
 import org.example.project.domain.repositories.CartRepository
+import org.example.project.domain.usecase.cart.CreateCartUseCase
+import org.example.project.domain.usecase.cart.LoadCartUseCase
 import org.example.project.domain.usecase.cart.UpdateDeliveryAddressUseCase
 import org.example.project.domain.usecase.departments.GetDepartmentsUseCase
 import org.example.project.domain.usecase.geo.GetGeoAddressUseCase
 import org.example.project.domain.usecase.geo.SearchAddressUseCase
 import org.example.project.features.SnackBarManager
 import org.example.project.features.home.HomeComponent
+import org.example.project.features.launch.LaunchComponent
 import org.example.project.features.map.MapComponent
 import org.example.project.features.payment.PaymentComponent
+import org.example.project.features.utils.DistanceCalculator
 
 class DefaultSearchAddressComponent(
     componentContext: ComponentContext,
@@ -34,6 +39,8 @@ class DefaultSearchAddressComponent(
     private val searchAddressUseCase: SearchAddressUseCase,
     private val updateDeliveryAddressUseCase: UpdateDeliveryAddressUseCase,
     private val getGeoAddressUseCase: GetGeoAddressUseCase,
+    private val createCartUseCase: CreateCartUseCase,
+    private val loadCartUseCase: LoadCartUseCase,
     private val callbacks: SearchAddressCallbacks
 ) : SearchAddressComponent(
     componentContext = componentContext,
@@ -49,7 +56,10 @@ class DefaultSearchAddressComponent(
     reducer = SearchAddressReducer()
 ) {
     private var job: Job? = null
+    private var cartSubjectJob: Job? = null
+    private var searchSubjectJob: Job? = null
     private val searchFlow = MutableSharedFlow<String>()
+    private var _departments: List<DepartmentModel> = emptyList()
 
     override fun onEvent(event: SearchAddressViewEvent) {
         when (event) {
@@ -96,27 +106,34 @@ class DefaultSearchAddressComponent(
         }
     }
 
-    override fun onCreate() {
+    override fun onStart() {
+        getDepartments()
         subscribeToCart()
         subscribeToSearch()
     }
 
+    override fun onStop() {
+        cartSubjectJob?.cancel()
+        cartSubjectJob = null
+        searchSubjectJob?.cancel()
+        searchSubjectJob = null
+    }
+
     private fun subscribeToCart() {
-        coroutineScope.launch {
+        cartSubjectJob?.cancel()
+        cartSubjectJob = coroutineScope.launch {
             cartRepository.cartSubject.collect {
                 onEvent(SearchAddressViewEvent.OnCartLoaded(it))
-                if (it.deliveryType == DeliveryType.PICKUP) {
-                    getDepartments()
-                }
             }
         }
     }
 
     @OptIn(FlowPreview::class)
     private fun subscribeToSearch() {
-        coroutineScope.launch {
+        searchSubjectJob?.cancel()
+        searchSubjectJob = coroutineScope.launch {
             searchFlow
-                .debounce(500)
+                .debounce(1000)
                 .filter {  query ->
                     if (query.isBlank()) {
                         onEvent(SearchAddressViewEvent.OnSearchComplete(emptyList()))
@@ -160,13 +177,14 @@ class DefaultSearchAddressComponent(
                 .catch {
                     onEvent(SearchAddressViewEvent.OnThrowError(it))
                 }
-                .collect {
-                    onEvent(SearchAddressViewEvent.OnDepartmentsLoaded(it))
+                .collect { departmentModels ->
+                    _departments = departmentModels
+                    onEvent(SearchAddressViewEvent.OnDepartmentsLoaded(departmentModels))
                 }
         }
     }
 
-    private suspend fun updateAddress(geoAddress: GeoAddressModel) {
+    private suspend fun updateAddress(geoAddress: GeoAddressModel, departmentModel: DepartmentModel) {
         val addressModel = AddressModel(
             street = geoAddress.street,
             house = geoAddress.house,
@@ -178,7 +196,7 @@ class DefaultSearchAddressComponent(
         val params = UpdateDeliveryAddressUseCase.Params(
             deliveryType = DeliveryType.DELIVERY,
             deliveryAddress = addressModel,
-            departmentId = 1,
+            departmentId = departmentModel.id,
             deliveryInfo = geoAddress.deliveryInfo ?: DeliveryInfoModel(0.0, 0.0)
         )
         updateDeliveryAddressUseCase.invoke(params)
@@ -230,10 +248,129 @@ class DefaultSearchAddressComponent(
                         }
                         ResultModel.Loading -> {}
                         is ResultModel.Success<GeoAddressModel> -> {
-                            updateAddress(resultModel.data)
+                            val closestDepartment = findClosestDepartment(
+                                resultModel.data.latitude,
+                                resultModel.data.longitude,
+                                _departments
+                            ) ?: return@collect
+
+                            when (fromScreen) {
+                                LaunchComponent::class.simpleName -> {
+                                    createCart(resultModel.data, closestDepartment)
+                                }
+                                else -> {
+                                    updateAddress(resultModel.data, closestDepartment)
+                                }
+                            }
                         }
                     }
                 }
+        }
+    }
+
+    private fun createCart(geoAddress: GeoAddressModel, closestDepartment: DepartmentModel?) {
+        val deliveryType = DeliveryType.DELIVERY
+        val deliveryInfo = geoAddress.deliveryInfo
+
+        val params = when (deliveryType) {
+            DeliveryType.PICKUP -> {
+                if (closestDepartment != null) {
+                    CreateCartUseCase.Params(
+                        departmentId = closestDepartment.id,
+                    )
+                } else {
+                    onEvent(SearchAddressViewEvent.OnError("Не выбран ресторан"))
+                    null
+                }
+            }
+
+            DeliveryType.DELIVERY -> {
+                if (deliveryInfo != null && closestDepartment != null) {
+                    CreateCartUseCase.Params(
+                        deliveryAddress = AddressModel(
+                            city = geoAddress.city,
+                            street = geoAddress.street,
+                            house = geoAddress.house,
+                            entrance = geoAddress.entrance,
+                            flat = null,
+                            intercome = null,
+                            comment = null,
+                            latitude = geoAddress.latitude,
+                            longitude = geoAddress.longitude
+                        ),
+                        deliveryInfo = deliveryInfo,
+                        departmentId = closestDepartment.id
+                    )
+                } else {
+                    if (deliveryInfo == null) {
+                        onEvent(SearchAddressViewEvent.OnError("Ошибка выбора адреса доставки: нет информации о доставке"))
+                    }
+                    if (closestDepartment == null) {
+                        onEvent(SearchAddressViewEvent.OnError("Ошибка выбора адреса доставки: нет ближайшего ресторана"))
+                    }
+
+                    null
+                }
+            }
+        }
+
+        if (params == null) return
+
+        coroutineScope.launch {
+            createCartUseCase.invoke(params)
+                .catch {
+                    onEvent(SearchAddressViewEvent.OnThrowError(it))
+                }
+                .collect { result ->
+                    when (result) {
+                        is ResultModel.Error -> {
+                            onEvent(SearchAddressViewEvent.OnError(result.message))
+                        }
+
+                        ResultModel.Loading -> {
+
+                        }
+
+                        is ResultModel.Success<Boolean> -> {
+                            loadCart {
+                                callbacks.navigateToHome()
+                            }
+                        }
+                    }
+                }
+        }
+    }
+
+    private suspend fun loadCart(onSuccess: () -> Unit = {}) {
+        loadCartUseCase(Unit)
+            .catch {
+                onEvent(SearchAddressViewEvent.OnThrowError(it))
+            }
+            .collect { result ->
+                withContext(Dispatchers.Main) {
+                    when (result) {
+                        is ResultModel.Error -> {
+                            onEvent(SearchAddressViewEvent.OnError(result.message))
+                        }
+
+                        ResultModel.Loading -> {
+                        }
+
+                        is ResultModel.Success<Boolean> -> {
+                            onSuccess()
+                        }
+                    }
+                }
+            }
+    }
+
+    private fun findClosestDepartment(
+        lat: Double,
+        lon: Double,
+        departments: List<DepartmentModel>
+    ): DepartmentModel? {
+        return departments.minByOrNull { department ->
+            DistanceCalculator.haversineDistance(lat, lon, department.latitude, department.longitude)
         }
     }
 }

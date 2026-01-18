@@ -74,6 +74,7 @@ struct MapContent: View {
                                 .fill(Color.primaryContainer)
                         )
                         .foregroundStyle(Color.onPrimaryContainer)
+                        .multilineTextAlignment(.center)
                 }
                 Spacer()
             }
@@ -85,7 +86,7 @@ struct MapContent: View {
             
             VStack {
                 Spacer()
-                if (showBackButton && deliveryType == DeliveryType.delivery) {
+                if (deliveryType == DeliveryType.delivery) {
                     IconButton(
                         systemName: "magnifyingglass",
                         tint: Color.primaryContainer,
@@ -93,7 +94,7 @@ struct MapContent: View {
                         action: onSearchAddressClicked
                     )
                     .frame(maxWidth: .infinity, alignment: .trailing)
-                    .padding()
+                    .padding(.horizontal)
                     .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
                 }
                 
@@ -131,6 +132,7 @@ struct MapContent: View {
                     .disabled(!isConfirmEnabled)
                 }
                 .padding(.horizontal)
+                .padding(.top, 8)
             }
         }
     }

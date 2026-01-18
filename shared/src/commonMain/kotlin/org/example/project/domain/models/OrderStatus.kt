@@ -3,24 +3,28 @@ package org.example.project.domain.models
 enum class OrderStatus {
     PENDING,
     AWAITING_PAYMENT,
-    AWAITING_CASH_PAYMENT,
     PAID,
     PROCESSING,
+    AWAITING_COURIER,
+    AWAITING_RECEIPT,
+    DELIVERY,
     FAILED,
     CANCELLED,
-    DELIVERED;
+    COMPLETED;
 
     companion object {
         fun getTitle(status: OrderStatus): String {
             return when (status) {
-                PENDING -> "Ожидаем подтверждения"
-                AWAITING_PAYMENT -> "Ожидаем оплаты"
-                AWAITING_CASH_PAYMENT -> "Ожидаем оплаты наличными"
-                PAID -> "Ресторан готовит заказ"
-                PROCESSING -> "В доставке"
+                PENDING -> "Ожидает подтверждения"
+                AWAITING_PAYMENT -> "Ожидает оплаты"
+                PAID -> "Оплачен"
+                PROCESSING -> "Ресторан готовит заказ"
+                AWAITING_COURIER -> "Ожидает курьера"
+                AWAITING_RECEIPT -> "Ожидает получения"
+                DELIVERY -> "Курьер уже в пути"
                 FAILED -> "Ошибка"
                 CANCELLED -> "Отменен"
-                DELIVERED -> "Доставлен"
+                COMPLETED -> "Выполнен"
             }
         }
     }

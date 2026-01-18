@@ -10,6 +10,7 @@ import com.arkivanov.decompose.router.slot.dismiss
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.items
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.popTo
 import com.arkivanov.decompose.router.stack.popWhile
@@ -162,7 +163,7 @@ class DefaultRootComponent(
 
     private fun getLaunchComponent(componentContext: ComponentContext): LaunchComponent {
         val callbacks = LaunchNavigationCallbacks(
-            navigateToSelectAddress = { navigation.pushToFront(Config.SelectAddress(LaunchComponent::class.simpleName)) },
+            navigateToSelectAddress = { navigation.pushNew(Config.SelectAddress(LaunchComponent::class.simpleName)) },
             navigateToHome = { navigation.pushToFront(Config.Home) }
         )
 
@@ -184,8 +185,8 @@ class DefaultRootComponent(
             navigateBack = {
                 navigation.pop()
             },
-            navigateToSearchAddress = {
-                navigation.pushToFront(Config.SearchAddress(MapComponent::class.simpleName))
+            navigateToSearchAddress = { fromScreen ->
+                navigation.pushToFront(Config.SearchAddress(fromScreen))
             },
             navigateToHome = {
                 navigation.pushToFront(Config.Home)
@@ -200,19 +201,31 @@ class DefaultRootComponent(
     private fun getHomeComponent(componentContent: ComponentContext, config: Config.Home): HomeComponent {
         val callbacks = HomeCallbacks(
             navigateToMap = {
-                navigation.pushToFront(Config.SelectAddress(HomeComponent::class.simpleName))
+                if (!childStack.items.any { it.configuration == Config.SelectAddress(HomeComponent::class.simpleName) }) {
+                    navigation.pushNew(Config.SelectAddress(HomeComponent::class.simpleName))
+                } else {
+                    navigation.pushToFront(Config.SelectAddress(HomeComponent::class.simpleName))
+                }
             },
             navigateToCart = {
                 navigation.pushToFront(Config.Cart)
             },
             navigateToCategory = { categoryId, title, ->
-                navigation.pushNew(Config.Catalog(categoryId, title))
+                if (!childStack.items.any { it.configuration == Config.Catalog(categoryId, title) }) {
+                    navigation.pushNew(Config.Catalog(categoryId, title))
+                } else {
+                    navigation.pushToFront(Config.Catalog(categoryId, title))
+                }
             },
             navigateToProfile = {
                 navigation.pushToFront(Config.Profile)
             },
-            navigateToOrder = {
-                navigation.pushNew(Config.CurrentOrder(HomeComponent::class.simpleName, it))
+            navigateToOrder = { orderId ->
+                if (!childStack.items.any { it.configuration == Config.CurrentOrder(HomeComponent::class.simpleName, orderId) }) {
+                    navigation.pushNew(Config.CurrentOrder(HomeComponent::class.simpleName, orderId))
+                } else {
+                    navigation.pushToFront(Config.CurrentOrder(HomeComponent::class.simpleName, orderId))
+                }
             },
             navigateToAuthorization = {
                 navigation.pushToFront(Config.SignIn(HomeComponent::class.simpleName))
@@ -245,7 +258,7 @@ class DefaultRootComponent(
                 } )
             },
             navigateToOrder = { navigation.push(Config.CurrentOrder(PaymentComponent::class.simpleName, it)) },
-            navigateToMap = { navigation.pushToFront(Config.SelectAddress(PaymentComponent::class.simpleName)) }
+            navigateToMap = { navigation.pushNew(Config.SelectAddress(PaymentComponent::class.simpleName)) }
         )
         return get { parametersOf(componentContext, callbacks) }
     }
@@ -346,7 +359,7 @@ class DefaultRootComponent(
                 navigation.pop()
             },
             navigateToMap = {
-                navigation.pushToFront(Config.SelectAddress(fromScreen = it))
+                navigation.pop()
             },
             navigateToPayment = {
                 navigation.pushToFront(Config.Payment)

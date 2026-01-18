@@ -40,6 +40,8 @@ class DefaultHomeComponent(
         userName = null,
         categories = emptyList(),
         amount = 0.0,
+        productsPrice = 0.0,
+        freeDeliveryPrice = null,
         deliveryType = DeliveryType.DELIVERY,
         deliveryInfo = "",
         deliveryAddress = "",

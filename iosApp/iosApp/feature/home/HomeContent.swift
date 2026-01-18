@@ -16,7 +16,9 @@ struct HomeContent: View {
     let deliveryInfo: String
     let currentOrders: [OrderUIModel]
     let categories: [CategoryModel]
-    let totalAmount: Float
+    let totalAmount: Int32
+    let productsPrice: Int32
+    let freeDeliveryPrice: KotlinDouble?
     let storeIsClosed: Bool
     let onChangeAddressClicked: () -> Void
     let onCategoryClicked: (CategoryModel) -> Void
@@ -56,14 +58,30 @@ struct HomeContent: View {
             Spacer()
             
             if totalAmount > 0 {
-                PrimaryButton(
-                    title: "\(Int(totalAmount)) руб",
-                    onClick: {
-                        onCartButtonClicked()
-                    },
-                    enabled: true
-                )
-                .padding(.horizontal)
+                VStack(spacing: 8) {
+
+                    if freeDeliveryPrice != nil && productsPrice < Int32(truncating: freeDeliveryPrice!) {
+                        let remaining = Int32(truncating: freeDeliveryPrice!) - productsPrice
+                        let progress = Double(productsPrice) / Double(truncating: freeDeliveryPrice!)
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Добавьте ещё \(remaining) ₽ для бесплатной доставки")
+                                .font(AppTypography.bodyMedium)
+                                .foregroundColor(.primaryContainer)
+                                    ProgressView(value: progress)
+                                        .progressViewStyle(.linear)
+                                        .tint(Color.primaryContainer)
+                                }
+                                .padding(.horizontal)
+                    }
+
+                    PrimaryButton(
+                        title: "\(totalAmount) руб",
+                        onClick: onCartButtonClicked,
+                        enabled: true
+                    )
+                    .padding(.horizontal)
+                }
                 .padding(.bottom)
             }
         }
@@ -268,8 +286,10 @@ struct HomeCategoryView: View {
                 span: 2
             )
         ],
-        totalAmount: 100.0,
-    storeIsClosed: false) {
+        totalAmount: 100,
+        productsPrice: 0,
+        freeDeliveryPrice: 0.0,
+        storeIsClosed: false) {
             
         } onCategoryClicked: { CategoryModel in
             

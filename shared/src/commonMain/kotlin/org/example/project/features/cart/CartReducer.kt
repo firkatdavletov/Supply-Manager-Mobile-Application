@@ -14,6 +14,7 @@ class CartReducer: Reducer<CartViewState, CartViewEvent, CartViewEffect> {
                     totalPrice = event.cartModel.totalPrice.toInt(),
                     deliveryPrice = event.cartModel.deliveryInfo.deliveryPrice.toInt(),
                     productsPrice = event.cartModel.items.sumOf { it.price.toInt() * it.quantity },
+                    freeDeliveryPrice = event.cartModel.deliveryInfo.freeDeliveryPrice?.toInt(),
                     cartItems = event.cartModel.items,
                     addressString = event.cartModel.deliveryAddress?.let {
                         AddressUtility.makeAddressString(it)

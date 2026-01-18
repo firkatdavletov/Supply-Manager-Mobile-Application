@@ -19,13 +19,13 @@ struct VerifyByCallContent: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            Text("Подтверждение")
+            Text("Вход по номеру телефона")
                 .foregroundColor(.white)
                 .font(.system(size: 30, weight: .bold, design: .rounded))
                 .bold()
                 .padding(.top, 132)
             
-            Text("Для подтверждения позвоните по номеру \(callPhone)")
+            Text("Подтвердите номер, чтобы продолжить")
                 .foregroundColor(.white)
                 .font(.system(size: 16, weight: .regular, design: .rounded))
                 .bold()
@@ -40,8 +40,9 @@ struct VerifyByCallContent: View {
                         .padding(.vertical)
                 }
                 
-                PrimaryButton(
-                    title: "Позвонить",
+                SubtitleButton(
+                    title: "Подтвердить по звонку",
+                    subtitle: "Бесплатный звонок, подтверждение автоматически",
                     onClick: {
                         onCallPhoneClicked()
                         doCallPhone()

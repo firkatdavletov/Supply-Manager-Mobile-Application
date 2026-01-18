@@ -137,6 +137,7 @@ class MapReducer: Reducer<MapViewState, MapViewEvent, MapViewEffect> {
                 val house = event.address.house
                 val entrance = event.address.entrance
                 val deliveryPrice = event.address.deliveryInfo?.deliveryPrice
+                val freeDeliveryPrice = event.address.deliveryInfo?.freeDeliveryPrice
 
                 val addressString = buildString {
                     append(street)
@@ -148,10 +149,18 @@ class MapReducer: Reducer<MapViewState, MapViewEvent, MapViewEffect> {
                     }
                 }
 
-                val deliveryInfo = if (deliveryPrice != null && deliveryPrice > 0.0) {
-                    "Доставка ${deliveryPrice.toInt()} руб"
-                } else {
-                    "Доставка бесплатно"
+                val deliveryInfo = buildString {
+                    append("Доставка ")
+                    if (deliveryPrice != null && deliveryPrice > 0.0) {
+                        append("${deliveryPrice.toInt()} руб")
+
+                        if (freeDeliveryPrice != null) {
+                            append("\n")
+                            append("от ${freeDeliveryPrice.toInt()} рублей бесплатно")
+                        }
+                    } else {
+                        append("бесплатно")
+                    }
                 }
 
                 val point = UiPoint(event.address.latitude, event.address.longitude)

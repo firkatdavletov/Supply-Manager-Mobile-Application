@@ -10,7 +10,7 @@ import org.example.project.features.search_address.SearchAddressComponent
 import org.koin.dsl.module
 
 fun mapModule() = module {
-    single<MapComponent> {  (componentContext: ComponentContext, fromScreen: String? , callbacks: MapCallbacks) ->
+    factory<MapComponent> {  (componentContext: ComponentContext, fromScreen: String? , callbacks: MapCallbacks) ->
         DefaultMapComponent(
             componentContext = componentContext,
             snackBarManager = get(),
@@ -30,6 +30,8 @@ fun mapModule() = module {
             componentContext = componentContext,
             snackBarManager = get(),
             fromScreen = fromScreen,
+            get(),
+            get(),
             get(),
             get(),
             get(),

@@ -8,6 +8,7 @@ data class CartViewState(
     val totalPrice: Int,
     val deliveryPrice: Int,
     val productsPrice: Int,
+    val freeDeliveryPrice: Int?,
     val cartItems: List<CartItemModel>,
     val addressString: String,
     val deliveryType: DeliveryType,

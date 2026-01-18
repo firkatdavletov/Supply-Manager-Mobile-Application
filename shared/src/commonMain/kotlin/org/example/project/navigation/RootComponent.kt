@@ -31,10 +31,6 @@ interface RootComponent {
     fun onBackClicked(toIndex: Int)
     fun dismissDialog()
 
-    sealed class DialogChild {
-        class SimpleDialog(val component: DialogComponent): DialogChild()
-    }
-
     sealed class Child {
         class Launch(val component: LaunchComponent): Child()
         class AppIntroduction(val component: AppIntroductionComponent) : Child()
