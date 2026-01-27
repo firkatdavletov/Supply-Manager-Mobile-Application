@@ -27,7 +27,7 @@ struct LogoutUserDialog: View {
                 .padding(.top, 32)
                 .padding(.horizontal)
             Spacer()
-            PrimaryButton(
+            SecondaryButton(
                 title: "Выйти",
                 onClick: {
                     component.onEvent(event: LogoutUserDialogViewEventOnConfirm())

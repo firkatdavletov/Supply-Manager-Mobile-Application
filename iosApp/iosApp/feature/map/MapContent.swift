@@ -74,6 +74,7 @@ struct MapContent: View {
                                 .fill(Color.primaryContainer)
                         )
                         .foregroundStyle(Color.onPrimaryContainer)
+                        .multilineTextAlignment(.center)
                 }
                 Spacer()
             }
@@ -93,7 +94,7 @@ struct MapContent: View {
                         action: onSearchAddressClicked
                     )
                     .frame(maxWidth: .infinity, alignment: .trailing)
-                    .padding()
+                    .padding(.horizontal)
                     .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
                 }
                 
@@ -113,14 +114,14 @@ struct MapContent: View {
                             selected: deliveryType == DeliveryType.pickup,
                             action: {
                                 onSelectDeliveryType(DeliveryType.pickup)
-                            },
+                            }
                         )
                         SelectedButton(
                             title: "Доставка",
                             selected: deliveryType == DeliveryType.delivery,
                             action: {
                                 onSelectDeliveryType(DeliveryType.delivery)
-                            },
+                            }
                         )
                     }
                     PrimaryButton(
@@ -131,6 +132,7 @@ struct MapContent: View {
                     .disabled(!isConfirmEnabled)
                 }
                 .padding(.horizontal)
+                .padding(.top, 8)
             }
         }
     }

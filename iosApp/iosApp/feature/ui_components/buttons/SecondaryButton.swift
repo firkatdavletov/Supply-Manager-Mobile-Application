@@ -24,11 +24,11 @@ struct SecondaryButton: View {
                     .font(AppTypography.titleMedium)
                     .frame(maxWidth: .infinity)
                     .padding(12)
-                    .background(enabled ? Color.background : Color.background.opacity(0.5))
-                    .foregroundColor(Color.primaryContainer)
+                    .background(Color.background.opacity(0.2))
+                    .foregroundColor(enabled ? Color.primaryContainer : Color.primaryContainer.opacity(0.5))
                     .overlay(
                         RoundedRectangle(cornerRadius: 25)
-                            .stroke(Color.primaryContainer, lineWidth: 2)
+                            .stroke(enabled ? Color.primaryContainer : Color.primaryContainer.opacity(0.5), lineWidth: 2)
                     )
                     .cornerRadius(25)
             }

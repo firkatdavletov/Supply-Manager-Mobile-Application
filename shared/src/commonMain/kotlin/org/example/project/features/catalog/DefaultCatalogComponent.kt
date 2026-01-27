@@ -25,7 +25,9 @@ class DefaultCatalogComponent(
     initialState = CatalogViewState(
         title = title,
         products = emptyList(),
-        amount = 0.0
+        amount = 0.0,
+        freeDeliveryPrice = null,
+        productsPrice = 0.0
     ),
     reducer = CatalogReducer(),) {
     private var job: Job? = null

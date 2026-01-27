@@ -32,6 +32,7 @@ class DefaultCartComponent(
         totalPrice = 0,
         deliveryPrice = 0,
         productsPrice = 0,
+        freeDeliveryPrice = null,
         cartItems = emptyList(),
         deliveryType = DeliveryType.PICKUP,
         addressString = "",

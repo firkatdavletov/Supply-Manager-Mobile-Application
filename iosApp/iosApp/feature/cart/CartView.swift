@@ -25,6 +25,7 @@ struct CartView: View {
             productPrice: state.productsPrice,
             deliveryPrice: state.deliveryPrice,
             totalAmount: state.totalPrice,
+            freeDeliveryPrice: state.freeDeliveryPrice != nil ? Int32(truncating: state.freeDeliveryPrice!) : nil,
             deliveryType: state.deliveryType,
             onAddToCart: { item in
                 component.onEvent(event: CartViewEventOnAddToCart(product: item))

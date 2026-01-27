@@ -27,7 +27,7 @@ struct DeleteUserDialog: View {
                 .padding(.top, 32)
                 .padding(.horizontal)
             Spacer()
-            PrimaryButton(
+            SecondaryButton(
                 title: "Удалить",
                 onClick: {
                     component.onEvent(event: DeleteUserDialogViewEventOnConfirm())

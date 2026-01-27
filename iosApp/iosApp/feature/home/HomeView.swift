@@ -26,7 +26,9 @@ struct HomeView: View {
             deliveryInfo: state.deliveryInfo,
             currentOrders: state.currentOrders,
             categories: state.categories,
-            totalAmount: Float(state.amount),
+            totalAmount: Int32(state.amount),
+            productsPrice: Int32(state.productsPrice),
+            freeDeliveryPrice: state.freeDeliveryPrice,
             storeIsClosed: state.storeIsClosed,
             onChangeAddressClicked: {
                 component.onEvent(event: HomeViewEventOnAddressClicked())

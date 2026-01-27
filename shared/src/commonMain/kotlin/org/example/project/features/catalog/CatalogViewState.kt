@@ -7,4 +7,6 @@ data class CatalogViewState(
     val title: String,
     val products: List<ProductModel>,
     val amount: Double,
+    val productsPrice: Double,
+    val freeDeliveryPrice: Double?
 ): Reducer.ViewState

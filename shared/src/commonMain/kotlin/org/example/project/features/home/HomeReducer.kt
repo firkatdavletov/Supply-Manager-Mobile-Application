@@ -48,8 +48,14 @@ class HomeReducer(
                     }
                 }
 
+                val productsPrice = event.cartModel.items.sumOf { it.price.toDouble() * it.quantity}
+
+                println("[HomeReducer.kt productPrice: $productsPrice")
+
                 state.copy(
                     amount = event.cartModel.totalPrice,
+                    productsPrice = productsPrice,
+                    freeDeliveryPrice = event.cartModel.deliveryInfo.freeDeliveryPrice,
                     deliveryType = event.cartModel.deliveryType,
                     deliveryInfo = deliveryInfo,
                     deliveryAddress = addressString,

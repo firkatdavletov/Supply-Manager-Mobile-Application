@@ -21,19 +21,8 @@ struct SignInContent: View {
     @FocusState private var isTextFieldFocused: Bool
     
     var body: some View {
-        VStack(spacing: 0) {
-            Text("Войти")
-                .foregroundColor(.white)
-                .font(AppTypography.headlineMedium)
-                .bold()
-                .padding(.top, 132)
-            
-            Text("Выберите способ подтверждения номера телефона")
-                .foregroundColor(.white)
-                .font(AppTypography.titleMedium)
-                .bold()
-                .padding(.vertical, 16)
-                .multilineTextAlignment(.center)
+        ZStack {
+            titleView
             
             VStack {
                 Text("Номер телефона:")
@@ -41,109 +30,150 @@ struct SignInContent: View {
                     .foregroundStyle(Color("DarkGrayColor"))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.top, 24)
-                HStack(spacing: 4) {
-                    Text("+7")
-                        .font(AppTypography.titleSmall)
-                        .foregroundColor(Color("DarkGrayColor"))
-                        .frame(alignment: .trailing)
-                        .padding(.leading, 16)
-                    TextField(
-                        "(999)9999999",
-                        text: Binding(
-                            get: {
-                                phoneNumber
-                            },
-                            set: { value in
-                                phoneNumber = value
-                                if (value.count < 14) {
-                                    onPhoneNumberEntered(value)
-                                }
-                            }
-                        )
-                    )
-                        .keyboardType(.phonePad)
-                        .frame(height: 62)
-                        .font(.system(size: 14, weight: .regular, design: .rounded))
-                        .foregroundColor(Color("DarkGrayColor"))
-                        .lineLimit(1)
-                        .focused($isTextFieldFocused)
-                        .onChange(of: phoneNumber) { newValue in
-                            // Оставляем только цифры
-                            let digits = newValue.filter { $0.isNumber }
-                                        
-                            // Ограничиваем до 10 цифр
-                            let limited = String(digits.prefix(10))
-                                    
-                            // Форматируем: добавим ( и )
-                            var result = ""
-                            if !limited.isEmpty {
-                                result += "("
-                            }
-                            if limited.count >= 1 {
-                                result += String(limited.prefix(3))
-                            } else {
-                                result += limited
-                            }
-                            if limited.count >= 4 {
-                                result += ") " + limited.dropFirst(3)
-                            }
-                                        
-                            phoneNumber = result
-                        }
-                }
-                .background(Color("IceBlue"))
-                .cornerRadius(10)
+                
+                phoneInputView
+                
+                Text("Мы используем номер только для входа и связи по заказу. Подтверждая номер телефона, вы соглашаетесь с условиями использования и политикой конфиденциальности.")
+                    .font(.footnote)
+                    .foregroundColor(Color("DarkGrayColor"))
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer()
                 
                 if (isLoading) {
                     Spacer()
                         .frame(height: 46)
                 } else {
-                    VStack(spacing: 8) {
-                        Text("Выбирая способ подтверждения, вы соглашаетесь с условиями использования и политикой конфиденциальности.")
-                            .font(.footnote)
-                            .foregroundColor(Color("DarkGrayColor"))
-                            .multilineTextAlignment(.leading)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        Button(
-                            action: onBackClicked,
-                            label: {
-                                Text("Вернуться назад")
-                                    .font(AppTypography.bodyMedium)
-                                    .foregroundStyle(Color.primaryContainer)
+                    ScrollView {
+                        VStack(spacing: 8) {
+                            ForEach(authTypes, id: \.self) { type in
+                                SubtitleButton(
+                                    title: type == "sms" ? "СМС" :
+                                        type == "call" ? "По звонку" : "",
+                                    subtitle: "Бесплатный звонок, подтверждение автоматически",
+                                    onClick: {
+                                        onAuthTypeClicked(type)
+                                    },
+                                    enabled: true
+                                )
                             }
-                        )
-                        .padding(.vertical)
-                    
-                        ForEach(authTypes, id: \.self) { type in
-                            PrimaryButton(
-                                title: type == "sms" ? "СМС" :
-                                    type == "call" ? "По звонку" : "",
-                                onClick: {
-                                    onAuthTypeClicked(type)
-                                },
-                                enabled: true
-                            )
                         }
                     }
                 }
-                
-                Spacer()
             }
             .padding()
             .background(
                 Color.white
                     .clipShape(RoundedCorner(radius: 20, corners: [.topLeft, .topRight]))
             )
+            .padding(.top, 236)
         }
-        .edgesIgnoringSafeArea([.bottom, .top])
+        .background(Color.darkCosmicBlue)
+//        .edgesIgnoringSafeArea([.bottom, .top])
         .frame(maxWidth: .infinity)
         .navigationBarBackButtonHidden(true)
-        .background(Color.darkCosmicBlue)
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 isTextFieldFocused = true
             }
         }
+    }
+}
+
+extension SignInContent {
+    private var titleView: some View {
+        VStack(spacing: 0) {
+            HStack {
+                IconButton(
+                    systemName: "arrow.backward",
+                    tint: Color.white,
+                    foreground: Color.darkCosmicBlue,
+                    action: onBackClicked
+                )
+                .padding()
+                Spacer()
+            }
+            Text("Подтверждение номера")
+                .foregroundColor(.white)
+                .font(AppTypography.headlineMedium)
+                .bold()
+            
+            if (authTypes.count <= 1) {
+                Text("Подтвердите номер, чтобы продолжить")
+                    .foregroundColor(.white)
+                    .font(AppTypography.titleMedium)
+                    .bold()
+                    .padding(.vertical, 16)
+                    .multilineTextAlignment(.center)
+            } else {
+                Text("Выберите удобный способ подтверждения")
+                    .foregroundColor(.white)
+                    .font(AppTypography.titleMedium)
+                    .bold()
+                    .padding(.vertical, 16)
+                    .multilineTextAlignment(.center)
+            }
+            
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+extension SignInContent {
+    private var phoneInputView: some View {
+        HStack(spacing: 4) {
+            Text("+7")
+                .font(AppTypography.titleSmall)
+                .foregroundColor(Color("DarkGrayColor"))
+                .frame(alignment: .trailing)
+                .padding(.leading, 16)
+            TextField(
+                "(999)9999999",
+                text: Binding(
+                    get: {
+                        phoneNumber
+                    },
+                    set: { value in
+                        phoneNumber = value
+                        if (value.count < 14) {
+                            onPhoneNumberEntered(value)
+                        }
+                    }
+                )
+            )
+                .keyboardType(.phonePad)
+                .frame(height: 62)
+                .font(.system(size: 14, weight: .regular, design: .rounded))
+                .foregroundColor(Color("DarkGrayColor"))
+                .lineLimit(1)
+                .focused($isTextFieldFocused)
+                .onChange(of: phoneNumber) { newValue in
+                    // Оставляем только цифры
+                    let digits = newValue.filter { $0.isNumber }
+                                
+                    // Ограничиваем до 10 цифр
+                    let limited = String(digits.prefix(10))
+                            
+                    // Форматируем: добавим ( и )
+                    var result = ""
+                    if !limited.isEmpty {
+                        result += "("
+                    }
+                    if limited.count >= 1 {
+                        result += String(limited.prefix(3))
+                    } else {
+                        result += limited
+                    }
+                    if limited.count >= 4 {
+                        result += ") " + limited.dropFirst(3)
+                    }
+                                
+                    phoneNumber = result
+                }
+        }
+        .background(Color("IceBlue"))
+        .cornerRadius(10)
     }
 }
 

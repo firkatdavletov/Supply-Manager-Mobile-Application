@@ -14,6 +14,7 @@ struct CartContent: View {
     let productPrice: Int32
     let deliveryPrice: Int32
     let totalAmount: Int32
+    let freeDeliveryPrice: Int32?
     let deliveryType: DeliveryType
     let onAddToCart: (CartItemModel) -> Void
     let onRemoveFromCart: (CartItemModel) -> Void
@@ -94,7 +95,7 @@ extension CartContent {
                         .foregroundColor(Color.onBackground)
                     Spacer()
                     
-                    if (totalAmount == 0) {
+                    if (totalAmount == 0 || (freeDeliveryPrice != nil && productPrice > freeDeliveryPrice!)) {
                         Text("бесплатно")
                             .font(AppTypography.titleLarge)
                             .foregroundColor(Color.onBackground)
@@ -117,7 +118,7 @@ extension CartContent {
             PrimaryButton(
                 title: "Перейти к заказу",
                 onClick: onConfirm,
-                enabled: true
+                enabled: !cartItems.isEmpty
             )
             .padding(.vertical)
         }
@@ -137,6 +138,7 @@ extension CartContent {
         productPrice: 300,
         deliveryPrice: 100,
         totalAmount: 400,
+        freeDeliveryPrice: 0,
         deliveryType: DeliveryType.delivery
     ) { CartItemModel in
         

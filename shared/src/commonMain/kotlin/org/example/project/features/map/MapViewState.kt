@@ -13,6 +13,7 @@ data class MapViewState(
     val deliveryAddress: String?,
     val city: CityModel?,
     val deliveryInfo: String?,
+    val freeDeliveryPrice: Int?,
     val departments: List<DepartmentModel>,
     val selectedDepartment: Int?,
     val cartDepartment: DepartmentModel?,

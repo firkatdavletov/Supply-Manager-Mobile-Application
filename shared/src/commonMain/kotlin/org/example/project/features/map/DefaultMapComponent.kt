@@ -55,6 +55,7 @@ class DefaultMapComponent(
         deliveryAddress = null,
         cartDepartment = null,
         deliveryInfo = null,
+        freeDeliveryPrice = null,
         departments = emptyList(),
         currentPosition = null,
         confirmEnabled = false,
@@ -72,14 +73,12 @@ class DefaultMapComponent(
     private var deliveryInfo: DeliveryInfoModel? = null
     private var departments = emptyList<DepartmentModel>()
     private var selectedCartDepartmentId: Int? = null
+    private var cartSubjectJob: Job? = null
 
-
-    init {
-        subscribeToCartSubject()
-        loadDepartments()
-    }
 
     override fun onResume() {
+        subscribeToCartSubject()
+        loadDepartments()
         if (fromScreen == LaunchComponent::class.simpleName) {
             onEvent(OnMoveToLocation(53.967621, 58.410023))
         } else {
@@ -87,6 +86,11 @@ class DefaultMapComponent(
                 loadCart()
             }
         }
+    }
+
+    override fun onPause() {
+        cartSubjectJob?.cancel()
+        cartSubjectJob = null
     }
 
     private fun loadDepartments() {
@@ -224,7 +228,8 @@ class DefaultMapComponent(
     }
 
     private fun subscribeToCartSubject() {
-        coroutineScope.launch {
+        cartSubjectJob?.cancel()
+        cartSubjectJob = coroutineScope.launch {
             cartRepository.cartSubject.collect { cart ->
                 onEvent(OnCartLoaded(cart))
             }
