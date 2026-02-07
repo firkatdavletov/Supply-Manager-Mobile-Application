@@ -4,4 +4,5 @@ data class CatalogCallbacks(
     val onBack: () -> Unit,
     val onNavigateToCart: () -> Unit,
     val showProductCard: (Int) -> Unit,
+    val onNavigateToCategory: (Int) -> Unit,
 )

@@ -2,16 +2,15 @@ package org.example.project.domain.models
 
 data class OrderModel(
     val id: Long,
+    val user: UserModel,
     val status: OrderStatus,
     val items: List<OrderItemModel>,
-    val deliveryPrice: Double,
-    val totalAmount: Double,
+    val deliveryPrice: Long,
+    val totalAmount: Long,
     val deliveryType: DeliveryType,
     val deliveryAddress: String?,
+    val deliveryTime: String?,
     val comment: String?,
-) {
-    val statusTitle: String
-        get() {
-            return OrderStatus.getTitle(status)
-        }
-}
+    val created: String,
+    val modified: String,
+)

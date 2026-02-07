@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import org.example.project.data.datastore.local.catalog.LocalCatalogDataStore
 import org.example.project.data.datastore.remote.catalog.CatalogRemoteDataStore
 import org.example.project.data.mapper.CategoryMapper
@@ -37,38 +36,43 @@ class DefaultCatalogRepository(
         }
     }
 
+    override fun getCategory(id: Long): Flow<ResultModel<CategoryModel>> {
+        return flow {
+            val response = catalogRemoteDataStore.getCategory(id)
+
+            if (response.success && response.category != null) {
+                val model = categoryMapper.toModel(response.category)
+                emit(ResultModel.Success(model))
+            }
+        }
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getCategoryById(id: Long): Flow<CategoryModel?> {
-        return catalogLocalDataStore.getCategory(id).map {
-            it?.let { categoryMapper.toModel(it)  }
-        }
+        TODO()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getProducts(categoryId: Long): Flow<List<ProductModel>> {
         return flow {
-            val categories = _catalogSubject.replayCache.firstOrNull()
-            val products = categories?.firstOrNull { it.id == categoryId }?.products ?: emptyList()
-            emit(products)
+
         }
     }
 
     override fun getProductCard(productId: Long): Flow<ProductModel?> {
         return flow {
-            val catalog = catalogSubject.replayCache.firstOrNull()
-            val product = catalog?.flatMap { it.products }?.firstOrNull { it.id == productId }
-            emit(product)
+
         }
     }
 
-    override fun loadCatalog(): Flow<ResultModel<Boolean>> {
+    override fun getRemoteCategories(): Flow<ResultModel<List<CategoryModel>>> {
         return flow {
             emit(ResultModel.Loading)
-            val response = catalogRemoteDataStore.getCatalog()
+            val response = catalogRemoteDataStore.getCategories()
             if (response.success) {
                 val model = categoryMapper.toModel(response.catalog)
                 _catalogSubject.emit(model)
-                emit(ResultModel.Success(true))
+                emit(ResultModel.Success(model))
             } else {
                 emit(ResultModel.Error(response.error, response.code))
             }

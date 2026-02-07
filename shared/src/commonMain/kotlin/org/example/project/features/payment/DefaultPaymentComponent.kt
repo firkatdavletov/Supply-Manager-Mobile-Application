@@ -12,6 +12,7 @@ import org.example.project.domain.models.DeliveryType
 import org.example.project.domain.models.OrderItemModel
 import org.example.project.domain.models.OrderModel
 import org.example.project.domain.models.ResultModel
+import org.example.project.domain.models.UnitOfMeasure
 import org.example.project.domain.repositories.CartRepository
 import org.example.project.domain.usecase.cart.ClearCartUseCase
 import org.example.project.domain.usecase.cart.UpdateDeliveryAddressUseCase
@@ -164,7 +165,10 @@ class DefaultPaymentComponent(
                         productId = cartItemModel.productId,
                         name = cartItemModel.title,
                         quantity = cartItemModel.quantity,
-                        price = cartItemModel.price
+                        price = cartItemModel.price.toLong(),
+                        totalPrice = 0L,
+                        unit = UnitOfMeasure.PIECE,
+                        imageUrl = null,
                     )
                 },
                 deliveryAddress = deliveryAddress?.copy(

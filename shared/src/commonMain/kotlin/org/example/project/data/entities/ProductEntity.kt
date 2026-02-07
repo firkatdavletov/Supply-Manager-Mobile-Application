@@ -1,6 +1,7 @@
 package org.example.project.data.entities
 
 import kotlinx.serialization.Serializable
+import org.example.project.domain.models.UnitOfMeasure
 
 @Serializable
 data class ProductEntity(
@@ -8,6 +9,9 @@ data class ProductEntity(
     val categoryId: Long,
     val title: String,
     val description: String?,
-    val price: Float,
-    val imageUrl: String?
+    val price: Long,
+    val unit: UnitOfMeasure,
+    val imageUrl: String?,
+    val displayWeight: String?,
+    val countStep: Int,
 )

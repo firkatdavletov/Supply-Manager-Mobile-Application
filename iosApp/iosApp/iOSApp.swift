@@ -17,6 +17,7 @@ struct iOSApp: App {
     
     var body: some Scene {
         WindowGroup {
+            
             RootView(root: rootHolder.root)
                 .onChange(of: scenePhase) { newPhase in
                     switch (newPhase) {

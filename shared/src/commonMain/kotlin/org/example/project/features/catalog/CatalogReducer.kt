@@ -2,43 +2,65 @@ package org.example.project.features.catalog
 
 import org.example.project.features.base.Reducer
 
-class CatalogReducer: Reducer<CatalogViewState, CatalogViewEvent, CatalogViewEffect> {
+class CatalogReducer : Reducer<CatalogViewState, CatalogViewEvent, CatalogViewEffect> {
     override fun reduce(
         state: CatalogViewState,
-        event: CatalogViewEvent
+        event: CatalogViewEvent,
     ): CatalogViewState {
         return when (event) {
-            is CatalogViewEvent.OnProductsLoaded -> {
+            is CatalogViewEvent.OnCategoriesLoaded -> {
                 state.copy(
-                    products = event.products
+                    title = "Категории",
+                    isLoading = false,
+                    categories = event.categories,
                 )
             }
+
             is CatalogViewEvent.OnCategoryLoaded -> {
                 state.copy(
-                    title = event.category.title
+                    title = event.categoryModel.title,
+                    isLoading = false,
+                    categories = event.categoryModel.children,
+                    products = event.categoryModel.products,
                 )
             }
-            is CatalogViewEvent.OnCartLoaded -> {
-                val newProducts = state.products.map { productModel ->
-                    val cartItem = event.cartModel.items.firstOrNull { it.productId == productModel.id }
-                    if (cartItem != null) {
-                        productModel.copy(count = cartItem.quantity)
-                    } else {
-                        productModel.copy(count = 0)
-                    }
-                }
-                val productsPrice = event.cartModel.items.sumOf { it.price.toDouble() * it.quantity }
 
-                println("[CatalogReducer.kt productPrice: $productsPrice")
+            is CatalogViewEvent.OnCartLoaded -> {
+                val cartItems = event.cartModel.items
 
                 state.copy(
+                    products = state.products.map { product ->
+                        product.copy(
+                            count = cartItems.firstOrNull { it.productId == product.id }?.quantity ?: 0,
+                        )
+                    },
                     amount = event.cartModel.totalPrice,
-                    productsPrice = productsPrice,
-                    freeDeliveryPrice = event.cartModel.deliveryInfo.freeDeliveryPrice,
-                    products = newProducts
                 )
             }
-            else -> state
+
+            CatalogViewEvent.OnBackClicked -> {
+                state
+            }
+
+            CatalogViewEvent.OnCartButtonClicked -> {
+                state
+            }
+
+            is CatalogViewEvent.OnCategoryClicked -> {
+                state
+            }
+
+            is CatalogViewEvent.OnAddToCart -> {
+                state
+            }
+
+            is CatalogViewEvent.OnRemoveFromCart -> {
+                state
+            }
+
+            is CatalogViewEvent.OnProductClicked -> {
+                state
+            }
         }
     }
 

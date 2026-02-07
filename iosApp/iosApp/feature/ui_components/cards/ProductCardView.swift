@@ -20,10 +20,10 @@ struct ProductCardView: View {
             RemoteImage(urlString: product.imageUrl)
                 .frame(height: 112)
                 .clipShape(
-                    RoundedRectangle(cornerRadius: 25, style: .continuous)
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
                 )
 
-            Text("\(Int(product.price)) руб")
+            Text("\(product.price.asCurrency())")
                 .font(.system(size: 16, weight: .bold, design: .rounded))
                 .foregroundColor(Color.onBackground)
                 .padding(.horizontal, 8)
@@ -43,13 +43,14 @@ struct ProductCardView: View {
                 .padding(.bottom, 8)
                 .allowsHitTesting(true)
         }
-        .background(Color.surface)
-        .clipShape(RoundedRectangle(cornerRadius: 25))
-        .frame(height: 234)
-        .contentShape(RoundedRectangle(cornerRadius: 25))
-        .onTapGesture {
-            onShowDetails(product.id)
-        }
+        .frame(maxWidth: .infinity)
+        .background(.white)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.gray.opacity(0.4), lineWidth: 1)
+        )
+        .cornerRadius(16)
+        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
     }
 }
 
@@ -59,7 +60,7 @@ struct ProductCardView: View {
             id: 0,
             title: "Pizza",
             description: nil,
-            price: 530.0,
+            price: 53000,
             imageUrl: nil,
             categoryId: 4,
             count: 56

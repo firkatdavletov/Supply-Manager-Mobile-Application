@@ -247,7 +247,7 @@ private fun SearchAddressContent_Preview() {
                     street = "ул. Косоротова",
                     house = "8",
                     entrance = null,
-                    deliveryInfo = DeliveryInfoModel(deliveryPrice = 100.0, freeDeliveryPrice = 1000.0),
+                    deliveryInfo = DeliveryInfoModel(deliveryPrice = 10000, freeDeliveryPrice = 100000),
                     deliveryTime = 20,
                     latitude = 0.0,
                     longitude = 0.0,

@@ -7,4 +7,5 @@ data class UserEntity(
     val phone: String,
     val name: String,
     val email: String,
+    val company: String?,
 )

@@ -21,30 +21,15 @@ struct HomeView: View {
     
     var body: some View {
         HomeContent(
-            userName: state.userName,
-            addressString: state.deliveryAddress,
-            deliveryInfo: state.deliveryInfo,
-            currentOrders: state.currentOrders,
-            categories: state.categories,
-            totalAmount: Int32(state.amount),
-            productsPrice: Int32(state.productsPrice),
-            freeDeliveryPrice: state.freeDeliveryPrice,
-            storeIsClosed: state.storeIsClosed,
-            onChangeAddressClicked: {
-                component.onEvent(event: HomeViewEventOnAddressClicked())
-            },
-            onCategoryClicked: { categoryModel in
-                component.onEvent(event: HomeViewEventOnCategoryClicked(categoryId: categoryModel.id, categoryTitle: categoryModel.title))
-            },
-            onCartButtonClicked: {
-                component.onEvent(event: HomeViewEventOnCartButtonClicked())
-            },
-            onPersonClicked: {
-                component.onEvent(event: HomeViewEventOnProfileClicked())
-            },
-            onOrderClicked: { id in
-                component.onEvent(event: HomeViewEventOnOrderClicked(id: id))
-            }
+            isLoading: state.isLoading,
+            orders: state.orders,
+            deliveredCount: Int(state.deliveredCount),
+            cancelledCount: Int(state.cancelledCount),
+            pendingCount: Int(state.pendingCount),
+            processingCount: Int(state.processingCount),
+            onOrderTap: { self.component.onEvent(event: HomeViewEventOnOrderClicked(id: $0)) },
+            onRefresh: { self.component.onEvent(event: HomeViewEventOnRefresh())},
+            onAddTap: { self.component.onEvent(event: HomeViewEventOnAddClicked())}
         )
         .navigationBarBackButtonHidden(true)
     }

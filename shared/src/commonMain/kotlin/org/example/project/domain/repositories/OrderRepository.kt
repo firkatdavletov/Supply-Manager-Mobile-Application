@@ -5,15 +5,16 @@ import org.example.project.domain.models.AddressModel
 import org.example.project.domain.models.DeliveryType
 import org.example.project.domain.models.OrderItemModel
 import org.example.project.domain.models.OrderModel
+import org.example.project.domain.models.OrderPreviewModel
 import org.example.project.domain.models.ResultModel
 
 interface OrderRepository {
-    val ordersSubject: Flow<List<OrderModel>>
-//    val orderWsSubject: Flow<OrderUpdateStatusModel>
+    val ordersSubject: Flow<List<OrderPreviewModel>>
+
+    //    val orderWsSubject: Flow<OrderUpdateStatusModel>
     fun getOrderById(id: Long): Flow<ResultModel<OrderModel>>
     fun getCurrentOrders(): Flow<List<OrderModel>>
-    fun getOrders(): Flow<List<OrderModel>>
-    fun getOrdersHistory(): Flow<List<OrderModel>>
+    fun getOrdersHistory(): Flow<List<OrderPreviewModel>>
     fun createOrder(
         deliveryType: DeliveryType,
         deliveryAddress: AddressModel?,
@@ -23,6 +24,11 @@ interface OrderRepository {
         deliveryPrice: Float,
         comment: String?,
     ): Flow<ResultModel<OrderModel>>
+    fun takeOrder(id: Long): Flow<ResultModel<OrderModel>>
+    fun completeOrder(id: Long): Flow<ResultModel<OrderModel>>
+    fun cancelOrder(id: Long): Flow<ResultModel<OrderModel>>
+    fun pendingOrder(id: Long): Flow<ResultModel<OrderModel>>
+    fun getOrders(): Flow<ResultModel<List<OrderPreviewModel>>>
     suspend fun clearOrders()
     suspend fun connect()
     suspend fun disconnect()

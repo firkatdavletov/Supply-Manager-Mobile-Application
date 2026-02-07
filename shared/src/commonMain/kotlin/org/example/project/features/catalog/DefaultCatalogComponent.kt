@@ -2,62 +2,67 @@ package org.example.project.features.catalog
 
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import org.example.project.domain.models.CategoryModel
 import org.example.project.domain.models.ProductModel
+import org.example.project.domain.models.ResultModel
 import org.example.project.domain.repositories.CartRepository
 import org.example.project.domain.usecase.cart.AddToCartUseCase
-import org.example.project.domain.usecase.cart.LoadCartUseCase
 import org.example.project.domain.usecase.cart.RemoveFromCartUseCase
-import org.example.project.domain.usecase.catalog.GetProductsUseCase
+import org.example.project.domain.usecase.catalog.GetCategoryUseCase
+import org.example.project.domain.usecase.catalog.GetRemoteCategoriesUseCase
 
 class DefaultCatalogComponent(
     componentContext: ComponentContext,
-    title: String,
-    private val categoryId: Long,
+    private val categoryId: Int?,
     private val callbacks: CatalogCallbacks,
-    private val getProductsUseCase: GetProductsUseCase,
+    private val getCategoriesUseCase: GetRemoteCategoriesUseCase,
+    private val getCategoryUseCase: GetCategoryUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val removeFromCartUseCase: RemoveFromCartUseCase,
-    private val cartRepository: CartRepository
+    private val cartRepository: CartRepository,
 ): CatalogComponent (
     componentContext = componentContext,
-    initialState = CatalogViewState(
-        title = title,
-        products = emptyList(),
-        amount = 0.0,
-        freeDeliveryPrice = null,
-        productsPrice = 0.0
-    ),
-    reducer = CatalogReducer(),) {
+    initialState = CatalogViewState(),
+    reducer = CatalogReducer(),
+) {
     private var job: Job? = null
+    private var subscribeJob: Job? = null
 
-    override fun onResume() {
-        coroutineScope.launch {
-            getProductsUseCase.invoke(categoryId)
-                .collect {
-                    onEvent(CatalogViewEvent.OnProductsLoaded(it))
-                    subscribeToCart()
-                }
+    override fun onStart() {
+        if (categoryId == null) {
+            getCategories()
+        } else {
+            subscribeToCart()
+            getCategory(categoryId.toLong())
         }
+    }
+
+    override fun onStop() {
+        subscribeJob?.cancel()
+        job?.cancel()
+        subscribeJob = null
+        job = null
     }
 
     override fun onEvent(event: CatalogViewEvent) {
         when (event) {
-            CatalogViewEvent.OnAddressClicked -> TODO()
             CatalogViewEvent.OnBackClicked -> {
                 callbacks.onBack()
             }
-            is CatalogViewEvent.OnProductsLoaded -> reduce(event)
-            is CatalogViewEvent.OnCategoryClicked -> TODO()
-            is CatalogViewEvent.OnUserLoaded -> TODO()
-            is CatalogViewEvent.OnCategoryLoaded -> TODO()
-            is CatalogViewEvent.OnAddToCart -> {
-                addToCart(event.product)
+
+            is CatalogViewEvent.OnCategoryClicked -> {
+                callbacks.onNavigateToCategory(event.categoryId.toInt())
             }
 
-            is CatalogViewEvent.OnRemoveFromCart -> {
-                removeFromCart(event.product)
+            is CatalogViewEvent.OnCategoriesLoaded -> {
+                reduce(event)
+            }
+
+            is CatalogViewEvent.OnCategoryLoaded -> {
+                reduce(event)
             }
 
             is CatalogViewEvent.OnCartLoaded -> {
@@ -68,49 +73,90 @@ class DefaultCatalogComponent(
                 callbacks.onNavigateToCart()
             }
 
-            is CatalogViewEvent.OnProductCardClicked -> {
-                callbacks.showProductCard(event.product.id.toInt())
+            is CatalogViewEvent.OnAddToCart -> {
+                addToCart(event.product)
+            }
+
+            is CatalogViewEvent.OnRemoveFromCart -> {
+                removeFromCart(event.product)
+            }
+
+            is CatalogViewEvent.OnProductClicked -> {
+                callbacks.showProductCard(event.id.toInt())
             }
         }
     }
 
+    private fun subscribeToCart() {
+        subscribeJob?.cancel()
+        subscribeJob = coroutineScope.launch {
+            cartRepository.cartSubject.collect {
+                onEvent(CatalogViewEvent.OnCartLoaded(it))
+            }
+        }
+    }
+
+    private fun getCategories() {
+        coroutineScope.launch {
+            getCategoriesUseCase.invoke(Unit)
+                .catch {  }
+                .collect { resultModel ->
+                    when (resultModel) {
+                        is ResultModel.Error -> {}
+                        ResultModel.Loading -> {}
+                        is ResultModel.Success<List<CategoryModel>> -> {
+                            onEvent(
+                                CatalogViewEvent.OnCategoriesLoaded(
+                                    resultModel.data
+                                )
+                            )
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun getCategory(id: Long) {
+        coroutineScope.launch {
+            getCategoryUseCase.invoke(id)
+                .catch {  }
+                .collect { resultModel ->
+                    when (resultModel) {
+                        is ResultModel.Error -> {}
+                        ResultModel.Loading -> {}
+                        is ResultModel.Success<CategoryModel> -> {
+                            onEvent(
+                                CatalogViewEvent.OnCategoryLoaded(
+                                    resultModel.data
+                                )
+                            )
+                        }
+                    }
+                }
+        }
+    }
+
     private fun addToCart(product: ProductModel) {
-        val params = AddToCartUseCase.Params(
-            product = product.copy(count = product.count + 1)
-        )
         job?.cancel()
         job = coroutineScope.launch {
+            val params = AddToCartUseCase.Params(product)
             addToCartUseCase.invoke(params)
-                .catch {
-                    print(it.message)
-                }
+                .catch {  }
                 .collect {
-                    print(it)
+
                 }
         }
     }
 
     private fun removeFromCart(product: ProductModel) {
-        val params = RemoveFromCartUseCase.Params(
-            product = product.copy(count = product.count - 1)
-        )
         job?.cancel()
         job = coroutineScope.launch {
+            val params = RemoveFromCartUseCase.Params(product)
             removeFromCartUseCase.invoke(params)
-                .catch {
-                    print(it.message)
-                }
+                .catch {  }
                 .collect {
-                    print(it)
-                }
-        }
-    }
 
-    private fun subscribeToCart() {
-        coroutineScope.launch {
-            cartRepository.cartSubject.collect {
-                onEvent(CatalogViewEvent.OnCartLoaded(it))
-            }
+                }
         }
     }
 }

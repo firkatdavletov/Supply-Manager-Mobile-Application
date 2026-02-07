@@ -7,13 +7,13 @@ import org.example.project.features.catalog.DefaultCatalogComponent
 import org.koin.dsl.module
 
 fun catalogModule() = module {
-    factory<CatalogComponent> { (componentContext: ComponentContext, categoryId: Long, title: String, callbacks: CatalogCallbacks) ->
+    factory<CatalogComponent> { (componentContext: ComponentContext, categoryId: Int?, callbacks: CatalogCallbacks) ->
         DefaultCatalogComponent(
             componentContext = componentContext,
             categoryId = categoryId,
-            title = title,
             callbacks = callbacks,
-            getProductsUseCase = get(),
+            getCategoriesUseCase = get(),
+            getCategoryUseCase = get(),
             addToCartUseCase = get(),
             removeFromCartUseCase = get(),
             cartRepository = get()

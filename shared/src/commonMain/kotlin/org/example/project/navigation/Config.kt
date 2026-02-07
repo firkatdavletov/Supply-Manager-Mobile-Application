@@ -25,10 +25,7 @@ sealed class Config {
     ): Config()
 
     @Serializable
-    data class Catalog(
-        val categoryId: Long,
-        val title: String,
-    ): Config()
+    data class Catalog(val categoryId: Int?): Config()
 
     @Serializable
     data object Profile : Config()

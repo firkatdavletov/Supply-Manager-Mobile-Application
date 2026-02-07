@@ -12,25 +12,41 @@ import Shared
 struct CurrentOrderView: View {
     let component: CurrentOrderComponent
     @StateValue private var state: CurrentOrderViewState
-    
+
     init(component: CurrentOrderComponent) {
         self.component = component
         _state = StateValue(component.state)
     }
     var body: some View {
         CurrentOrderContent(
-            title: state.number,
-            statusTitle: state.status,
+            companyName: state.companyName,
+            createdAt: state.createdAt,
+            orderStatus: state.status,
+            customerName: state.customerName,
+            customerEmail: state.customerEmail,
+            customerPhone: state.customerPhone,
             deliveryType: state.deliveryType,
             address: state.addressString,
             comment: state.comment,
             orderItems: state.items,
-            productPrice: Int(state.productsPrice),
-            deliveryPrice: Int(state.deliveryPrice),
-            totalPrice: Int(state.totalAmount)
-        ) {
-            component.onEvent(event: CurrentOrderViewEventOnBackClicked())
-        }
+            totalAmount: state.totalAmount,
+            deliveryDate: state.deliveryDate,
+            onBackButtonClicked: {
+                component.onEvent(event: CurrentOrderViewEventOnBackClicked())
+            },
+            onTakeOrder: {
+                component.onEvent(event: CurrentOrderViewEventOnTakeOrder())
+            },
+            onCompleteOrder: {
+                component.onEvent(event: CurrentOrderViewEventOnCompleteOrder())
+            },
+            onCancelOrder: {
+                component.onEvent(event: CurrentOrderViewEventOnCancelOrder())
+            },
+            onPendingOrder: {
+                component.onEvent(event: CurrentOrderViewEventOnPendingOrder())
+            }
+        )
         .navigationBarBackButtonHidden(true)
     }
 }

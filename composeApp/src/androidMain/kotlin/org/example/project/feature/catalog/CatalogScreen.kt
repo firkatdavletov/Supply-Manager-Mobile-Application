@@ -20,24 +20,5 @@ fun CatalogScreen(component: CatalogComponent) {
         component.onEvent(CatalogViewEvent.OnBackClicked)
     }
 
-    CatalogContent(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        title = state.title,
-        products = state.products,
-        cartPrice = state.amount.toInt(),
-        onBackButtonClicked = {
-            component.onEvent(CatalogViewEvent.OnBackClicked)
-        },
-        onAddToCart = {
-            component.onEvent(CatalogViewEvent.OnAddToCart(it))
-        },
-        onRemoveFromCart = {
-            component.onEvent(CatalogViewEvent.OnRemoveFromCart(it))
-        },
-        onCartButtonClicked = {
-            component.onEvent(CatalogViewEvent.OnCartButtonClicked)
-        }
-    )
+
 }

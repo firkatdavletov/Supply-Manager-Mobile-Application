@@ -28,7 +28,7 @@ import org.example.project.data.api.order_api.model.CreateOrderRequestBody
 import org.example.project.data.api.order_api.model.CreateOrderResponseModel
 import org.example.project.data.api.order_api.model.GetCurrentOrdersResponseBody
 import org.example.project.data.api.order_api.model.GetOrderByIdRequestBody
-import org.example.project.data.api.order_api.model.GetOrderByIdResponse
+import org.example.project.data.api.order_api.model.GetOrderResponse
 import org.example.project.data.api.order_api.model.GetOrdersResponseModel
 import org.example.project.data.api.order_api.model.OrderStatusUpdateEntity
 
@@ -45,8 +45,8 @@ class OrderApiImpl(
     private val _updates = MutableSharedFlow<OrderStatusUpdateEntity>()
     override val updates: SharedFlow<OrderStatusUpdateEntity> = _updates
 
-    override suspend fun getOrderById(body: GetOrderByIdRequestBody): GetOrderByIdResponse {
-        val response = httpClient.get("orders/currentOrder") {
+    override suspend fun getOrderById(body: GetOrderByIdRequestBody): GetOrderResponse {
+        val response = httpClient.get("orders/order") {
             url {
                 parameters.append("id", body.id.toString())
             }
@@ -77,12 +77,56 @@ class OrderApiImpl(
         return response.body()
     }
 
+    override suspend fun takeOrder(id: Long): GetOrderResponse {
+        val response = httpClient.get {
+            url {
+                path("orders/takeOrder")
+                parameters.append("id", id.toString())
+            }
+        }
+
+        return response.body()
+    }
+
+    override suspend fun completeOrder(id: Long): GetOrderResponse {
+        val response = httpClient.get {
+            url {
+                path("orders/completeOrder")
+                parameters.append("id", id.toString())
+            }
+        }
+
+        return response.body()
+    }
+
+    override suspend fun cancelOrder(id: Long): GetOrderResponse {
+        val response = httpClient.get {
+            url {
+                path("orders/cancelOrder")
+                parameters.append("id", id.toString())
+            }
+        }
+
+        return response.body()
+    }
+
+    override suspend fun pendingOrder(id: Long): GetOrderResponse {
+        val response = httpClient.get {
+            url {
+                path("orders/pendingOrder")
+                parameters.append("id", id.toString())
+            }
+        }
+
+        return response.body()
+    }
+
     override suspend fun connect() {
         if (reconnectJob != null) return
         reconnectJob = scope.launch {
             while (isActive) {
                 try {
-                    wsClient.webSocket("wss://foodbox-service-firkat.amvera.io/ws/orders") {
+                    wsClient.webSocket("http://localhost:8080/ws/orders") {
                         wsSession = this
                         send("subscribe")
                         listenIncomingMessages()

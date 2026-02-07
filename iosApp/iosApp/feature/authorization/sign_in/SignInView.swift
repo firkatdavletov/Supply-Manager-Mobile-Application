@@ -34,5 +34,6 @@ struct SignInView: View {
             } onBackClicked: {
                 component.onEvent(event: SignInViewEventOnBackClicked())
             }
+            .navigationBarBackButtonHidden()
     }
 }

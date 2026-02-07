@@ -7,7 +7,7 @@ class DeliveryInfoMapper {
     fun toModel(entity: DeliveryInfoEntity): DeliveryInfoModel {
         return DeliveryInfoModel(
             deliveryPrice = entity.deliveryPrice,
-            freeDeliveryPrice = entity.freeDeliveryPrice
+            freeDeliveryPrice = entity.freeDeliveryPrice ?: 0
         )
     }
 

@@ -1,6 +1,7 @@
 package org.example.project.features.current_order
 
 import org.example.project.domain.models.OrderStatus
+import org.example.project.domain.utils.DateUtility
 import org.example.project.features.base.Reducer
 
 class CurrentOrderReducer : Reducer<CurrentOrderViewState, CurrentOrderViewEvent, CurrentOrderViewEffect> {
@@ -11,15 +12,21 @@ class CurrentOrderReducer : Reducer<CurrentOrderViewState, CurrentOrderViewEvent
         return when (event) {
             is CurrentOrderViewEvent.OnOrderLoaded -> {
                 state.copy(
+                    companyName = event.order.user.company,
+                    customerName = event.order.user.name,
+                    customerEmail = event.order.user.email,
+                    customerPhone = event.order.user.phone,
+                    createdAt = DateUtility.formatLocalDateTimeSimple(event.order.created),
                     number = event.order.id.toString(),
                     deliveryType = event.order.deliveryType,
                     addressString = event.order.deliveryAddress ?: "",
-                    status = OrderStatus.getTitle(event.order.status),
+                    status = event.order.status,
                     items = event.order.items,
-                    deliveryPrice = event.order.deliveryPrice.toInt(),
-                    totalAmount = event.order.totalAmount.toInt(),
-                    productsPrice = event.order.items.sumOf { it.price.toInt() },
-                    comment = event.order.comment.orEmpty()
+                    totalAmount = event.order.totalAmount,
+                    comment = event.order.comment.orEmpty(),
+                    deliveryDate = event.order.deliveryTime?.let {
+                        DateUtility.formatLocalDateTimeSimple(it)
+                    } ?: "-"
                 )
             }
 

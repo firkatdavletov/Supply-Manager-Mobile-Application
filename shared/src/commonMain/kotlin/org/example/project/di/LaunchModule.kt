@@ -11,8 +11,6 @@ fun launchModule() = module {
         DefaultLaunchComponent(
             componentContext = componentContext,
             loadUserUseCase = get(),
-            loadCatalogUseCase = get(),
-            loadCartUseCase = get(),
             callbacks = callbacks,
             snackBarManager = get(),
             orderRepository = get()

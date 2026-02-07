@@ -22,19 +22,4 @@ fun CurrentOrderScreen(component: CurrentOrderComponent) {
     BackHandler {
         component.onEvent(CurrentOrderViewEvent.OnBackClicked)
     }
-
-    CurrentOrderContent(
-        deliveryType = DeliveryType.DELIVERY,
-        addressString = "ул. Щербакова 150/2б кв. 88",
-        orderNumber = state.number,
-        status = state.status,
-        orderItems = state.items,
-        productsPrice = state.productsPrice,
-        deliveryPrice = state.deliveryPrice,
-        totalPrice = state.deliveryPrice,
-        comment = state.comment,
-        onBackButtonClicked = {
-            component.onEvent(CurrentOrderViewEvent.OnBackClicked)
-        }
-    )
 }

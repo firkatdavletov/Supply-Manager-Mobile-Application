@@ -12,9 +12,17 @@ class CategoryMapper(
         title = entity.title,
         imageUrl = entity.imageUrl,
         products = productMapper.toModel(entity.products),
-        selected = false,
-        span = entity.span,
+        children = toModel(entity.children),
     )
 
-    fun toModel(entities: List<CategoryEntity>) = entities.map { toModel(it) }
+    private fun toShortModel(entity: CategoryEntity) = CategoryModel(
+        id = entity.id,
+        parentCategoryId = entity.parentCategory,
+        title = entity.title,
+        imageUrl = entity.imageUrl,
+        products = productMapper.toModel(entity.products),
+        children = emptyList(),
+    )
+
+    fun toModel(entities: List<CategoryEntity>) = entities.map { toShortModel(it) }
 }

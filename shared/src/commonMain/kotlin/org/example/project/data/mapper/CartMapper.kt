@@ -10,15 +10,14 @@ class CartMapper(
     private val addressModelMapper: AddressModelMapper,
     private val deliveryInfoMapper: DeliveryInfoMapper,
 ) {
-    fun toModel(
-        entity: CartEntity,
-    ) : CartModel = CartModel(
-        items = cartItemMapper.toModel(entity.items),
-        deliveryType = entity.deliveryType,
-        deliveryAddress = entity.deliveryAddress?.let { addressModelMapper.toModel(it) },
-        deliveryInfo = deliveryInfoMapper.toModel(entity.deliveryInfo),
-        totalPrice = entity.totalPrice,
-        department = departmentMapper.toModel(entity.department),
-        comment = entity.comment
-    )
+    fun toModel(entity: CartEntity): CartModel =
+        CartModel(
+            items = cartItemMapper.toModel(entity.items),
+            deliveryType = entity.deliveryType,
+            deliveryAddress = entity.deliveryAddress?.let { addressModelMapper.toModel(it) },
+            deliveryInfo = deliveryInfoMapper.toModel(entity.deliveryInfo),
+            totalPrice = entity.totalPrice,
+            department = departmentMapper.toModel(entity.department),
+            comment = entity.comment,
+        )
 }

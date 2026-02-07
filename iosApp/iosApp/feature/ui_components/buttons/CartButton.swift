@@ -23,7 +23,7 @@ struct CartButton: View {
                         .foregroundColor(.onPrimaryContainer)
                         .frame(width: 40, height: 40)
                 }
-                .background(Color.primaryContainer)
+                .background(Color.blue)
                 .clipShape(RoundedCorner(radius: 20))
             } else {
                 HStack(spacing: 8) {
@@ -32,7 +32,7 @@ struct CartButton: View {
                             .foregroundColor(.onPrimaryContainer)
                             .frame(width: 40, height: 40)
                     }
-                    .background(Color.primaryContainer)
+                    .background(Color.blue)
                     .clipShape(RoundedCorner(radius: 20))
 
                     Spacer()
@@ -49,7 +49,7 @@ struct CartButton: View {
                             .foregroundColor(.onPrimaryContainer)
                             .frame(width: 40, height: 40)
                     }
-                    .background(Color.primaryContainer)
+                    .background(Color.blue)
                     .clipShape(RoundedCorner(radius: 20))
                 }
                 .frame(maxWidth: .infinity)

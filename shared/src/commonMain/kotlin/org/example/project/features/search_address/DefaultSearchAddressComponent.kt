@@ -197,7 +197,7 @@ class DefaultSearchAddressComponent(
             deliveryType = DeliveryType.DELIVERY,
             deliveryAddress = addressModel,
             departmentId = departmentModel.id,
-            deliveryInfo = geoAddress.deliveryInfo ?: DeliveryInfoModel(0.0, 0.0)
+            deliveryInfo = geoAddress.deliveryInfo ?: DeliveryInfoModel(0, 0)
         )
         updateDeliveryAddressUseCase.invoke(params)
             .catch {

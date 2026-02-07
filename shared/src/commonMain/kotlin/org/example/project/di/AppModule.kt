@@ -57,7 +57,7 @@ import org.example.project.data.datastore.remote.payment.PaymentRemoteDataStore
 import org.example.project.data.datastore.remote.user.DefaultUserRemoteDatastore
 import org.example.project.data.datastore.remote.user.UserRemoteDataStore
 import org.example.project.data.mapper.AddressModelMapper
-import org.example.project.data.mapper.AuthTypesMapper
+import org.example.project.data.mapper.AuthTypeMapper
 import org.example.project.data.mapper.BankInfoMapper
 import org.example.project.data.mapper.CartItemMapper
 import org.example.project.data.mapper.CartMapper
@@ -104,17 +104,22 @@ import org.example.project.domain.usecase.cart.LoadCartUseCase
 import org.example.project.domain.usecase.cart.RemoveFromCartUseCase
 import org.example.project.domain.usecase.cart.UpdateDeliveryAddressUseCase
 import org.example.project.domain.usecase.catalog.GetCategoriesUseCase
+import org.example.project.domain.usecase.catalog.GetCategoryUseCase
 import org.example.project.domain.usecase.catalog.GetProductCardUseCase
 import org.example.project.domain.usecase.catalog.GetProductUseCase
 import org.example.project.domain.usecase.catalog.GetProductsUseCase
-import org.example.project.domain.usecase.catalog.LoadCatalogUseCase
+import org.example.project.domain.usecase.catalog.GetRemoteCategoriesUseCase
 import org.example.project.domain.usecase.departments.GetDepartmentsUseCase
 import org.example.project.domain.usecase.geo.GetGeoAddressUseCase
 import org.example.project.domain.usecase.geo.SearchAddressUseCase
+import org.example.project.domain.usecase.order.CancelOrderUseCase
+import org.example.project.domain.usecase.order.CompleteOrderUseCase
 import org.example.project.domain.usecase.order.CreateOrderUseCase
 import org.example.project.domain.usecase.order.GetCurrentOrderUseCase
 import org.example.project.domain.usecase.order.GetOrderByIdUseCase
 import org.example.project.domain.usecase.order.GetOrdersUseCase
+import org.example.project.domain.usecase.order.PendingOrderUseCase
+import org.example.project.domain.usecase.order.TakeOrderUseCase
 import org.example.project.domain.usecase.payment.GetPaymentTypesUseCase
 import org.example.project.domain.usecase.sbp_banks.GetSbpBanksUseCase
 import org.example.project.domain.usecase.user.DeleteUserUseCase
@@ -127,12 +132,12 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 //For IOS:
-//private const val baseUrl = "localhost:8080"
+private const val baseUrl = "localhost:8080"
 //For Android Studio
 //private const val baseUrl = "10.0.2.2:8080"
 //For remote server
-private const val baseUrl = "foodbox-service-firkat.amvera.io"
-private val isHttps = true
+//private const val baseUrl = "foodbox-service-firkat.amvera.io"
+private val isHttps = false
 
 @OptIn(ExperimentalSerializationApi::class)
 fun appModule() = module {
@@ -177,7 +182,7 @@ fun appModule() = module {
     factory<UpdateDeliveryAddressUseCase> { UpdateDeliveryAddressUseCase(get()) }
     factory<GetDepartmentsUseCase> { GetDepartmentsUseCase(get(), get()) }
     factory<GetProductUseCase> { GetProductUseCase(get()) }
-    factory<LoadCatalogUseCase> { LoadCatalogUseCase(get()) }
+    factory<GetRemoteCategoriesUseCase> { GetRemoteCategoriesUseCase(get()) }
     factory<CreateOrderUseCase> { CreateOrderUseCase(get()) }
     factory<GetSbpBanksUseCase> { GetSbpBanksUseCase(get()) }
     factory<GetPaymentTypesUseCase> { GetPaymentTypesUseCase(get()) }
@@ -191,9 +196,14 @@ fun appModule() = module {
     factory<LogoutUserUseCase> { LogoutUserUseCase(get(), get(), get()) }
     factory<UpdateUserUseCase> { UpdateUserUseCase(get()) }
     factory { GetProductCardUseCase(get()) }
+    factory { TakeOrderUseCase(get()) }
+    factory { CompleteOrderUseCase(get()) }
+    factory { CancelOrderUseCase(get()) }
+    factory { PendingOrderUseCase(get()) }
+    factory { GetCategoryUseCase(get()) }
 
     //Mappers
-    factory<AuthTypesMapper> { AuthTypesMapper() }
+    factory<AuthTypeMapper> { AuthTypeMapper() }
     factory<UserMapper> { UserMapper() }
     factory<CategoryMapper> { CategoryMapper(get()) }
     factory<ProductMapper> { ProductMapper() }
@@ -205,7 +215,7 @@ fun appModule() = module {
     factory { GeoAddressMapper(get(), get()) }
     factory { DepartmentMapper(get(), get()) }
     factory { WorkingHoursMapper() }
-    factory { OrderMapper(get(), get(), get()) }
+    factory { OrderMapper(get(), get()) }
     factory { OrderItemMapper() }
     factory { BankInfoMapper() }
     factory { PaymentMapper(get()) }
@@ -454,7 +464,7 @@ fun appModule() = module {
     }
 
     single<OrderApi> {
-        val httpClient = get<HttpClient>(named("auth"))
+        val httpClient = get<HttpClient>(named("no_auth"))
         val wsClient = get<HttpClient>(named("ws_orders"))
         OrderApiImpl(httpClient, wsClient)
     }

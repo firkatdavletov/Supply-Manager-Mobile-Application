@@ -20,23 +20,24 @@ struct CatalogView: View {
     }
     
     var body: some View {
-        
         CatalogContent(
             title: state.title,
+            isLoading: state.isLoading,
+            categories: state.categories,
             products: state.products,
-            amount: Int32(state.amount),
-            productsPrice: Int32(state.productsPrice),
-            freeDeliveryPrice: state.freeDeliveryPrice != nil ? Int32(truncating: state.freeDeliveryPrice!) : nil
-        ) { productModel in
-                component.onEvent(event: CatalogViewEventOnAddToCart(product: productModel))
-            } onRemove: { productModel in
-                component.onEvent(event: CatalogViewEventOnRemoveFromCart(product: productModel))
-            } onCartButtonClicked: {
+            amount: state.amount) {
                 component.onEvent(event: CatalogViewEventOnCartButtonClicked())
             } onBackButtonClicked: {
                 component.onEvent(event: CatalogViewEventOnBackClicked())
-            } onProductCardClicked: { product in
-                component.onEvent(event: CatalogViewEventOnProductCardClicked(product: product))
+            } onCategoryClicked: { id in
+                component.onEvent(event: CatalogViewEventOnCategoryClicked(categoryId: id))
+            } onProductClicked: { product in
+                component.onEvent(event: CatalogViewEventOnProductClicked(id: product))
+            } onAddToCart: { id in
+                component.onEvent(event: CatalogViewEventOnAddToCart(product: id))
+            } onRemoveFromCart: { id in
+                component.onEvent(event: CatalogViewEventOnRemoveFromCart(product: id))
             }
+            .navigationBarBackButtonHidden()
     }
 }

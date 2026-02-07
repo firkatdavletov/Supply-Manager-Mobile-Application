@@ -8,6 +8,16 @@ import org.koin.dsl.module
 
 fun currentOrderModule() = module {
     factory <CurrentOrderComponent> { (componentContext: ComponentContext, fromScreen: String?, callbacks: CurrentOrderCallbacks, orderId: Long) ->
-        DefaultCurrentOrderComponent(componentContext, fromScreen, callbacks, get(), orderId, get())
+        DefaultCurrentOrderComponent(
+            componentContext = componentContext,
+            fromScreen = fromScreen,
+            callbacks = callbacks,
+            orderId = orderId,
+            getOrderByIdUseCase = get(),
+            takeOrderUseCase = get(),
+            completeOrderUseCase = get(),
+            cancelOrderUseCase = get(),
+            pendingOrderUseCase = get()
+        )
     }
 }

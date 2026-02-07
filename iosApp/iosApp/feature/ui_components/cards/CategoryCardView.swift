@@ -13,22 +13,20 @@ struct CategoryCardView: View {
     let imageUrl: String?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            RemoteImage(urlString: imageUrl)
-                .frame(height: 112)
-                .clipShape(
-                    RoundedRectangle(cornerRadius: 16, style: .continuous)
-                )
-
+        VStack(spacing: 8) {
+            
             Text(title)
-                .font(AppTypography.titleMedium.weight(.semibold))
+                .font(.system(size: 14, weight: .medium))
                 .foregroundColor(Color.onBackground)
-            Spacer()
         }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 20)
+        .background(.white)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.gray.opacity(0.4), lineWidth: 1)
+        )
+        .cornerRadius(16)
+        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
     }
-}
-
-#Preview {
-    CategoryCardView(title: "String", imageUrl: "")
-        .frame(width: 200, height: 200)
 }

@@ -12,6 +12,7 @@ struct RootView: View {
     
     @StateValue
     private var dialogSlot: ChildSlot<AnyObject, RootComponentBottomChild>
+    
 
     init(root: RootComponent) {
         self.root = root

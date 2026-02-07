@@ -5,7 +5,7 @@ data class CartModel(
     val deliveryType: DeliveryType,
     val deliveryAddress: AddressModel?,
     val deliveryInfo: DeliveryInfoModel,
-    val totalPrice: Double,
+    val totalPrice: Long,
     val department: DepartmentModel,
     val comment: String?,
 )

@@ -25,6 +25,8 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import org.example.project.data.api.auth_api.model.CheckSmsCodeRequestBody
+import org.example.project.data.api.auth_api.model.CheckSmsCodeResponseBody
 import org.example.project.data.api.auth_api.model.CreateCartRequestBody
 import org.example.project.data.api.auth_api.model.CreateCartResponse
 import org.example.project.data.api.auth_api.model.GetAuthTypesResponseBody
@@ -32,8 +34,6 @@ import org.example.project.data.api.auth_api.model.RefreshTokenRequestBody
 import org.example.project.data.api.auth_api.model.RefreshTokenResponseBody
 import org.example.project.data.api.auth_api.model.VerifyPhoneNumberRequestBody
 import org.example.project.data.api.auth_api.model.VerifyPhoneNumberResponseBody
-import org.example.project.data.api.auth_api.model.CheckSmsCodeRequestBody
-import org.example.project.data.api.auth_api.model.CheckSmsCodeResponseBody
 import org.example.project.data.entities.TokenPairEntity
 
 class AuthApiImpl(private val httpClient: HttpClient, val wsClient: HttpClient) : AuthApi {
@@ -48,32 +48,38 @@ class AuthApiImpl(private val httpClient: HttpClient, val wsClient: HttpClient) 
         return httpClient.get("auth/authTypes").body()
     }
 
-    override suspend fun verifyPhoneNumber(verifyPhoneNumberRequestBody: VerifyPhoneNumberRequestBody): VerifyPhoneNumberResponseBody {
-        return httpClient.post("auth/verifyPhoneNumber") {
-            contentType(ContentType.Application.Json)
-            setBody(verifyPhoneNumberRequestBody)
-        }.body()
+    override suspend fun verifyPhoneNumber(
+        verifyPhoneNumberRequestBody: VerifyPhoneNumberRequestBody,
+    ): VerifyPhoneNumberResponseBody {
+        return httpClient
+            .post("auth/verifyPhoneNumber") {
+                contentType(ContentType.Application.Json)
+                setBody(verifyPhoneNumberRequestBody)
+            }.body()
     }
 
     override suspend fun checkSmsCode(body: CheckSmsCodeRequestBody): CheckSmsCodeResponseBody {
-        return httpClient.post("auth/checkSmsCode") {
-            contentType(ContentType.Application.Json)
-            setBody(body)
-        }.body()
+        return httpClient
+            .post("auth/checkSmsCode") {
+                contentType(ContentType.Application.Json)
+                setBody(body)
+            }.body()
     }
 
     override suspend fun refreshTokens(refreshTokenRequestBody: RefreshTokenRequestBody): RefreshTokenResponseBody {
-        return httpClient.post("auth/refreshTokens") {
-            contentType(ContentType.Application.Json)
-            setBody(refreshTokenRequestBody)
-        }.body()
+        return httpClient
+            .post("auth/refreshTokens") {
+                contentType(ContentType.Application.Json)
+                setBody(refreshTokenRequestBody)
+            }.body()
     }
 
     override suspend fun createCart(body: CreateCartRequestBody): CreateCartResponse {
-        return httpClient.post("auth/createCart") {
-            contentType(ContentType.Application.Json)
-            setBody(body)
-        }.body()
+        return httpClient
+            .post("auth/createCart") {
+                contentType(ContentType.Application.Json)
+                setBody(body)
+            }.body()
     }
 
     override suspend fun connect(checkId: String) {
@@ -82,17 +88,15 @@ class AuthApiImpl(private val httpClient: HttpClient, val wsClient: HttpClient) 
         reconnectJob = scope.launch {
             while (isActive) {
                 try {
-                    wsClient.webSocket("wss://foodbox-service-firkat.amvera.io/ws/callcheck/$checkId") {
+                    wsClient.webSocket("ws://localhost:8080/ws/callcheck/$checkId") {
                         wsSession = this
                         send("subscribe")
                         listenIncomingMessages()
                     }
-                }
-                catch (e: CancellationException) {
+                } catch (e: CancellationException) {
                     println("WebSocket cancelled")
                     throw e
-                }
-                catch (e: Exception) {
+                } catch (e: Exception) {
                     println("WebSocket reconnect in 3 sec: ${e.message}")
                     delay(3000)
                 }
@@ -125,8 +129,12 @@ class AuthApiImpl(private val httpClient: HttpClient, val wsClient: HttpClient) 
                         println("Unknown WS message: $text")
                     }
                 }
+
                 is Frame.Pong -> {}
-                else -> Unit
+
+                else -> {
+                    Unit
+                }
             }
         }
     }

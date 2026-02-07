@@ -9,7 +9,7 @@ data class CartEntity(
     val deliveryType: DeliveryType,
     val deliveryAddress: AddressEntity?,
     val deliveryInfo: DeliveryInfoEntity,
-    val totalPrice: Double,
+    val totalPrice: Long,
     val department: DepartmentEntity,
     val comment: String?,
 )

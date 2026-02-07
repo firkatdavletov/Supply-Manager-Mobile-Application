@@ -9,5 +9,5 @@ data class CategoryEntity(
     val title: String,
     val imageUrl: String?,
     val products: List<ProductEntity>,
-    val span: Int,
+    val children: List<CategoryEntity>,
 )

@@ -45,28 +45,28 @@ class DefaultMapComponent(
     private val getDepartmentsUseCase: GetDepartmentsUseCase,
     private val fromScreen: String?,
 ) : MapComponent(
-    componentContext = componentContext,
-    initialState = MapViewState(
-        isLoading = true,
-        isSearching = true,
-        isError = false,
-        deliveryType = DeliveryType.DELIVERY,
-        city = null,
-        deliveryAddress = null,
-        cartDepartment = null,
-        deliveryInfo = null,
-        freeDeliveryPrice = null,
-        departments = emptyList(),
-        currentPosition = null,
-        confirmEnabled = false,
-        showLocation = false,
-        selectedDepartment = null,
-        showBackButton = fromScreen != LaunchComponent::class.simpleName,
-        showSearchButton = true,
-        errorMessage = null
-    ),
-    snackBarManager = snackBarManager,
-) {
+        componentContext = componentContext,
+        initialState = MapViewState(
+            isLoading = true,
+            isSearching = true,
+            isError = false,
+            deliveryType = DeliveryType.DELIVERY,
+            city = null,
+            deliveryAddress = null,
+            cartDepartment = null,
+            deliveryInfo = null,
+            freeDeliveryPrice = null,
+            departments = emptyList(),
+            currentPosition = null,
+            confirmEnabled = false,
+            showLocation = false,
+            selectedDepartment = null,
+            showBackButton = fromScreen != LaunchComponent::class.simpleName,
+            showSearchButton = true,
+            errorMessage = null,
+        ),
+        snackBarManager = snackBarManager,
+    ) {
     private var job: Job? = null
     private var mapIsMoving = false
     private var selectedDeliveryAddress: AddressModel? = null
@@ -74,7 +74,6 @@ class DefaultMapComponent(
     private var departments = emptyList<DepartmentModel>()
     private var selectedCartDepartmentId: Int? = null
     private var cartSubjectJob: Job? = null
-
 
     override fun onResume() {
         subscribeToCartSubject()
@@ -95,11 +94,11 @@ class DefaultMapComponent(
 
     private fun loadDepartments() {
         coroutineScope.launch {
-            getDepartmentsUseCase.invoke(Unit)
+            getDepartmentsUseCase
+                .invoke(Unit)
                 .catch {
                     onEvent(MapViewEvent.OnThrowError(it))
-                }
-                .collect {
+                }.collect {
                     departments = it
                     onEvent(OnShowDepartments(it))
                 }
@@ -108,7 +107,10 @@ class DefaultMapComponent(
 
     override fun onEvent(event: MapViewEvent) {
         when (event) {
-            is OnCartLoaded -> reduce(event)
+            is OnCartLoaded -> {
+                reduce(event)
+            }
+
             is OnMapMoved -> {
                 if (!mapIsMoving) {
                     mapIsMoving = true
@@ -122,7 +124,9 @@ class DefaultMapComponent(
                 }
             }
 
-            is OnShowDepartments -> reduce(event)
+            is OnShowDepartments -> {
+                reduce(event)
+            }
 
             is OnMoveToLocation -> {
                 reduce(event)
@@ -139,7 +143,9 @@ class DefaultMapComponent(
                 confirm()
             }
 
-            OnBackClicked -> callbacks.navigateBack()
+            OnBackClicked -> {
+                callbacks.navigateBack()
+            }
 
             OnSearchAddressClicked -> {
                 if (state.value.deliveryType == DeliveryType.DELIVERY) {
@@ -149,7 +155,7 @@ class DefaultMapComponent(
 
             is MapViewEvent.OnDepartmentSelected -> {
                 selectedCartDepartmentId = event.id
-                deliveryInfo = DeliveryInfoModel(0.0, null)
+                deliveryInfo = DeliveryInfoModel(0, 0)
                 reduce(event)
             }
 
@@ -160,7 +166,7 @@ class DefaultMapComponent(
                     entrance = event.address.entrance,
                     city = event.address.city,
                     latitude = event.address.latitude,
-                    longitude = event.address.longitude
+                    longitude = event.address.longitude,
                 )
                 selectedDeliveryAddress = addressModel
                 deliveryInfo = event.address.deliveryInfo
@@ -178,9 +184,13 @@ class DefaultMapComponent(
                 showError(null)
             }
 
-            is MapViewEvent.OnFindAddressError -> reduce(event)
+            is MapViewEvent.OnFindAddressError -> {
+                reduce(event)
+            }
 
-            MapViewEvent.OnLoading -> reduce(event)
+            MapViewEvent.OnLoading -> {
+                reduce(event)
+            }
 
             is MapViewEvent.OnError -> {
                 showError(event.message)
@@ -189,28 +199,36 @@ class DefaultMapComponent(
         }
     }
 
-    private fun handleMovingToLocation(latitude: Double, longitude: Double) {
+    private fun handleMovingToLocation(
+        latitude: Double,
+        longitude: Double,
+    ) {
         if (state.value.deliveryType == DeliveryType.DELIVERY) {
             findAddress(latitude, longitude)
         }
     }
 
-    private fun findAddress(latitude: Double, longitude: Double) {
+    private fun findAddress(
+        latitude: Double,
+        longitude: Double,
+    ) {
         job?.cancel()
         job = coroutineScope.launch {
             val params = GetGeoAddressUseCase.Params(longitude, latitude)
-            getGeoAddressUseCase.invoke(params)
+            getGeoAddressUseCase
+                .invoke(params)
                 .catch { throwable ->
                     when (throwable) {
                         is CancellationException -> {}
+
                         else -> {
                             onEvent(MapViewEvent.OnThrowError(throwable))
                         }
                     }
-                }
-                .collect { result ->
+                }.collect { result ->
                     when (result) {
                         ResultModel.Loading -> {}
+
                         is ResultModel.Error -> {
                             withContext(Dispatchers.Main) {
                                 onEvent(MapViewEvent.OnFindAddressError(result.message ?: "Что-то пошло не так"))
@@ -239,6 +257,7 @@ class DefaultMapComponent(
     private fun handleDeliveryType(deliveryType: DeliveryType) {
         when (deliveryType) {
             DeliveryType.PICKUP -> {}
+
             DeliveryType.DELIVERY -> {
                 val currentPosition = state.value.currentPosition
                 if (currentPosition != null) {
@@ -268,9 +287,8 @@ class DefaultMapComponent(
                         UpdateDeliveryAddressUseCase.Params(
                             deliveryType = DeliveryType.PICKUP,
                             departmentId = cartDepartmentId,
-                            deliveryInfo = DeliveryInfoModel(0.0, 0.0),
+                            deliveryInfo = DeliveryInfoModel(0, 0),
                         )
-
                     } else {
                         onEvent(MapViewEvent.OnError("Не выбрал ресторан"))
                         null
@@ -283,7 +301,7 @@ class DefaultMapComponent(
                             deliveryType = DeliveryType.DELIVERY,
                             deliveryAddress = deliveryAddress,
                             deliveryInfo = deliveryInfo ?: return@launch,
-                            departmentId = departments.first().id
+                            departmentId = departments.first().id,
                         )
                     } else {
                         onEvent(MapViewEvent.OnError("Не выбран адрес доставки"))
@@ -295,14 +313,16 @@ class DefaultMapComponent(
             if (params == null) {
                 onEvent(MapViewEvent.OnDefaultError)
             } else {
-                updateDeliveryAddressUseCase.invoke(params)
+                updateDeliveryAddressUseCase
+                    .invoke(params)
                     .catch {
                         onEvent(MapViewEvent.OnThrowError(it))
-                    }
-                    .collect { resultModel ->
+                    }.collect { resultModel ->
                         when (resultModel) {
                             is ResultModel.Error -> {}
+
                             ResultModel.Loading -> {}
+
                             is ResultModel.Success<Boolean> -> {
                                 if (resultModel.data) {
                                     when (fromScreen) {
@@ -354,7 +374,7 @@ class DefaultMapComponent(
                     CreateCartUseCase.Params(
                         deliveryAddress = deliveryAddress,
                         deliveryInfo = deliveryInfo,
-                        departmentId = cartDepartmentId
+                        departmentId = cartDepartmentId,
                     )
                 } else {
                     onEvent(MapViewEvent.OnError("Не выбран адрес доставки"))
@@ -364,11 +384,11 @@ class DefaultMapComponent(
         }
         if (params == null) return
         coroutineScope.launch {
-            createCartUseCase.invoke(params)
+            createCartUseCase
+                .invoke(params)
                 .catch {
                     onEvent(MapViewEvent.OnThrowError(it))
-                }
-                .collect { result ->
+                }.collect { result ->
                     when (result) {
                         is ResultModel.Error -> {
                             onEvent(MapViewEvent.OnError(result.message))
@@ -392,8 +412,7 @@ class DefaultMapComponent(
         loadCartUseCase(Unit)
             .catch {
                 onEvent(MapViewEvent.OnThrowError(it))
-            }
-            .collect { result ->
+            }.collect { result ->
                 withContext(Dispatchers.Main) {
                     when (result) {
                         is ResultModel.Error -> {
@@ -415,7 +434,7 @@ class DefaultMapComponent(
     private fun findClosestDepartment(
         lat: Double,
         lon: Double,
-        departments: List<DepartmentModel>
+        departments: List<DepartmentModel>,
     ): DepartmentModel? {
         return departments.minByOrNull { department ->
             DistanceCalculator.haversineDistance(lat, lon, department.latitude, department.longitude)

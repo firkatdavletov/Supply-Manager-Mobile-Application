@@ -6,13 +6,17 @@ import org.example.project.domain.models.OrderStatus
 import org.example.project.features.base.Reducer
 
 data class CurrentOrderViewState(
+    val companyName: String?,
+    val customerName: String,
+    val customerEmail: String,
+    val customerPhone: String,
+    val createdAt: String,
+    val status: OrderStatus,
     val number: String,
     val deliveryType: DeliveryType,
     val addressString: String,
-    val status: String,
     val items: List<OrderItemModel>,
-    val deliveryPrice: Int,
-    val totalAmount: Int,
-    val productsPrice: Int,
+    val totalAmount: Long,
     val comment: String,
+    val deliveryDate: String,
 ) : Reducer.ViewState

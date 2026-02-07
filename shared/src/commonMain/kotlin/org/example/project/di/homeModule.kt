@@ -14,14 +14,8 @@ fun homeModule(): Module = module {
             componentContext = componentContext,
             snackBarManager = get(),
             homeCallbacks = callbacks,
-            cartRepository = get<CartRepository>(),
-            addToCartUseCase = get(),
-            removeFromCartUseCase = get(),
-            getCurrentOrderUseCase = get(),
+            getOrdersUseCase = get(),
             orderRepository = get(),
-            catalogRepository = get(),
-            userRepository = get(),
-            orderUIModelMapper = get()
         )
     }
 }

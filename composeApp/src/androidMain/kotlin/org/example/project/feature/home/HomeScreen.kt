@@ -20,37 +20,5 @@ import org.example.project.features.home.HomeViewEvent
 fun HomeScreen(component: HomeComponent) {
     val state by (component as DefaultHomeComponent).state.subscribeAsState()
 
-    HomeContent(
-        modifier = Modifier
-            .fillMaxSize()
-//            .background(brush = Brush.linearGradient(listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.surfaceVariant)))
-            .background(MaterialTheme.colorScheme.background),
-        userName = state.userName,
-        addressString = state.deliveryAddress,
-        deliveryInfo = state.deliveryInfo,
-        totalAmount = state.amount.toFloat(),
-        currentOrders = state.currentOrders,
-        onChangeAddressClicked = {
-            component.onEvent(HomeViewEvent.OnAddressClicked)
-        },
-        onCategoryClicked = {
-            component.onEvent(HomeViewEvent.OnCategoryClicked(it.id, it.title))
-        },
-        categories = state.categories,
-        onAddToCart = {
-            component.onEvent(HomeViewEvent.OnAddToCart(it))
-        },
-        onRemoveFromCart = {
-            component.onEvent(HomeViewEvent.OnRemoveFromCart(it))
-        },
-        onCartButtonClicked = {
-            component.onEvent(HomeViewEvent.OnCartButtonClicked)
-        },
-        onPersonClicked = {
-            component.onEvent(HomeViewEvent.OnProfileClicked)
-        },
-        onOrderClicked = {
-            component.onEvent(HomeViewEvent.OnOrderClicked(it))
-        }
-    )
+
 }

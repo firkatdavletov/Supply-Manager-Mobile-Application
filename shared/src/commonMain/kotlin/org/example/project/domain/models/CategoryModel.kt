@@ -6,6 +6,5 @@ data class CategoryModel(
     val imageUrl: String?,
     val parentCategoryId: Long?,
     val products: List<ProductModel>,
-    val selected: Boolean,
-    val span: Int,
+    val children: List<CategoryModel>,
 )

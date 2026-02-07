@@ -3,13 +3,12 @@ package org.example.project.data.repositories.auth
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import org.example.project.data.entities.AuthTypesEntity
 import org.example.project.data.api.auth_api.model.VerifyPhoneNumberRequestBody
 import org.example.project.data.datastore.local.SecurityStorage
 import org.example.project.data.datastore.remote.auth.AuthRemoteDataStore
-import org.example.project.data.mapper.AuthTypesMapper
+import org.example.project.data.mapper.AuthTypeMapper
 import org.example.project.data.mapper.TokenPairMapper
-import org.example.project.domain.models.AuthTypesModel
+import org.example.project.domain.models.AuthTypeModel
 import org.example.project.domain.models.ResultModel
 import org.example.project.domain.models.VerifyPhoneNumberModel
 import org.example.project.domain.repositories.AuthRepository
@@ -17,9 +16,9 @@ import org.example.project.domain.repositories.AuthRepository
 class DefaultAuthRepository(
     private val authRemoteDataStore: AuthRemoteDataStore,
     private val securityStorage: SecurityStorage,
-    private val authTypesMapper: AuthTypesMapper,
+    private val authTypeMapper: AuthTypeMapper,
     private val tokenPairMapper: TokenPairMapper,
-): AuthRepository {
+) : AuthRepository {
     override val updates: Flow<Boolean>
         get() = authRemoteDataStore.updates.map { response ->
             val accessToken = response.access
@@ -30,21 +29,25 @@ class DefaultAuthRepository(
             true
         }
 
-    override fun getAuthTypes(): Flow<ResultModel<AuthTypesModel>> {
+    override fun getAuthTypes(): Flow<ResultModel<List<AuthTypeModel>>> {
         return flow {
             emit(ResultModel.Loading)
 
             val response = authRemoteDataStore.getAuthTypes()
 
-            if (response.success) {
-                emit(ResultModel.Success(AuthTypesModel(response.types)))
+            if (response.success && response.types != null) {
+                val models = authTypeMapper.toModels(response.types)
+                emit(ResultModel.Success(models))
             } else {
                 emit(ResultModel.Error(response.error, response.code))
             }
         }
     }
 
-    override fun verifyPhoneNumber(phone: String, type: String): Flow<ResultModel<VerifyPhoneNumberModel>> {
+    override fun verifyPhoneNumber(
+        phone: String,
+        type: String,
+    ): Flow<ResultModel<VerifyPhoneNumberModel>> {
         return flow {
             emit(ResultModel.Loading)
             val request = VerifyPhoneNumberRequestBody(phone, type)
@@ -54,7 +57,7 @@ class DefaultAuthRepository(
                 val model = VerifyPhoneNumberModel(
                     success = true,
                     checkId = response.checkId,
-                    callPhone = response.callPhone
+                    callPhone = response.callPhone,
                 )
                 emit(ResultModel.Success(model))
             } else {
@@ -65,7 +68,7 @@ class DefaultAuthRepository(
 
     override fun verifyCode(
         phone: String,
-        code: String
+        code: String,
     ): Flow<Boolean> {
         return flow {
             val response = authRemoteDataStore.checkSmsCode(phone, code)
@@ -90,11 +93,5 @@ class DefaultAuthRepository(
 
     override suspend fun disconnect() {
         authRemoteDataStore.disconnect()
-    }
-
-    private fun AuthTypesEntity.toModel(): AuthTypesModel {
-        return AuthTypesModel(
-            types = types
-        )
     }
 }

@@ -5,9 +5,13 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import org.example.project.domain.models.DeliveryType
 import org.example.project.domain.models.OrderModel
+import org.example.project.domain.models.OrderStatus
 import org.example.project.domain.models.ResultModel
-import org.example.project.domain.repositories.OrderRepository
+import org.example.project.domain.usecase.order.CancelOrderUseCase
+import org.example.project.domain.usecase.order.CompleteOrderUseCase
 import org.example.project.domain.usecase.order.GetOrderByIdUseCase
+import org.example.project.domain.usecase.order.PendingOrderUseCase
+import org.example.project.domain.usecase.order.TakeOrderUseCase
 import org.example.project.features.home.HomeComponent
 import org.example.project.features.payment.PaymentComponent
 
@@ -16,20 +20,27 @@ class DefaultCurrentOrderComponent(
     private val fromScreen: String?,
     private val callbacks: CurrentOrderCallbacks,
     private val getOrderByIdUseCase: GetOrderByIdUseCase,
+    private val takeOrderUseCase: TakeOrderUseCase,
+    private val completeOrderUseCase: CompleteOrderUseCase,
+    private val cancelOrderUseCase: CancelOrderUseCase,
+    private val pendingOrderUseCase: PendingOrderUseCase,
     private val orderId: Long,
-    private val orderRepository: OrderRepository,
 ) : CurrentOrderComponent(
     componentContext = componentContext,
     initialState = CurrentOrderViewState(
         number = "",
         deliveryType = DeliveryType.DELIVERY,
         addressString = "",
-        status = "",
+        status = OrderStatus.PENDING,
         items = emptyList(),
-        deliveryPrice = 0,
         totalAmount = 0,
-        productsPrice = 0,
-        comment = ""
+        comment = "",
+        createdAt = "",
+        customerEmail = "",
+        customerPhone = "",
+        customerName = "",
+        companyName = "",
+        deliveryDate = "",
     )
 ) {
 
@@ -52,18 +63,15 @@ class DefaultCurrentOrderComponent(
                     }
                 }
             }
+
+            CurrentOrderViewEvent.OnCancelOrder -> cancelOrder()
+            CurrentOrderViewEvent.OnCompleteOrder -> completeOrder()
+            CurrentOrderViewEvent.OnTakeOrder -> takeOrder()
+            CurrentOrderViewEvent.OnPendingOrder -> pendingOrder()
         }
     }
 
     private fun initData() {
-        coroutineScope.launch {
-            orderRepository.ordersSubject.collect {
-                val currentOrder = it.firstOrNull { orderModel -> orderModel.id == orderId }
-                if (currentOrder != null) {
-                    onEvent(CurrentOrderViewEvent.OnOrderLoaded(currentOrder))
-                }
-            }
-        }
         getCurrentOrder()
     }
 
@@ -83,6 +91,70 @@ class DefaultCurrentOrderComponent(
                         }
                         is ResultModel.Success<OrderModel> -> {
                             onEvent(CurrentOrderViewEvent.OnOrderLoaded(result.data))
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun takeOrder() {
+        coroutineScope.launch {
+            takeOrderUseCase.invoke(orderId)
+                .catch {  }
+                .collect {  resultModel ->
+                    when (resultModel) {
+                        is ResultModel.Error -> {}
+                        ResultModel.Loading -> {}
+                        is ResultModel.Success<OrderModel> -> {
+                            onEvent(CurrentOrderViewEvent.OnOrderLoaded(resultModel.data))
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun completeOrder() {
+        coroutineScope.launch {
+            completeOrderUseCase.invoke(orderId)
+                .catch {  }
+                .collect {  resultModel ->
+                    when (resultModel) {
+                        is ResultModel.Error -> {}
+                        ResultModel.Loading -> {}
+                        is ResultModel.Success<OrderModel> -> {
+                            onEvent(CurrentOrderViewEvent.OnOrderLoaded(resultModel.data))
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun cancelOrder() {
+        coroutineScope.launch {
+            cancelOrderUseCase.invoke(orderId)
+                .catch {  }
+                .collect {  resultModel ->
+                    when (resultModel) {
+                        is ResultModel.Error -> {}
+                        ResultModel.Loading -> {}
+                        is ResultModel.Success<OrderModel> -> {
+                            onEvent(CurrentOrderViewEvent.OnOrderLoaded(resultModel.data))
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun pendingOrder() {
+        coroutineScope.launch {
+            pendingOrderUseCase.invoke(orderId)
+                .catch {  }
+                .collect {  resultModel ->
+                    when (resultModel) {
+                        is ResultModel.Error -> {}
+                        ResultModel.Loading -> {}
+                        is ResultModel.Success<OrderModel> -> {
+                            onEvent(CurrentOrderViewEvent.OnOrderLoaded(resultModel.data))
                         }
                     }
                 }

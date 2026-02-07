@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DeliveryInfoEntity(
-    val deliveryPrice: Double,
-    val freeDeliveryPrice: Double?,
+    val deliveryPrice: Long,
+    val freeDeliveryPrice: Long?,
 )

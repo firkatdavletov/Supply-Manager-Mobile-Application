@@ -11,295 +11,81 @@ import SwiftUI
 import Shared
 
 struct HomeContent: View {
-    let userName: String?
-    let addressString: String
-    let deliveryInfo: String
-    let currentOrders: [OrderUIModel]
-    let categories: [CategoryModel]
-    let totalAmount: Int32
-    let productsPrice: Int32
-    let freeDeliveryPrice: KotlinDouble?
-    let storeIsClosed: Bool
-    let onChangeAddressClicked: () -> Void
-    let onCategoryClicked: (CategoryModel) -> Void
-    let onCartButtonClicked: () -> Void
-    let onPersonClicked: () -> Void
-    let onOrderClicked: (Int64) -> Void
-
-    @State private var focused: Bool = false
+    let isLoading: Bool
+    let orders: [OrderPreviewModel]
+    let deliveredCount: Int
+    let cancelledCount: Int
+    let pendingCount: Int
+    let processingCount: Int
+    let onOrderTap: (Int64) -> Void
+    let onRefresh: () -> Void
+    let onAddTap: () -> Void
     
-    var columns = [
-      GridItem(.flexible()),
-      GridItem(.flexible()),
-    ]
+    private let columns = Array(
+        repeating: GridItem(.flexible(), spacing: 12),
+        count: 4
+    )
 
     var body: some View {
-        VStack {
-            headerView
+        VStack(alignment: .center) {
+            HomeTopBar(
+                companyLogoName: "Logo", // имя ассета
+                userName: "Эллина Кулушева",
+                onAddTap: onAddTap
+            )
+            
+            if (isLoading) {
+                ProgressView()
+            }
             
             ScrollView {
-                LazyVGrid(
-                    columns: columns,
-                ) {
-                    if (storeIsClosed) {
-                        Section(header: storeIsClosedView) {}
+                VStack {
+                    HStack {
+                        AllCounterCardView(count: orders.count)
+                        CounterCardView(count: pendingCount, status: OrderStatus.pending)
                     }
-                    Section(header: ordersPagerItem) {}
-                    ForEach(categories, id: \.id) { category in
-                        CategoryCardView(title: category.title, imageUrl: category.imageUrl)
+                    HStack {
+                        CounterCardView(count: processingCount, status: OrderStatus.processing)
+                        CounterCardView(count: deliveredCount, status: OrderStatus.completed)
+                    }
+                    
+                    LazyVStack(spacing: 12) {
+                        ForEach(orders, id: \.id) { order in
+                            OrderPreviewCard(
+                                companyName: order.companyName,
+                                contactName: order.customerName,
+                                totalAmount: order.totalAmount
+                                    .asCurrency(locale: Locale(identifier: "ru_RU"), currencySymbol: "₽"),
+                                deliveryDate: order.deliveryTime,
+                                status: order.status
+                            )
                             .onTapGesture {
-                                onCategoryClicked(category)
+                                onOrderTap(order.id)
                             }
+                        }
                     }
                 }
-                .padding(.horizontal)
+                .padding()
+                .background(Color(.systemGroupedBackground))
             }
-
-            Spacer()
-            
-            if totalAmount > 0 {
-                VStack(spacing: 8) {
-
-                    if freeDeliveryPrice != nil && productsPrice < Int32(truncating: freeDeliveryPrice!) {
-                        let remaining = Int32(truncating: freeDeliveryPrice!) - productsPrice
-                        let progress = Double(productsPrice) / Double(truncating: freeDeliveryPrice!)
-
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Добавьте ещё \(remaining) ₽ для бесплатной доставки")
-                                .font(AppTypography.bodyMedium)
-                                .foregroundColor(.primaryContainer)
-                                    ProgressView(value: progress)
-                                        .progressViewStyle(.linear)
-                                        .tint(Color.primaryContainer)
-                                }
-                                .padding(.horizontal)
-                    }
-
-                    PrimaryButton(
-                        title: "\(totalAmount) руб",
-                        onClick: onCartButtonClicked,
-                        enabled: true
-                    )
-                    .padding(.horizontal)
-                }
-                .padding(.bottom)
+            .refreshable {
+                onRefresh()
             }
         }
-        .onTapGesture {
-            focused = false
-        }
-        .background(.background)
-    }
-}
-
-extension HomeContent {
-    private var headerView: some View {
-        HStack(alignment: .top,spacing: 8) {
-            VStack(alignment: .leading, spacing: 8) {
-
-                Text(addressString)
-                    .font(AppTypography.titleLarge)
-                    .foregroundColor(.onPrimaryContainer)
-
-                HStack(spacing: 16) {
-                    Text(deliveryInfo)
-                        .font(AppTypography.bodyMedium)
-                        .foregroundColor(.onPrimaryContainer)
-
-                    Text("Изменить")
-                        .font(AppTypography.bodySmall)
-                        .padding(.vertical, 4)
-                        .padding(.horizontal, 6)
-                        .background(Color.primaryContainer)
-                        .foregroundColor(Color.onPrimaryContainer)
-                        .cornerRadius(12)
-                        .padding(1)
-                        .background(Color.onPrimaryContainer)
-                        .cornerRadius(12)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .onTapGesture { onChangeAddressClicked() }
-
-            Button(action: onPersonClicked) {
-                Image(systemName: "person.circle")
-                    .font(.title2)
-                    .foregroundStyle(Color.onPrimaryContainer)
-            }
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 16)
-        .background(Color.primaryContainer)
-    }
-}
-
-extension HomeContent {
-    private var ordersPagerItem: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            LazyHStack {
-                ForEach(currentOrders, id: \.self) { order in
-                    HomeOrderView(
-                        orderNumber: order.number,
-                        status: order.status,
-                        amount: Int(order.amount)
-                    )
-                    .padding(.vertical, 2)
-                    .frame(width: UIScreen.main.bounds.width - 32)
-                    .onTapGesture {
-                        onOrderClicked(order.id)
-                    }
-                }
-            }
-        }
-    }
-}
-
-extension HomeContent {
-    private var storeIsClosedView: some View {
-        Text("Ресторан закрыт")
-            .font(AppTypography.headlineSmall)
-            .foregroundStyle(Color.onBackground)
-            .frame(maxWidth: .infinity, alignment: .center)
-    }
-}
-
-struct HomeOrderView: View {
-    let orderNumber: String
-    let status: String
-    let amount: Int
-
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Заказ №\(orderNumber)")
-                    .font(AppTypography.bodyMedium)
-                    .foregroundStyle(Color.onSecondaryContainer)
-                Text(status)
-                    .font(AppTypography.titleMedium)
-                    .foregroundStyle(Color.onSecondaryContainer)
-            }
-            Spacer()
-            Text("\(amount) руб")
-                .font(AppTypography.titleLarge)
-                .foregroundStyle(Color.onSecondaryContainer)
-        }
-        .padding(12)
-        .frame(maxWidth: .infinity)
-        .background(Color.background)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.primaryContainer, lineWidth: 0)
-        )
-    }
-}
-
-struct HomeCategoryView: View {
-    let title: String
-    let imageUrl: String?
-
-    var body: some View {
-        VStack {
-            Rectangle()
-                .fill(Color.gray.opacity(0.2))
-                .aspectRatio(1, contentMode: .fit)
-            Text(title)
-                .font(.footnote)
-        }
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
     }
 }
 
 #Preview {
     HomeContent(
-        userName: "Firkat",
-        addressString: "улица Косоротова, 6",
-        deliveryInfo: "Доставка 100 ₽",
-        currentOrders: [
-            OrderUIModel(
-                id: 1,
-                number: "1243",
-                status: "Собираем",
-                amount: 100
-            ),
-            OrderUIModel(
-                id: 2,
-                number: "467",
-                status: "В пути",
-                amount: 100
-            )
-        ],
-        categories: [
-            CategoryModel(
-                id: 0,
-                title: "Выбор пользователей",
-                imageUrl: nil,
-                parentCategoryId: 0,
-                products: [],
-                selected: true,
-                span: 2
-            ),
-            CategoryModel(
-                id: 1,
-                title: "Избранное",
-                imageUrl: nil,
-                parentCategoryId: 0,
-                products: [],
-                selected: true,
-                span: 2
-            ),
-            CategoryModel(
-                id: 2,
-                title: "Пицца",
-                imageUrl: nil,
-                parentCategoryId: 0,
-                products: [],
-                selected: true,
-                span: 2
-            ),
-            CategoryModel(
-                id: 3,
-                title: "Выбор пользователей",
-                imageUrl: nil,
-                parentCategoryId: 0,
-                products: [],
-                selected: true,
-                span: 2
-            ),
-            CategoryModel(
-                id: 4,
-                title: "Избранное",
-                imageUrl: nil,
-                parentCategoryId: 0,
-                products: [],
-                selected: true,
-                span: 2
-            ),
-            CategoryModel(
-                id: 5,
-                title: "Пицца",
-                imageUrl: nil,
-                parentCategoryId: 0,
-                products: [],
-                selected: true,
-                span: 2
-            )
-        ],
-        totalAmount: 100,
-        productsPrice: 0,
-        freeDeliveryPrice: 0.0,
-        storeIsClosed: false) {
-            
-        } onCategoryClicked: { CategoryModel in
-            
-        } onCartButtonClicked: {
-            
-        } onPersonClicked: {
-            
-        } onOrderClicked: { Int64 in
-            
-        }
-
+        isLoading: false,
+        orders: [],
+        deliveredCount: 0,
+        cancelledCount: 0,
+        pendingCount: 0,
+        processingCount: 0,
+        onOrderTap: { id in},
+        onRefresh: {},
+        onAddTap: {}
+    )
 }
 

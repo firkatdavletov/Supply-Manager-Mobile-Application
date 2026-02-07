@@ -9,6 +9,9 @@ class OrderItemMapper {
         name = entity.name,
         quantity = entity.quantity,
         price = entity.price,
+        totalPrice = entity.totalPrice,
+        imageUrl = entity.imageUrl,
+        unit = entity.unit,
     )
 
     fun toModel(entities: List<OrderItemEntity>) = entities.map { toModel(it) }
@@ -18,6 +21,9 @@ class OrderItemMapper {
         name = model.name,
         quantity = model.quantity,
         price = model.price,
+        totalPrice = model.totalPrice,
+        unit = model.unit,
+        imageUrl = model.imageUrl,
     )
 
     fun toEntity(models: List<OrderItemModel>): List<OrderItemEntity> = models.map { toEntity(it) }

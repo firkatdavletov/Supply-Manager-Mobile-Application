@@ -80,7 +80,7 @@ class DefaultCartRepository(
             deliveryType = deliveryType,
             deliveryAddress = newAddress,
             departmentId = departmentId,
-            deliveryPrice = deliveryInfo?.deliveryPrice ?: 0.0,
+            deliveryPrice = deliveryInfo?.deliveryPrice ?: 0,
             freeDeliveryPrice = deliveryInfo?.freeDeliveryPrice
         )
         return flow {
@@ -162,11 +162,11 @@ class DefaultCartRepository(
             )
         }
 
-        val itemsPrice = updatedItems.sumOf { it.price.toDouble() * it.quantity }
+        val itemsPrice = updatedItems.sumOf { it.price * it.quantity }
         val freeDeliveryPrice = cart.deliveryInfo.freeDeliveryPrice
         val deliveryPrice = cart.deliveryInfo.deliveryPrice
-        val totalDeliveryPrice = if (freeDeliveryPrice != null && itemsPrice >= freeDeliveryPrice) {
-            0.0
+        val totalDeliveryPrice = if (itemsPrice >= freeDeliveryPrice) {
+            0
         } else {
             deliveryPrice
         }

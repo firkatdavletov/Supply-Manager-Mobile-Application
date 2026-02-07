@@ -1,5 +1,6 @@
 package org.example.project.domain.models
 
-data class AuthTypesModel(
-    val types: List<String>,
+data class AuthTypeModel(
+    val key: String,
+    val title: String,
 )
