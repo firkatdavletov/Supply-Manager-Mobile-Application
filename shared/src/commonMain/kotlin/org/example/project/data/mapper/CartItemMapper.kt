@@ -10,6 +10,8 @@ class CartItemMapper {
             title = entity.title,
             quantity = entity.quantity,
             price = entity.price,
+            countStep = entity.countStep,
+            unit = entity.unit,
         )
 
     fun toModel(entities: List<CartItemEntity>) = entities.map { toModel(it) }

@@ -126,7 +126,7 @@ class OrderApiImpl(
         reconnectJob = scope.launch {
             while (isActive) {
                 try {
-                    wsClient.webSocket("http://localhost:8080/ws/orders") {
+                    wsClient.webSocket("wss://foodbox-service-firkat.amvera.io/ws/orders") {
                         wsSession = this
                         send("subscribe")
                         listenIncomingMessages()
@@ -152,10 +152,13 @@ class OrderApiImpl(
                         println("Unknown WS message: $text")
                     }
                 }
-                is Frame.Pong -> {
 
+                is Frame.Pong -> {
                 }
-                else -> Unit
+
+                else -> {
+                    Unit
+                }
             }
         }
     }

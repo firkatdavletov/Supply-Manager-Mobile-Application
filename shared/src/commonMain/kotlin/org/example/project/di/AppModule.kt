@@ -131,13 +131,13 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 // For IOS:
-private const val baseUrl = "localhost:8080"
+// private const val BASE_URL = "localhost:8080"
 
 // For Android Studio
-// private const val baseUrl = "10.0.2.2:8080"
+// private const val BASE_URL = "10.0.2.2:8080"
 // For remote server
-// private const val baseUrl = "foodbox-service-firkat.amvera.io"
-private val isHttps = false
+private const val BASE_URL = "foodbox-service-firkat.amvera.io"
+private val isHttps = true
 
 @OptIn(ExperimentalSerializationApi::class)
 fun appModule() =
@@ -254,7 +254,7 @@ fun appModule() =
                         if (isHttps) {
                             protocol = URLProtocol.HTTPS
                         }
-                        host = baseUrl
+                        host = BASE_URL
                     }
                 }
 
@@ -359,7 +359,7 @@ fun appModule() =
                         if (isHttps) {
                             protocol = URLProtocol.HTTPS
                         }
-                        host = baseUrl
+                        host = BASE_URL
                     }
                 }
 
@@ -427,7 +427,7 @@ fun appModule() =
                         if (isHttps) {
                             protocol = URLProtocol.HTTPS
                         }
-                        host = baseUrl
+                        host = BASE_URL
                     }
                 }
 

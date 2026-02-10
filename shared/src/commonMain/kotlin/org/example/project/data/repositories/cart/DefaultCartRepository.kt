@@ -159,6 +159,8 @@ class DefaultCartRepository(
                 title = product.title,
                 quantity = 1,
                 price = product.price,
+                countStep = product.countStep,
+                unit = product.unit,
             )
         }
 

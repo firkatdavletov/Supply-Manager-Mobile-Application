@@ -49,9 +49,9 @@ fun PaymentContent(
     flat: String,
     flatInputError: String? = null,
     comment: String,
-    totalAmount: Int,
-    deliveryPrice: Int,
-    productPrice: Int,
+    totalAmount: Long,
+    deliveryPrice: Long,
+    productPrice: Long,
     paymentTypes: List<PaymentTypeModel>,
     onChangeDeliveryType: (DeliveryType) -> Unit = {},
     onBackButtonClicked: () -> Unit = {},
@@ -326,11 +326,11 @@ fun PaymentContent(
                     Text(
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onBackground,
-                        text = if (deliveryPrice == 0) "бесплатно" else "$deliveryPrice ₽"
+                        text = if (deliveryPrice == 0L) "бесплатно" else "$deliveryPrice ₽"
                     )
                 }
             }
-            
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

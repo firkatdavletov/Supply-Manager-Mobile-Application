@@ -8,4 +8,6 @@ data class ProductModel(
     val imageUrl: String?,
     val categoryId: Long,
     val count: Int,
+    val countStep: Int,
+    val unit: UnitOfMeasure,
 )

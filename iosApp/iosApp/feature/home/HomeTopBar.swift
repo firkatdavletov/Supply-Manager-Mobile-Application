@@ -9,26 +9,26 @@
 import SwiftUI
 
 struct HomeTopBar: View {
-    
+
     let companyLogoName: String
     let userName: String
     let onAddTap: () -> Void
     let onProfileClicked: () -> Void
-    
+
     var body: some View {
         HStack(spacing: 12) {
-            
+
             Image(companyLogoName)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 36, height: 36)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
-            
+
             VStack(alignment: .leading, spacing: 2) {
                 Text("Добро пожаловать")
                     .font(.system(size: 12))
                     .foregroundColor(.gray)
-                
+
                 Text(userName)
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.black)
@@ -36,17 +36,8 @@ struct HomeTopBar: View {
             .onTapGesture {
                 onProfileClicked()
             }
-            
+
             Spacer()
-            
-            Button(action: onAddTap) {
-                Image(systemName: "plus")
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(.white)
-                    .frame(width: 40, height: 40)
-                    .background(Color.blue)
-                    .clipShape(Circle())
-            }
         }
         .padding(.horizontal)
         .padding(.vertical, 10)

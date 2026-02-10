@@ -31,17 +31,17 @@ class DefaultVerificationComponent(
     private val orderRepository: OrderRepository,
     private val authRepository: AuthRepository,
 ) : VerificationComponent(
-    componentContext = componentContext,
-    snackBarManager = snackBarManager,
-    initialState = VerifyViewState(
-        isLoading = false,
-        authType = authType,
-        callPhone = callPhone,
-        phoneNumber = phoneNumber,
-        code = "",
-        confirmEnabled = false
-    )
-) {
+        componentContext = componentContext,
+        snackBarManager = snackBarManager,
+        initialState = VerifyViewState(
+            isLoading = false,
+            authType = authType,
+            callPhone = callPhone,
+            phoneNumber = phoneNumber,
+            code = "",
+            confirmEnabled = false,
+        ),
+    ) {
     private var _callNumberClicked = false
     private var socketIsConnected = false
     private var job: Job? = null
@@ -59,20 +59,29 @@ class DefaultVerificationComponent(
                 reduce(event)
                 handleCodeChanged(event.newValue)
             }
+
             is VerifyViewEvent.OnError -> {
                 reduce(event)
                 showError(event.message)
             }
+
             is VerifyViewEvent.OnThrowError -> {
                 reduce(event)
                 showThrowError(event.throwable)
             }
-            VerifyViewEvent.OnBackClicked -> callbacks.onBack()
+
+            VerifyViewEvent.OnBackClicked -> {
+                callbacks.onBack()
+            }
+
             VerifyViewEvent.OnCallPhoneClicked -> {
                 _callNumberClicked = true
                 reduce(event)
             }
-            VerifyViewEvent.OnAppBecameActive -> onAppBecameActive()
+
+            VerifyViewEvent.OnAppBecameActive -> {
+                onAppBecameActive()
+            }
         }
     }
 
@@ -99,7 +108,6 @@ class DefaultVerificationComponent(
     }
 
     private fun onAppBecameActive() {
-
     }
 
     private suspend fun subscribeToUpdates() {
@@ -127,11 +135,11 @@ class DefaultVerificationComponent(
         coroutineScope.launch {
             val params = VerifyCodeUseCase.Params(phoneNumber, code)
 
-            verifyCodeUseCase.invoke(params)
+            verifyCodeUseCase
+                .invoke(params)
                 .catch {
                     onEvent(VerifyViewEvent.OnThrowError(it))
-                }
-                .collect {
+                }.collect {
                     if (it) {
                         loadUser()
                     } else {
@@ -142,31 +150,35 @@ class DefaultVerificationComponent(
     }
 
     private suspend fun loadUser() {
-        loadUserUseCase.invoke(Unit)
+        loadUserUseCase
+            .invoke(Unit)
             .catch {
                 withContext(Dispatchers.Main) {
                     onEvent(VerifyViewEvent.OnThrowError(it))
                 }
-            }
-            .collect { resultModel ->
+            }.collect { resultModel ->
                 when (resultModel) {
                     is ResultModel.Error -> {
                         withContext(Dispatchers.Main) {
                             onEvent(VerifyViewEvent.OnError(resultModel.message))
                         }
                     }
+
                     ResultModel.Loading -> {}
+
                     is ResultModel.Success<Boolean> -> {
                         if (resultModel.data) {
-                            orderRepository.connect()
+//                            orderRepository.connect()
                             withContext(Dispatchers.Main) {
                                 when (fromScreen) {
                                     CartComponent::class.simpleName -> {
                                         callbacks.navigateToPayment()
                                     }
+
                                     HomeComponent::class.simpleName -> {
                                         callbacks.navigateToHome()
                                     }
+
                                     else -> {
                                         callbacks.navigateToHome()
                                     }

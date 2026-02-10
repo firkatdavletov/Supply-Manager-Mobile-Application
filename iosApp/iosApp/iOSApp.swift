@@ -5,19 +5,19 @@ import Shared
 struct iOSApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self)
     var appDelegate: AppDelegate
-    
+
     @Environment(\.scenePhase)
     var scenePhase: ScenePhase
-    
+
     var rootHolder: RootHolder { appDelegate.rootHolder }
-    
+
     init() {
         HelperKtKt.doInitKoin()
     }
-    
+
     var body: some Scene {
         WindowGroup {
-            
+
             RootView(root: rootHolder.root)
                 .onChange(of: scenePhase) { newPhase in
                     switch (newPhase) {
@@ -27,6 +27,7 @@ struct iOSApp: App {
                     @unknown default: break
                     }
                 }
+            .preferredColorScheme(.light)
         }
     }
 }

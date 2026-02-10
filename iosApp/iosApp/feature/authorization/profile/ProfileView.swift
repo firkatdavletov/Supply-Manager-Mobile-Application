@@ -10,9 +10,9 @@ import SwiftUI
 import Shared
 struct ProfileView: View {
     let component: ProfileComponent
-    
+
     @StateValue private var state: ProfileViewState
-    
+
     init(component: ProfileComponent) {
         self.component = component
         _state = StateValue(component.state)
@@ -21,18 +21,14 @@ struct ProfileView: View {
         ProfileContent(
             name: state.name,
             phone: state.phone,
-            isLoading: state.isLoading
-        ) { name in
-            component.onEvent(event: ProfileViewEventOnNameChanged(name: name))
-            } onSave: {
-                component.onEvent(event: ProfileViewEventOnSave())
-            } onDelete: {
-                component.onEvent(event: ProfileViewEventOnDelete())
-            } onLogout: {
+            isLoading: state.isLoading,
+            onLogout: {
                 component.onEvent(event: ProfileViewEventOnLogout())
-            } onBack: {
+            },
+            onBack: {
                 component.onEvent(event: ProfileViewEventOnBackClicked())
             }
+        )
             .navigationBarBackButtonHidden(true)
 
     }

@@ -51,14 +51,14 @@ fun CatalogContent(
     onBackButtonClicked: () -> Unit = {},
     onAddToCart: (ProductModel) -> Unit = {},
     onRemoveFromCart: (ProductModel) -> Unit = {},
-    onCartButtonClicked: () -> Unit = {}
+    onCartButtonClicked: () -> Unit = {},
 ) {
     Box(
         modifier = modifier,
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxSize(),
         ) {
             Box(
                 modifier = Modifier
@@ -83,7 +83,7 @@ fun CatalogContent(
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    text = title
+                    text = title,
                 )
             }
 
@@ -94,13 +94,13 @@ fun CatalogContent(
                     .padding(horizontal = 16.dp),
                 columns = GridCells.Fixed(2),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 items(
                     count = products.size,
                     span = {
                         GridItemSpan(1)
-                    }
+                    },
                 ) {
                     val product = products[it]
                     ProductCard(
@@ -117,7 +117,7 @@ fun CatalogContent(
                         },
                         onRemoveFromCart = {
                             onRemoveFromCart(product)
-                        }
+                        },
                     )
                 }
             }
@@ -132,91 +132,11 @@ fun CatalogContent(
                     ) {
                         Text(
                             style = MaterialTheme.typography.titleMedium,
-                            text = "$cartPrice ₽"
+                            text = "$cartPrice ₽",
                         )
                     }
                 }
             }
         }
-    }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-private fun CatalogContent_Preview() {
-    DeliveryAppTheme {
-        CatalogContent(
-            title = "Food",
-            products = listOf(
-                ProductModel(
-                    id = 0,
-                    title = "Ролл с креветкой",
-                    description = "",
-                    price = 10000,
-                    imageUrl = null,
-                    categoryId = 0,
-                    count = 0,
-                ),
-                ProductModel(
-                    id = 1,
-                    title = "Ролл с креветкой",
-                    description = "",
-                    price = 10000,
-                    imageUrl = null,
-                    categoryId = 0,
-                    count = 0,
-                ),
-                ProductModel(
-                    id = 2,
-                    title = "Ролл с креветкой",
-                    description = "",
-                    price = 10000,
-                    imageUrl = null,
-                    categoryId = 0,
-                    count = 0,
-                )
-            ),
-            cartPrice = 100
-        )
-    }
-}
-
-@Preview(showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun CatalogContent_Preview_Night() {
-    DeliveryAppTheme {
-        CatalogContent(
-            title = "Food",
-            products = listOf(
-                ProductModel(
-                    id = 0,
-                    title = "Ролл с креветкой",
-                    description = "",
-                    price = 10000,
-                    imageUrl = null,
-                    categoryId = 0,
-                    count = 0,
-                ),
-                ProductModel(
-                    id = 1,
-                    title = "Ролл с креветкой",
-                    description = "",
-                    price = 10000,
-                    imageUrl = null,
-                    categoryId = 0,
-                    count = 0,
-                ),
-                ProductModel(
-                    id = 2,
-                    title = "Ролл с креветкой",
-                    description = "",
-                    price = 10000,
-                    imageUrl = null,
-                    categoryId = 0,
-                    count = 0,
-                )
-            ),
-            cartPrice = 100
-        )
     }
 }

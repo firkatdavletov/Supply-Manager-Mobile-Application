@@ -10,51 +10,30 @@
 import SwiftUI
 import Shared
 
-
 struct PaymentContent: View {
-    let deliveryType: DeliveryType
-    let addressString: String?
-    let departmentName: String?
-    let isPrivateHome: Bool
-    let entrance: String
-    let entranceInputError: String?
-    let flat: String
-    let flatInputError: String?
-    let comment: String
-    let totalAmount: Int
-    let deliveryPrice: Int
-    let productPrice: Int
-    let paymentTypes: [PaymentTypeModel]
-    let storeIsClosed: Bool
-
-    let onChangeDeliveryType: (DeliveryType) -> Void
+    let totalAmount: Int64
     let onBackButtonClicked: () -> Void
-    let onSelectAddress: () -> Void
     let onConfirmClicked: () -> Void
-    let onIsPrivateHouseChanged: (Bool) -> Void
-    let onEntranceChanged: (String) -> Void
-    let onFlatChanged: (String) -> Void
-    let onCommentChanged: (String) -> Void
+
+    @State private var companyName: String = ""
+    @State private var contactName: String = ""
+    @State private var email: String = ""
+    @State private var contactPhone: String = ""
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             header
             ScrollView {
-                if (storeIsClosed) {
-                    storeIsClosedView
+                VStack(spacing: 24) {
+                    contactForm
+                    bottomSummary
                 }
-                if (deliveryType == DeliveryType.delivery) {
-                    deliverySection
-                } else {
-                    pickupSection
-                }
-                paymentSection
-                bottomSummary
+                .padding(.vertical, 16)
             }
             PrimaryButton(
                 title: "Заказать",
                 onClick: onConfirmClicked,
-                enabled: deliveryType != .delivery || addressString != nil
+                enabled: isFormValid
             )
             .padding()
         }
@@ -76,155 +55,64 @@ extension PaymentContent {
             Spacer()
         }
         .padding()
-        .background(Color.primaryContainer)
+        .background(Color.blue)
     }
 }
 
 extension PaymentContent {
-    private var storeIsClosedView: some View {
-        Text("Ресторан закрыт")
-            .font(AppTypography.headlineSmall)
-            .foregroundStyle(Color.onBackground)
-            .frame(maxWidth: .infinity, alignment: .center)
-    }
-}
-
-extension PaymentContent {
-    private var pickupSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-
-            Text("Откуда")
-                .font(AppTypography.headlineSmall)
-
-            if let department = departmentName {
-                Text(department)
-                    .font(AppTypography.titleLarge)
-                    .foregroundStyle(Color.onBackground)
-            }
+    private var contactForm: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Контактные данные")
+                .font(AppTypography.titleMedium)
+                .foregroundStyle(Color.onBackground)
+                .padding(.horizontal, 16)
 
             StyledTextField(
-                value: comment,
-                placeholder: "Комментарий",
-                isError: false,
-                onChange: onCommentChanged
+                value: companyName,
+                placeholder: "Компания",
+                isError: companyName.isEmpty == false && trimmedCompanyName.isEmpty,
+                onChange: { companyName = String($0.prefix(100)) }
             )
-            .padding(.vertical, 8)
-
-        }
-        .padding(.horizontal, 16)
-    }
-}
-
-extension PaymentContent {
-    private var deliverySection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-
-            Text("Куда")
-                .font(AppTypography.headlineSmall)
-
-            if let department = departmentName {
-                Text(addressString ?? "Ошибка загрузки адреса")
-                    .font(AppTypography.titleLarge)
-                    .foregroundStyle(Color.onBackground)
-            }
-            
-            SelectedButton(
-                title: "Частный дом",
-                selected: isPrivateHome) {
-                    onIsPrivateHouseChanged(!isPrivateHome)
-                }
-            if (!isPrivateHome) {
-                HStack {
-                    StyledTextField(
-                        value: entrance,
-                        placeholder: "Подъезд",
-                        isError: entranceInputError != nil,
-                        onChange: onEntranceChanged
-                    )
-                    .keyboardType(.phonePad)
-                    .padding(.vertical, 8)
-                    StyledTextField(
-                        value: flat,
-                        placeholder: "Квартира",
-                        isError: flatInputError != nil,
-                        onChange: onFlatChanged
-                    )
-                    .keyboardType(.phonePad)
-                    .padding(.vertical, 8)
-                }
-            }
+            .padding(.horizontal, 16)
 
             StyledTextField(
-                value: comment,
-                placeholder: "Комментарий",
-                isError: false,
-                onChange: onCommentChanged
+                value: contactName,
+                placeholder: "Контактное лицо",
+                isError: contactName.isEmpty == false && trimmedContactName.isEmpty,
+                onChange: { contactName = String($0.prefix(100)) }
             )
-            .padding(.vertical, 8)
+            .padding(.horizontal, 16)
 
-        }
-        .padding(.horizontal, 16)
-    }
-}
+            StyledTextField(
+                value: email,
+                placeholder: "Электронная почта",
+                isError: email.isEmpty == false && isEmailValid == false,
+                onChange: { email = String($0.prefix(100)) }
+            )
+            .padding(.horizontal, 16)
 
-extension PaymentContent {
-    private var paymentSection: some View {
-        VStack(alignment: .leading) {
-
-            Text("Оплата")
-                .font(.title2)
-                .padding(.bottom, 16)
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach(paymentTypes, id: \.id) { type in
-                        SelectedButton(
-                            title: type.title,
-                            selected: true,
-                            action: {}
-                        )
-                    }
+            StyledTextField(
+                value: contactPhone,
+                placeholder: "Номер телефона",
+                isError: contactPhone.isEmpty == false && isPhoneValid == false,
+                onChange: { newValue in
+                    contactPhone = sanitizePhone(newValue)
                 }
-            }
+            )
+            .padding(.horizontal, 16)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 16)
     }
 }
 
 extension PaymentContent {
     private var bottomSummary: some View {
         VStack(spacing: 12) {
-
-            HStack {
-                Text("Стоимость продуктов:")
-                    .font(AppTypography.bodyLarge)
-                    .foregroundStyle(Color.onBackground)
-                Spacer()
-                Text("\(productPrice) руб")
-                    .font(AppTypography.titleLarge)
-                    .foregroundStyle(Color.onBackground)
-            }
-            .font(.title3)
-
-            if deliveryType == .delivery {
-                HStack {
-                    Text("Стоимость доставки:")
-                        .font(AppTypography.bodyLarge)
-                        .foregroundStyle(Color.onBackground)
-                    Spacer()
-                    Text(deliveryPrice == 0 ? "бесплатно" : "\(deliveryPrice) руб")
-                        .font(AppTypography.titleLarge)
-                        .foregroundStyle(Color.onBackground)
-                }
-            }
-
             HStack {
                 Text("Итого:")
                     .font(AppTypography.bodyLarge)
                     .foregroundStyle(Color.onBackground)
                 Spacer()
-                Text("\(totalAmount) руб")
+                Text("\(totalAmount.asCurrency())")
                     .font(AppTypography.titleLarge)
                     .foregroundStyle(Color.onBackground)
             }
@@ -233,47 +121,38 @@ extension PaymentContent {
     }
 }
 
-#Preview {
-    PaymentContent(
-        deliveryType: DeliveryType.delivery,
-        addressString: "ул. Щербакова 150/2",
-        departmentName: "Точисского 20",
-        isPrivateHome: false,
-        entrance: "2",
-        entranceInputError: nil,
-        flat: "20",
-        flatInputError: nil,
-        comment: "",
-        totalAmount: 1699,
-        deliveryPrice: 100,
-        productPrice: 1599,
-        paymentTypes: [
-            PaymentTypeModel(id: "1", title: "Cash", selected: true)
-        ],
-        storeIsClosed: false,
-        onChangeDeliveryType: { deliveryType in
-            
-        },
-        onBackButtonClicked: {
-           
-        },
-        onSelectAddress: {
-      
-        },
-        onConfirmClicked: {
-            
-        },
-        onIsPrivateHouseChanged: { value in
-          
-        },
-        onEntranceChanged: { entrance in
-      
-        },
-        onFlatChanged: { flat in
-        
-        },
-        onCommentChanged: { comment in
-          
+extension PaymentContent {
+    private var trimmedCompanyName: String {
+        companyName.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var trimmedContactName: String {
+        contactName.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var trimmedEmail: String {
+        email.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var isEmailValid: Bool {
+        trimmedEmail.contains("@") && trimmedEmail.contains(".")
+    }
+
+    private var isPhoneValid: Bool {
+        contactPhone.filter(\.isNumber).count >= 10
+    }
+
+    private var isFormValid: Bool {
+        trimmedCompanyName.isEmpty == false &&
+        trimmedContactName.isEmpty == false &&
+        isEmailValid &&
+        isPhoneValid
+    }
+
+    private func sanitizePhone(_ value: String) -> String {
+        let filtered = value.filter {
+            $0.isNumber || $0 == "+" || $0 == " " || $0 == "(" || $0 == ")" || $0 == "-"
         }
-    )
+        return String(filtered.prefix(20))
+    }
 }

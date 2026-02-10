@@ -5,4 +5,6 @@ data class CartItemModel(
     val title: String,
     val quantity: Int,
     val price: Long,
+    val countStep: Int,
+    val unit: UnitOfMeasure,
 )

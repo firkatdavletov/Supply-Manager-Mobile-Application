@@ -134,7 +134,7 @@ class DefaultCartComponent(
         println("on add to cart")
         coroutineScope.launch {
             getProduct(cartItemModel.productId) {
-                addToCart(it.copy(count = cartItemModel.quantity))
+                addToCart(it)
             }
         }
     }
@@ -142,14 +142,14 @@ class DefaultCartComponent(
     private fun removeFromCart(cartItemModel: CartItemModel) {
         coroutineScope.launch {
             getProduct(cartItemModel.productId) {
-                removeFromCart(it.copy(count = cartItemModel.quantity))
+                removeFromCart(it)
             }
         }
     }
 
     private fun addToCart(product: ProductModel) {
         val params = AddToCartUseCase.Params(
-            product = product.copy(count = product.count + 1),
+            product = product.copy(count = product.count + product.countStep),
         )
         job?.cancel()
         job = coroutineScope.launch {
@@ -168,7 +168,7 @@ class DefaultCartComponent(
 
     private fun removeFromCart(product: ProductModel) {
         val params = RemoveFromCartUseCase.Params(
-            product = product.copy(count = product.count - 1),
+            product = product.copy(count = product.count - product.countStep),
         )
         job?.cancel()
         job = coroutineScope.launch {

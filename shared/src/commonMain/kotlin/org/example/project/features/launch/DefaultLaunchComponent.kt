@@ -14,15 +14,15 @@ class DefaultLaunchComponent(
     private val orderRepository: OrderRepository,
     private val callbacks: LaunchNavigationCallbacks,
     snackBarManager: SnackBarManager,
-): LaunchComponent(
-    componentContext = componentContext,
-    initialState = LaunchViewState(
-        isLoading = true,
-        isError = false
-    ),
-    reducer = LaunchReducer(),
-    snackBarManager = snackBarManager
-) {
+) : LaunchComponent(
+        componentContext = componentContext,
+        initialState = LaunchViewState(
+            isLoading = true,
+            isError = false,
+        ),
+        reducer = LaunchReducer(),
+        snackBarManager = snackBarManager,
+    ) {
 
     override fun onResume() {
         loadData()
@@ -33,6 +33,7 @@ class DefaultLaunchComponent(
             is LaunchViewEvent.OnError -> {
                 reduce(event)
             }
+
             LaunchViewEvent.OnReconnect -> {
                 reduce(event)
                 loadData()
@@ -45,16 +46,17 @@ class DefaultLaunchComponent(
             loadUserUseCase(Unit)
                 .catch {
                     callbacks.navigateToSignIn()
-                }
-                .collect { resultModel ->
+                }.collect { resultModel ->
                     when (resultModel) {
                         is ResultModel.Error -> {
                             callbacks.navigateToSignIn()
                         }
+
                         ResultModel.Loading -> {}
+
                         is ResultModel.Success<Boolean> -> {
                             if (resultModel.data) {
-                                orderRepository.connect()
+//                                orderRepository.connect()
                                 callbacks.navigateToHome()
                             } else {
                                 callbacks.navigateToSignIn()

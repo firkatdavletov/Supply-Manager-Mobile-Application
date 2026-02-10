@@ -13,6 +13,8 @@ class ProductMapper {
             price = entity.price,
             categoryId = entity.categoryId,
             count = 0,
+            countStep = entity.countStep,
+            unit = entity.unit,
         )
 
     fun toModel(entities: List<ProductEntity>) = entities.map { toModel(it) }

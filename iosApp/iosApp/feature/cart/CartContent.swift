@@ -90,41 +90,11 @@ extension CartContent {
     private var infoView: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("Стоимость продуктов:")
-                    .font(AppTypography.bodyLarge)
-                    .foregroundColor(Color.onBackground)
-                Spacer()
-
-                Text("\(productPrice.asCurrency())")
-                    .font(AppTypography.titleLarge)
-                    .foregroundColor(Color.onBackground)
-            }
-
-            if deliveryType == .delivery {
-                HStack {
-                    Text("Стоимость доставки:")
-                        .font(AppTypography.bodyLarge)
-                        .foregroundColor(Color.onBackground)
-                    Spacer()
-
-                    if isDeliveryFree {
-                        Text("бесплатно")
-                            .font(AppTypography.titleLarge)
-                            .foregroundColor(Color.onBackground)
-                    } else {
-                        Text("\(deliveryPrice.asCurrency())")
-                            .font(AppTypography.titleLarge)
-                            .foregroundColor(Color.onBackground)
-                    }
-                }
-            }
-
-            HStack {
                 Text("Итого:")
                     .font(AppTypography.bodyLarge)
                     .foregroundColor(Color.onBackground)
                 Spacer()
-                Text("\(totalAmount.asCurrency()) руб")
+                Text("\(totalAmount.asCurrency())")
                     .font(AppTypography.titleLarge)
                     .foregroundColor(Color.onBackground)
             }
@@ -135,31 +105,5 @@ extension CartContent {
             )
             .padding(.vertical)
         }
-    }
-}
-
-#Preview {
-    CartContent(
-        cartItems: [
-            CartItemModel(
-                productId: 0,
-                title: "Ролл запеченный",
-                quantity: 2,
-                price: 900
-            )
-        ],
-        productPrice: 300,
-        deliveryPrice: 100,
-        totalAmount: 400,
-        freeDeliveryPrice: 0,
-        deliveryType: DeliveryType.delivery
-    ) { CartItemModel in
-
-    } onRemoveFromCart: { CartItemModel in
-
-    } onBack: {
-
-    } onConfirm: {
-
     }
 }

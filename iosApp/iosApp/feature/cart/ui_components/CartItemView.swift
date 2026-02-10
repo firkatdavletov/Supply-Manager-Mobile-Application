@@ -19,7 +19,7 @@ struct CartItemView: View {
                 Text(item.title)
                     .font(AppTypography.bodyLarge)
                     .foregroundColor(.onBackground)
-                Text("\(Int(item.price)) руб")
+                Text("\(item.price.asCurrency())")
                     .font(AppTypography.titleLarge)
                     .foregroundColor(.onBackground)
             }
@@ -38,20 +38,4 @@ struct CartItemView: View {
         }
         .padding(.horizontal, 16)
     }
-}
-
-#Preview {
-    CartItemView(
-        item: CartItemModel(
-            productId: 0,
-            title: "Ролл запеченный",
-            quantity: 2,
-            price: 900
-        )
-    ) { CartItemModel in
-            
-        } onRemove: { CartItemModel in
-            
-        }
-
 }

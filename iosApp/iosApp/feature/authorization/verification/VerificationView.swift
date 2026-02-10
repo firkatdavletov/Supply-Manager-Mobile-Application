@@ -11,14 +11,14 @@ import Shared
 
 struct VerificationView: View {
     let component: VerificationComponent
-    
+
     @StateValue private var state: VerifyViewState
-    
+
     init(component: VerificationComponent) {
         self.component = component
         _state = StateValue(component.state)
     }
-    
+
     var body: some View {
         switch state.authType {
         case "sms" : VerifyBySmsContent(
@@ -30,7 +30,8 @@ struct VerificationView: View {
             onBack: {
                 component.onEvent(event: VerifyViewEventOnBackClicked())
             }
-        );
+        )
+        .navigationBarBackButtonHidden();
         case "call" : VerifyByCallContent(
             callPhone: state.callPhone!,
             isLoading: state.isLoading,
@@ -44,6 +45,7 @@ struct VerificationView: View {
                 component.onEvent(event: VerifyViewEventOnAppBecameActive())
             }
         )
+        .navigationBarBackButtonHidden()
         default:
             EmptyView()
         }

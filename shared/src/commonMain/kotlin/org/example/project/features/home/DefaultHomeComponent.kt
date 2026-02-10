@@ -52,7 +52,6 @@ class DefaultHomeComponent(
             }
 
             HomeViewEvent.OnAddClicked -> {
-                homeCallbacks.navigateToCatalog()
             }
 
             HomeViewEvent.OnUserClicked -> {

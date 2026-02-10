@@ -88,7 +88,7 @@ class AuthApiImpl(private val httpClient: HttpClient, val wsClient: HttpClient) 
         reconnectJob = scope.launch {
             while (isActive) {
                 try {
-                    wsClient.webSocket("ws://localhost:8080/ws/callcheck/$checkId") {
+                    wsClient.webSocket("wss://foodbox-service-firkat.amvera.io/ws/callcheck/$checkId") {
                         wsSession = this
                         send("subscribe")
                         listenIncomingMessages()

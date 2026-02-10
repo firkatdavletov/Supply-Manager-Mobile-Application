@@ -14,7 +14,7 @@ struct ProductCardView: View {
     let onAddToCart: (Int64) -> Void
     let onRemove: (Int64) -> Void
     let onShowDetails: (Int64) -> Void
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             RemoteImage(urlString: product.imageUrl)
@@ -52,25 +52,4 @@ struct ProductCardView: View {
         .cornerRadius(16)
         .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
     }
-}
-
-#Preview {
-    ProductCardView(
-        product: Shared.ProductModel(
-            id: 0,
-            title: "Pizza",
-            description: nil,
-            price: 53000,
-            imageUrl: nil,
-            categoryId: 4,
-            count: 56
-        )) { Int64 in
-            
-        } onRemove: { Int64 in
-            
-        } onShowDetails: { id in
-            
-        }
-        .padding()
-
 }

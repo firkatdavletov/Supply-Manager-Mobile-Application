@@ -157,9 +157,10 @@ class DefaultCatalogComponent(
     }
 
     private fun addToCart(product: ProductModel) {
+        val newCount = product.count + product.countStep
         job?.cancel()
         job = coroutineScope.launch {
-            val params = AddToCartUseCase.Params(product)
+            val params = AddToCartUseCase.Params(product.copy(count = newCount))
             addToCartUseCase
                 .invoke(params)
                 .catch { }
@@ -169,9 +170,10 @@ class DefaultCatalogComponent(
     }
 
     private fun removeFromCart(product: ProductModel) {
+        val newCount = product.count + product.countStep
         job?.cancel()
         job = coroutineScope.launch {
-            val params = RemoveFromCartUseCase.Params(product)
+            val params = RemoveFromCartUseCase.Params(product.copy(count = newCount))
             removeFromCartUseCase
                 .invoke(params)
                 .catch { }

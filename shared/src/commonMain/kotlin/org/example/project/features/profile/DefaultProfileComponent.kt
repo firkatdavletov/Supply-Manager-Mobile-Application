@@ -72,7 +72,6 @@ class DefaultProfileComponent(
             }
 
             is ProfileViewEvent.OnNameChanged -> {
-                reduce(event)
             }
 
             is ProfileViewEvent.OnUserLoaded -> {
