@@ -12,7 +12,7 @@ class DefaultCatalogRemoteDataStore(
         return catalogApi.getCategories()
     }
 
-    override suspend fun getProduct(id: Int): GetProductResponseBody {
+    override suspend fun getProduct(id: Long): GetProductResponseBody {
         return catalogApi.getProduct(id)
     }
 

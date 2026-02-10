@@ -35,7 +35,7 @@ import org.example.project.features.dialogs.deleteUserDialog.DeleteUserComponent
 import org.example.project.features.dialogs.deleteUserDialog.DeleteUserDialogCallbacks
 import org.example.project.features.dialogs.logoutUserDialog.LogoutUserComponent
 import org.example.project.features.dialogs.logoutUserDialog.LogoutUserDialogCallbacks
-import org.example.project.features.dialogs.product_card.ProductCardComponent
+import org.example.project.features.dialogs.productCard.ProductCardComponent
 import org.example.project.features.home.HomeCallbacks
 import org.example.project.features.home.HomeComponent
 import org.example.project.features.launch.LaunchComponent

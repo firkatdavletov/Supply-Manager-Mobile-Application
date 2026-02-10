@@ -5,12 +5,12 @@ import org.example.project.domain.models.DeliveryType
 import org.example.project.features.base.Reducer
 
 data class CartViewState(
-    val totalPrice: Int,
-    val deliveryPrice: Int,
-    val productsPrice: Int,
-    val freeDeliveryPrice: Int?,
+    val totalPrice: Long,
+    val deliveryPrice: Long,
+    val productsPrice: Long,
+    val freeDeliveryPrice: Long?,
     val cartItems: List<CartItemModel>,
     val addressString: String,
     val deliveryType: DeliveryType,
     val continueText: String,
-): Reducer.ViewState
+) : Reducer.ViewState

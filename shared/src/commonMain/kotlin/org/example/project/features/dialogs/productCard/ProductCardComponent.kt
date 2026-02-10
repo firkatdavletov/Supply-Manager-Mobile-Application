@@ -1,4 +1,4 @@
-package org.example.project.features.dialogs.product_card
+package org.example.project.features.dialogs.productCard
 
 import com.arkivanov.decompose.ComponentContext
 import org.example.project.features.SnackBarManager
@@ -10,8 +10,8 @@ abstract class ProductCardComponent(
     reducer: ProductCardReducer,
     snackBarManager: SnackBarManager,
 ) : BaseComponent<ProductCardViewState, ProductCardViewEvent, ProductCardViewEffect>(
-    componentContext = componentContent,
-    initialState = initialState,
-    reducer = reducer,
-    snackBarManager = snackBarManager,
-)
+        componentContext = componentContent,
+        initialState = initialState,
+        reducer = reducer,
+        snackBarManager = snackBarManager,
+    )

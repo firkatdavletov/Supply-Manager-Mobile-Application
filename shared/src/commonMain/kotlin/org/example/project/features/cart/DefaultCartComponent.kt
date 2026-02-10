@@ -26,21 +26,21 @@ class DefaultCartComponent(
     private val getProductUseCase: GetProductUseCase,
     private val cartRepository: CartRepository,
     private val securityStorage: SecurityStorage,
-): CartComponent(
-    componentContext = componentContext,
-    initialState = CartViewState(
-        totalPrice = 0,
-        deliveryPrice = 0,
-        productsPrice = 0,
-        freeDeliveryPrice = null,
-        cartItems = emptyList(),
-        deliveryType = DeliveryType.PICKUP,
-        addressString = "",
-        continueText = "ВЫБЕРИТЕ АДРЕС"
-    ),
-    snackBarManager = snackBarManager,
-    reducer = CartReducer()
-) {
+) : CartComponent(
+        componentContext = componentContext,
+        initialState = CartViewState(
+            totalPrice = 0,
+            deliveryPrice = 0,
+            productsPrice = 0,
+            freeDeliveryPrice = null,
+            cartItems = emptyList(),
+            deliveryType = DeliveryType.PICKUP,
+            addressString = "",
+            continueText = "ВЫБЕРИТЕ АДРЕС",
+        ),
+        snackBarManager = snackBarManager,
+        reducer = CartReducer(),
+    ) {
     private var job: Job? = null
 
     init {
@@ -56,6 +56,7 @@ class DefaultCartComponent(
             CartViewEvent.OnBackClick -> {
                 callbacks.onBackClicked()
             }
+
             CartViewEvent.OnConfirmButtonClicked -> {
                 if (securityStorage.getAccessToken().isBlank()) {
                     callbacks.navigateToLogin()
@@ -63,13 +64,24 @@ class DefaultCartComponent(
                     callbacks.navigateToPayment()
                 }
             }
-            is CartViewEvent.OnCartLoaded -> reduce(event)
-            is CartViewEvent.OnAddToCart -> addToCart(event.product)
-            is CartViewEvent.OnRemoveFromCart -> removeFromCart(event.product)
+
+            is CartViewEvent.OnCartLoaded -> {
+                reduce(event)
+            }
+
+            is CartViewEvent.OnAddToCart -> {
+                addToCart(event.product)
+            }
+
+            is CartViewEvent.OnRemoveFromCart -> {
+                removeFromCart(event.product)
+            }
+
             is CartViewEvent.OnError -> {
                 reduce(event)
                 showError(event.message)
             }
+
             is CartViewEvent.OnThrowError -> {
                 reduce(event)
                 showThrowError(event.throwable)
@@ -79,11 +91,11 @@ class DefaultCartComponent(
 
     fun getCart() {
         coroutineScope.launch {
-            loadCartUseCase.invoke(Unit)
+            loadCartUseCase
+                .invoke(Unit)
                 .catch {
                     onEvent(CartViewEvent.OnThrowError(it))
-                }
-                .collect {}
+                }.collect {}
         }
     }
 
@@ -95,13 +107,26 @@ class DefaultCartComponent(
         }
     }
 
-    private suspend fun getProduct(productId: Long, onSuccess: (ProductModel) -> Unit) {
-        getProductUseCase.invoke(productId)
+    private suspend fun getProduct(
+        productId: Long,
+        onSuccess: (ProductModel) -> Unit,
+    ) {
+        getProductUseCase
+            .invoke(productId)
             .catch {
                 onEvent(CartViewEvent.OnThrowError(it))
-            }
-            .collect {
-                it?.let { onSuccess(it) }
+            }.collect { resultModel ->
+                when (resultModel) {
+                    is ResultModel.Error -> {
+                        onEvent(CartViewEvent.OnError(resultModel.message))
+                    }
+
+                    ResultModel.Loading -> {}
+
+                    is ResultModel.Success<ProductModel> -> {
+                        onSuccess(resultModel.data)
+                    }
+                }
             }
     }
 
@@ -124,16 +149,16 @@ class DefaultCartComponent(
 
     private fun addToCart(product: ProductModel) {
         val params = AddToCartUseCase.Params(
-            product = product.copy(count = product.count + 1)
+            product = product.copy(count = product.count + 1),
         )
         job?.cancel()
         job = coroutineScope.launch {
             println(" on add")
-            addToCartUseCase.invoke(params)
+            addToCartUseCase
+                .invoke(params)
                 .catch {
                     onEvent(CartViewEvent.OnThrowError(it))
-                }
-                .collect {
+                }.collect {
                     if (it is ResultModel.Error) {
                         onEvent(CartViewEvent.OnError(it.message))
                     }
@@ -143,16 +168,16 @@ class DefaultCartComponent(
 
     private fun removeFromCart(product: ProductModel) {
         val params = RemoveFromCartUseCase.Params(
-            product = product.copy(count = product.count - 1)
+            product = product.copy(count = product.count - 1),
         )
         job?.cancel()
         job = coroutineScope.launch {
             println(" on remove")
-            removeFromCartUseCase.invoke(params)
+            removeFromCartUseCase
+                .invoke(params)
                 .catch {
                     onEvent(CartViewEvent.OnThrowError(it))
-                }
-                .collect {
+                }.collect {
                     if (it is ResultModel.Error) {
                         onEvent(CartViewEvent.OnError(it.message))
                     }

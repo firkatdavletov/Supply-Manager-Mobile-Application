@@ -7,8 +7,8 @@ import org.example.project.features.dialogs.deleteUserDialog.DeleteUserDialogCal
 import org.example.project.features.dialogs.logoutUserDialog.DefaultLogoutUserComponent
 import org.example.project.features.dialogs.logoutUserDialog.LogoutUserComponent
 import org.example.project.features.dialogs.logoutUserDialog.LogoutUserDialogCallbacks
-import org.example.project.features.dialogs.product_card.DefaultProductCardComponent
-import org.example.project.features.dialogs.product_card.ProductCardComponent
+import org.example.project.features.dialogs.productCard.DefaultProductCardComponent
+import org.example.project.features.dialogs.productCard.ProductCardComponent
 import org.example.project.navigation.DialogConfig
 import org.koin.dsl.module
 
@@ -19,7 +19,7 @@ fun dialogsModule() =
                 componentContent = componentContext,
                 productId = config.productId,
                 snackBarManager = get(),
-                getProductCardUseCase = get(),
+                getProductUseCase = get(),
                 addToCartUseCase = get(),
                 removeFromCartUseCase = get(),
                 cartRepository = get(),

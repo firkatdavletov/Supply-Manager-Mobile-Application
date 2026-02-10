@@ -13,7 +13,7 @@ import org.example.project.features.catalog.CatalogComponent
 import org.example.project.features.current_order.CurrentOrderComponent
 import org.example.project.features.dialogs.deleteUserDialog.DeleteUserComponent
 import org.example.project.features.dialogs.logoutUserDialog.LogoutUserComponent
-import org.example.project.features.dialogs.product_card.ProductCardComponent
+import org.example.project.features.dialogs.productCard.ProductCardComponent
 import org.example.project.features.home.HomeComponent
 import org.example.project.features.launch.LaunchComponent
 import org.example.project.features.main_tabs.MainTabsComponent

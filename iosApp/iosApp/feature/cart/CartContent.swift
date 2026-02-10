@@ -11,21 +11,21 @@ import Shared
 
 struct CartContent: View {
     let cartItems: [CartItemModel]
-    let productPrice: Int32
-    let deliveryPrice: Int32
-    let totalAmount: Int32
-    let freeDeliveryPrice: Int32?
+    let productPrice: Int64
+    let deliveryPrice: Int64
+    let totalAmount: Int64
+    let freeDeliveryPrice: Int64?
     let deliveryType: DeliveryType
     let onAddToCart: (CartItemModel) -> Void
     let onRemoveFromCart: (CartItemModel) -> Void
     let onBack: () -> Void
     let onConfirm: () -> Void
-    
+
     var body: some View {
         VStack(spacing: 0) {
             headerView
                 .padding(16)
-                .background(Color.primaryContainer)
+                .background(Color.blue)
             // Content
             cartItemList
             // Bottom info and button
@@ -82,25 +82,25 @@ extension CartContent {
                     .font(AppTypography.bodyLarge)
                     .foregroundColor(Color.onBackground)
                 Spacer()
-                
-                Text("\(productPrice) руб")
+
+                Text("\(productPrice.asCurrency())")
                     .font(AppTypography.titleLarge)
                     .foregroundColor(Color.onBackground)
             }
-            
+
             if (deliveryType == DeliveryType.delivery) {
                 HStack {
                     Text("Стоимость доставки:")
                         .font(AppTypography.bodyLarge)
                         .foregroundColor(Color.onBackground)
                     Spacer()
-                    
+
                     if (totalAmount == 0 || (freeDeliveryPrice != nil && productPrice > freeDeliveryPrice!)) {
                         Text("бесплатно")
                             .font(AppTypography.titleLarge)
                             .foregroundColor(Color.onBackground)
                     } else {
-                        Text("\(deliveryPrice) руб")
+                        Text("\(deliveryPrice.asCurrency)")
                             .font(AppTypography.titleLarge)
                             .foregroundColor(Color.onBackground)
                     }
@@ -111,7 +111,7 @@ extension CartContent {
                     .font(AppTypography.bodyLarge)
                     .foregroundColor(Color.onBackground)
                 Spacer()
-                Text("\(totalAmount) руб")
+                Text("\(totalAmount.asCurrency()) руб")
                     .font(AppTypography.titleLarge)
                     .foregroundColor(Color.onBackground)
             }
@@ -141,12 +141,12 @@ extension CartContent {
         freeDeliveryPrice: 0,
         deliveryType: DeliveryType.delivery
     ) { CartItemModel in
-        
+
     } onRemoveFromCart: { CartItemModel in
-        
+
     } onBack: {
-        
+
     } onConfirm: {
-        
+
     }
 }

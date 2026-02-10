@@ -95,8 +95,8 @@ import org.example.project.domain.repositories.TokenRepository
 import org.example.project.domain.repositories.UserRepository
 import org.example.project.domain.usecase.auth.GetAccessTokenUseCase
 import org.example.project.domain.usecase.auth.GetAuthTypesUseCase
-import org.example.project.domain.usecase.auth.VerifyPhoneNumberUseCase
 import org.example.project.domain.usecase.auth.VerifyCodeUseCase
+import org.example.project.domain.usecase.auth.VerifyPhoneNumberUseCase
 import org.example.project.domain.usecase.cart.AddToCartUseCase
 import org.example.project.domain.usecase.cart.ClearCartUseCase
 import org.example.project.domain.usecase.cart.CreateCartUseCase
@@ -105,7 +105,6 @@ import org.example.project.domain.usecase.cart.RemoveFromCartUseCase
 import org.example.project.domain.usecase.cart.UpdateDeliveryAddressUseCase
 import org.example.project.domain.usecase.catalog.GetCategoriesUseCase
 import org.example.project.domain.usecase.catalog.GetCategoryUseCase
-import org.example.project.domain.usecase.catalog.GetProductCardUseCase
 import org.example.project.domain.usecase.catalog.GetProductUseCase
 import org.example.project.domain.usecase.catalog.GetProductsUseCase
 import org.example.project.domain.usecase.catalog.GetRemoteCategoriesUseCase
@@ -131,341 +130,352 @@ import org.example.project.features.mapper.OrderUIModelMapper
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-//For IOS:
+// For IOS:
 private const val baseUrl = "localhost:8080"
-//For Android Studio
-//private const val baseUrl = "10.0.2.2:8080"
-//For remote server
-//private const val baseUrl = "foodbox-service-firkat.amvera.io"
+
+// For Android Studio
+// private const val baseUrl = "10.0.2.2:8080"
+// For remote server
+// private const val baseUrl = "foodbox-service-firkat.amvera.io"
 private val isHttps = false
 
 @OptIn(ExperimentalSerializationApi::class)
-fun appModule() = module {
-    single<SnackBarManager> { SnackBarManager() }
-    //Data stores
-    single<AuthRemoteDataStore> { DefaultAuthRemoteDatStore(get()) }
-    single<UserRemoteDataStore> { DefaultUserRemoteDatastore(get()) }
-    single<UserLocalDataStore> { DefaultUserLocalDataStore() }
-    single<CatalogRemoteDataStore> { DefaultCatalogRemoteDataStore(get()) }
-    single<LocalCatalogDataStore> { DefaultLocalCatalogDataStore() }
-    single<GeoRemoteDatasource> { DefaultGeoRemoteDatasource(get()) }
-    single<RemoteCartDataStore> { DefaultRemoteCartDataStore(get(), get()) }
-    single<DepartmentsRemoteDataStore> { DefaultDepartmentsRemoteDataStore(get()) }
-    single<DepartmentsLocalDataStore> { DefaultDepartmentLocalDataStore() }
-    single<PaymentRemoteDataStore> { DefaultPaymentRemoteDataStore(get()) }
-    single<OrderRemoteDataStore> { DefaultOrderRemoteDataStore(get()) }
+fun appModule() =
+    module {
+        single<SnackBarManager> { SnackBarManager() }
+        // Data stores
+        single<AuthRemoteDataStore> { DefaultAuthRemoteDatStore(get()) }
+        single<UserRemoteDataStore> { DefaultUserRemoteDatastore(get()) }
+        single<UserLocalDataStore> { DefaultUserLocalDataStore() }
+        single<CatalogRemoteDataStore> { DefaultCatalogRemoteDataStore(get()) }
+        single<LocalCatalogDataStore> { DefaultLocalCatalogDataStore() }
+        single<GeoRemoteDatasource> { DefaultGeoRemoteDatasource(get()) }
+        single<RemoteCartDataStore> { DefaultRemoteCartDataStore(get(), get()) }
+        single<DepartmentsRemoteDataStore> { DefaultDepartmentsRemoteDataStore(get()) }
+        single<DepartmentsLocalDataStore> { DefaultDepartmentLocalDataStore() }
+        single<PaymentRemoteDataStore> { DefaultPaymentRemoteDataStore(get()) }
+        single<OrderRemoteDataStore> { DefaultOrderRemoteDataStore(get()) }
 
-    //Repositories
-    single<AuthRepository> { DefaultAuthRepository(get(), get(), get(), get()) }
-    single<UserRepository> { DefaultUserRepository(get(), get(), get()) }
-    single<CatalogRepository> { DefaultCatalogRepository(get(), get(), get(), get()) }
-    single<TokenRepository> { DefaultTokenRepository(get()) }
-    single<CartRepository> { DefaultCartRepository(get(), get(), get(), get(), get()) }
-    single<GeoRepository> { DefaultGeoRepository(get(), get()) }
-    single<DepartmentsRepository> { DefaultDepartmentRepository(get(), get(), get()) }
-    single<PaymentRepository> { DefaultPaymentRepository(get(), get()) }
-    single<SbpBanksRepository> { DefaultSbpBanksRepository(get(), get()) }
-    single<OrderRepository> { DefaultOrderRepository(get(), get(), get(), get()) }
+        // Repositories
+        single<AuthRepository> { DefaultAuthRepository(get(), get(), get(), get()) }
+        single<UserRepository> { DefaultUserRepository(get(), get(), get()) }
+        single<CatalogRepository> { DefaultCatalogRepository(get(), get(), get(), get()) }
+        single<TokenRepository> { DefaultTokenRepository(get()) }
+        single<CartRepository> { DefaultCartRepository(get(), get(), get(), get(), get()) }
+        single<GeoRepository> { DefaultGeoRepository(get(), get()) }
+        single<DepartmentsRepository> { DefaultDepartmentRepository(get(), get(), get()) }
+        single<PaymentRepository> { DefaultPaymentRepository(get(), get()) }
+        single<SbpBanksRepository> { DefaultSbpBanksRepository(get(), get()) }
+        single<OrderRepository> { DefaultOrderRepository(get(), get(), get(), get()) }
 
-    //UseCases
-    factory<LoadUserUseCase> { LoadUserUseCase(get()) }
-    factory<GetAuthTypesUseCase> { GetAuthTypesUseCase(get()) }
-    factory<GetAccessTokenUseCase> { GetAccessTokenUseCase(get()) }
-    factory<VerifyPhoneNumberUseCase> { VerifyPhoneNumberUseCase(get()) }
-    factory<VerifyCodeUseCase> { VerifyCodeUseCase(get()) }
-    factory<GetCategoriesUseCase> { GetCategoriesUseCase(get()) }
-    factory<GetProductsUseCase> { GetProductsUseCase(get()) }
-    factory<AddToCartUseCase> { AddToCartUseCase(get()) }
-    factory<LoadCartUseCase> { LoadCartUseCase(get()) }
-    factory<RemoveFromCartUseCase> { RemoveFromCartUseCase(get()) }
-    factory<GetGeoAddressUseCase> { GetGeoAddressUseCase(get()) }
-    factory<UpdateDeliveryAddressUseCase> { UpdateDeliveryAddressUseCase(get()) }
-    factory<GetDepartmentsUseCase> { GetDepartmentsUseCase(get(), get()) }
-    factory<GetProductUseCase> { GetProductUseCase(get()) }
-    factory<GetRemoteCategoriesUseCase> { GetRemoteCategoriesUseCase(get()) }
-    factory<CreateOrderUseCase> { CreateOrderUseCase(get()) }
-    factory<GetSbpBanksUseCase> { GetSbpBanksUseCase(get()) }
-    factory<GetPaymentTypesUseCase> { GetPaymentTypesUseCase(get()) }
-    factory<ClearCartUseCase> { ClearCartUseCase(get()) }
-    factory<GetCurrentOrderUseCase> { GetCurrentOrderUseCase(get()) }
-    factory<GetOrdersUseCase> { GetOrdersUseCase(get()) }
-    factory<SearchAddressUseCase> { SearchAddressUseCase(get()) }
-    factory<CreateCartUseCase> { CreateCartUseCase(get()) }
-    factory<GetOrderByIdUseCase> { GetOrderByIdUseCase(get()) }
-    factory<DeleteUserUseCase> { DeleteUserUseCase(get(), get(), get()) }
-    factory<LogoutUserUseCase> { LogoutUserUseCase(get(), get(), get()) }
-    factory<UpdateUserUseCase> { UpdateUserUseCase(get()) }
-    factory { GetProductCardUseCase(get()) }
-    factory { TakeOrderUseCase(get()) }
-    factory { CompleteOrderUseCase(get()) }
-    factory { CancelOrderUseCase(get()) }
-    factory { PendingOrderUseCase(get()) }
-    factory { GetCategoryUseCase(get()) }
+        // UseCases
+        factory<LoadUserUseCase> { LoadUserUseCase(get()) }
+        factory<GetAuthTypesUseCase> { GetAuthTypesUseCase(get()) }
+        factory<GetAccessTokenUseCase> { GetAccessTokenUseCase(get()) }
+        factory<VerifyPhoneNumberUseCase> { VerifyPhoneNumberUseCase(get()) }
+        factory<VerifyCodeUseCase> { VerifyCodeUseCase(get()) }
+        factory<GetCategoriesUseCase> { GetCategoriesUseCase(get()) }
+        factory<GetProductsUseCase> { GetProductsUseCase(get()) }
+        factory<AddToCartUseCase> { AddToCartUseCase(get()) }
+        factory<LoadCartUseCase> { LoadCartUseCase(get()) }
+        factory<RemoveFromCartUseCase> { RemoveFromCartUseCase(get()) }
+        factory<GetGeoAddressUseCase> { GetGeoAddressUseCase(get()) }
+        factory<UpdateDeliveryAddressUseCase> { UpdateDeliveryAddressUseCase(get()) }
+        factory<GetDepartmentsUseCase> { GetDepartmentsUseCase(get(), get()) }
+        factory<GetProductUseCase> { GetProductUseCase(get()) }
+        factory<GetRemoteCategoriesUseCase> { GetRemoteCategoriesUseCase(get()) }
+        factory<CreateOrderUseCase> { CreateOrderUseCase(get()) }
+        factory<GetSbpBanksUseCase> { GetSbpBanksUseCase(get()) }
+        factory<GetPaymentTypesUseCase> { GetPaymentTypesUseCase(get()) }
+        factory<ClearCartUseCase> { ClearCartUseCase(get()) }
+        factory<GetCurrentOrderUseCase> { GetCurrentOrderUseCase(get()) }
+        factory<GetOrdersUseCase> { GetOrdersUseCase(get()) }
+        factory<SearchAddressUseCase> { SearchAddressUseCase(get()) }
+        factory<CreateCartUseCase> { CreateCartUseCase(get()) }
+        factory<GetOrderByIdUseCase> { GetOrderByIdUseCase(get()) }
+        factory<DeleteUserUseCase> { DeleteUserUseCase(get(), get(), get()) }
+        factory<LogoutUserUseCase> { LogoutUserUseCase(get(), get(), get()) }
+        factory<UpdateUserUseCase> { UpdateUserUseCase(get()) }
+        factory { TakeOrderUseCase(get()) }
+        factory { CompleteOrderUseCase(get()) }
+        factory { CancelOrderUseCase(get()) }
+        factory { PendingOrderUseCase(get()) }
+        factory { GetCategoryUseCase(get()) }
 
-    //Mappers
-    factory<AuthTypeMapper> { AuthTypeMapper() }
-    factory<UserMapper> { UserMapper() }
-    factory<CategoryMapper> { CategoryMapper(get()) }
-    factory<ProductMapper> { ProductMapper() }
-    factory<CartMapper> { CartMapper(get(), get(), get(), get(), get()) }
-    factory<CartItemMapper> { CartItemMapper() }
-    factory { CityMapper() }
-    factory { DeliveryInfoMapper() }
-    factory { AddressModelMapper(get()) }
-    factory { GeoAddressMapper(get(), get()) }
-    factory { DepartmentMapper(get(), get()) }
-    factory { WorkingHoursMapper() }
-    factory { OrderMapper(get(), get()) }
-    factory { OrderItemMapper() }
-    factory { BankInfoMapper() }
-    factory { PaymentMapper(get()) }
-    factory { OrderUIModelMapper() }
-    factory { TokenPairMapper() }
+        // Mappers
+        factory<AuthTypeMapper> { AuthTypeMapper() }
+        factory<UserMapper> { UserMapper() }
+        factory<CategoryMapper> { CategoryMapper(get()) }
+        factory<ProductMapper> { ProductMapper() }
+        factory<CartMapper> { CartMapper(get(), get(), get(), get(), get()) }
+        factory<CartItemMapper> { CartItemMapper() }
+        factory { CityMapper() }
+        factory { DeliveryInfoMapper() }
+        factory { AddressModelMapper(get()) }
+        factory { GeoAddressMapper(get(), get()) }
+        factory { DepartmentMapper(get(), get()) }
+        factory { WorkingHoursMapper() }
+        factory { OrderMapper(get(), get()) }
+        factory { OrderItemMapper() }
+        factory { BankInfoMapper() }
+        factory { PaymentMapper(get()) }
+        factory { OrderUIModelMapper() }
+        factory { TokenPairMapper() }
 
-    single<HttpClient>(named("cart")) {
-        val securityStorage: SecurityStorage = get()
+        single<HttpClient>(named("cart")) {
+            val securityStorage: SecurityStorage = get()
 
-        val httpClient = HttpClient {
-            install(Logging) {
-                level = LogLevel.ALL // Уровень логирования (ALL, HEADERS, BODY, INFO, NONE)
-                logger = object : Logger {
-                    override fun log(message: String) {
-                        println("Ktorfit Log: $message") // Логирование в консоль
+            val httpClient = HttpClient {
+                install(Logging) {
+                    level = LogLevel.ALL // Уровень логирования (ALL, HEADERS, BODY, INFO, NONE)
+                    logger = object : Logger {
+                        override fun log(message: String) {
+                            println("Ktorfit Log: $message") // Логирование в консоль
+                        }
                     }
                 }
-            }
-            install(ContentNegotiation) {
-                json(Json {
-                    prettyPrint = true
-                    isLenient = true
-                })
-            }
-            install(AuthPlugin()) {
-                tokenProvider = {
-                    val token = securityStorage.getCartToken()
-                    token
+                install(ContentNegotiation) {
+                    json(
+                        Json {
+                            prettyPrint = true
+                            isLenient = true
+                        },
+                    )
                 }
-            }
-
-            defaultRequest {
-                url {
-                    if (isHttps) {
-                        protocol = URLProtocol.HTTPS
+                install(AuthPlugin()) {
+                    tokenProvider = {
+                        val token = securityStorage.getCartToken()
+                        token
                     }
-                    host = baseUrl
                 }
-            }
+
+                defaultRequest {
+                    url {
+                        if (isHttps) {
+                            protocol = URLProtocol.HTTPS
+                        }
+                        host = baseUrl
+                    }
+                }
 
 //            install(HttpRequestRetry) {
 //                retryOnServerErrors(maxRetries = 5)
 //                exponentialDelay()
 //            }
-            expectSuccess = true
+                expectSuccess = true
+            }
+            httpClient
         }
-        httpClient
-    }
 
-    single<HttpClient>(named("ws_orders")) {
-        val securityStorage: SecurityStorage = get()
-        val httpClient = HttpClient {
-            install(Logging) {
-                level = LogLevel.ALL // Уровень логирования (ALL, HEADERS, BODY, INFO, NONE)
-                logger = object : Logger {
-                    override fun log(message: String) {
-                        println("Ktorfit Log: $message") // Логирование в консоль
+        single<HttpClient>(named("ws_orders")) {
+            val securityStorage: SecurityStorage = get()
+            val httpClient = HttpClient {
+                install(Logging) {
+                    level = LogLevel.ALL // Уровень логирования (ALL, HEADERS, BODY, INFO, NONE)
+                    logger = object : Logger {
+                        override fun log(message: String) {
+                            println("Ktorfit Log: $message") // Логирование в консоль
+                        }
                     }
                 }
-            }
-            install(WebSockets) {
-                pingIntervalMillis = 20_000
-            }
-            install(AuthPlugin()) {
-                tokenProvider = {
-                    val token = securityStorage.getAccessToken()
-                    token
+                install(WebSockets) {
+                    pingIntervalMillis = 20_000
                 }
+                install(AuthPlugin()) {
+                    tokenProvider = {
+                        val token = securityStorage.getAccessToken()
+                        token
+                    }
+                }
+                install(ContentNegotiation) {
+                    json(
+                        Json {
+                            prettyPrint = true
+                            isLenient = true
+                        },
+                    )
+                }
+                expectSuccess = true
             }
-            install(ContentNegotiation) {
-                json(Json {
-                    prettyPrint = true
-                    isLenient = true
-                })
-            }
-            expectSuccess = true
+            httpClient
         }
-        httpClient
-    }
 
-    single<HttpClient>(named("ws_callcheck")) {
-        val httpClient = HttpClient {
-            install(Logging) {
-                level = LogLevel.ALL
-                logger = object : Logger {
-                    override fun log(message: String) {
-                        println("Ktorfit Log: $message")
+        single<HttpClient>(named("ws_callcheck")) {
+            val httpClient = HttpClient {
+                install(Logging) {
+                    level = LogLevel.ALL
+                    logger = object : Logger {
+                        override fun log(message: String) {
+                            println("Ktorfit Log: $message")
+                        }
                     }
                 }
+                install(WebSockets) {
+                    pingIntervalMillis = 5_000
+                }
+                install(ContentNegotiation) {
+                    json(
+                        Json {
+                            prettyPrint = true
+                            isLenient = true
+                        },
+                    )
+                }
+                expectSuccess = true
             }
-            install(WebSockets) {
-                pingIntervalMillis = 5_000
-            }
-            install(ContentNegotiation) {
-                json(Json {
-                    prettyPrint = true
-                    isLenient = true
-                })
-            }
-            expectSuccess = true
+            httpClient
         }
-        httpClient
-    }
 
-    single<HttpClient>(named("auth")) {
-        val securityStorage: SecurityStorage = get()
-        val authApi: AuthApi = get()
+        single<HttpClient>(named("auth")) {
+            val securityStorage: SecurityStorage = get()
+            val authApi: AuthApi = get()
 
-        val httpClient = HttpClient {
-            install(Logging) {
-                level = LogLevel.ALL // Уровень логирования (ALL, HEADERS, BODY, INFO, NONE)
-                logger = object : Logger {
-                    override fun log(message: String) {
-                        println("Ktorfit Log: $message") // Логирование в консоль
+            val httpClient = HttpClient {
+                install(Logging) {
+                    level = LogLevel.ALL // Уровень логирования (ALL, HEADERS, BODY, INFO, NONE)
+                    logger = object : Logger {
+                        override fun log(message: String) {
+                            println("Ktorfit Log: $message") // Логирование в консоль
+                        }
                     }
                 }
-            }
-            install(ContentNegotiation) {
-                json(Json {
-                    prettyPrint = true
-                    isLenient = true
-                })
-            }
-            install(AuthPlugin()) {
-                tokenProvider = {
-                    val token = securityStorage.getAccessToken()
-                    token
+                install(ContentNegotiation) {
+                    json(
+                        Json {
+                            prettyPrint = true
+                            isLenient = true
+                        },
+                    )
                 }
-            }
-
-            defaultRequest {
-                url {
-                    if (isHttps) {
-                        protocol = URLProtocol.HTTPS
+                install(AuthPlugin()) {
+                    tokenProvider = {
+                        val token = securityStorage.getAccessToken()
+                        token
                     }
-                    host = baseUrl
                 }
-            }
+
+                defaultRequest {
+                    url {
+                        if (isHttps) {
+                            protocol = URLProtocol.HTTPS
+                        }
+                        host = baseUrl
+                    }
+                }
 
 //            install(HttpRequestRetry) {
 //                retryOnServerErrors(maxRetries = 2)
 //                exponentialDelay()
 //            }
-            expectSuccess = true
-        }
-        httpClient.plugin(HttpSend).intercept { request ->
-            val originalCall = execute(request)
+                expectSuccess = true
+            }
+            httpClient.plugin(HttpSend).intercept { request ->
+                val originalCall = execute(request)
 
-            if (originalCall.response.status.value == HttpStatusCode.Unauthorized.value) {
-                val refreshToken = securityStorage.getRefreshToken()
-                if (refreshToken.isNotEmpty()) {
-                    try {
-                        val refreshResponse = authApi.refreshTokens(RefreshTokenRequestBody(refreshToken))
+                if (originalCall.response.status.value == HttpStatusCode.Unauthorized.value) {
+                    val refreshToken = securityStorage.getRefreshToken()
+                    if (refreshToken.isNotEmpty()) {
+                        try {
+                            val refreshResponse = authApi.refreshTokens(RefreshTokenRequestBody(refreshToken))
 
-                        if (refreshResponse.success && refreshResponse.tokens != null) {
-                            securityStorage.saveAccessToken(refreshResponse.tokens.access)
-                            securityStorage.saveRefreshToken(refreshResponse.tokens.refresh)
-                            execute(request)
-                        } else {
+                            if (refreshResponse.success && refreshResponse.tokens != null) {
+                                securityStorage.saveAccessToken(refreshResponse.tokens.access)
+                                securityStorage.saveRefreshToken(refreshResponse.tokens.refresh)
+                                execute(request)
+                            } else {
+                                securityStorage.saveAccessToken("")
+                                securityStorage.saveRefreshToken("")
+                                throw HttpException.RequiredAuth
+                            }
+                        } catch (e: Exception) {
                             securityStorage.saveAccessToken("")
                             securityStorage.saveRefreshToken("")
-                            throw HttpException.RequiredAuth
+                            throw e
                         }
-                    } catch (e: Exception) {
-                        securityStorage.saveAccessToken("")
-                        securityStorage.saveRefreshToken("")
-                        throw e
+                    } else {
+                        throw IllegalStateException("No refresh token available")
                     }
+                    execute(request)
                 } else {
-                    throw IllegalStateException("No refresh token available")
+                    originalCall
                 }
-                execute(request)
-            } else {
-                originalCall
             }
+            httpClient
         }
-        httpClient
-    }
 
-    single<HttpClient>(named("no_auth")) {
-        val httpClient = HttpClient {
-            install(Logging) {
-                level = LogLevel.ALL // Уровень логирования (ALL, HEADERS, BODY, INFO, NONE)
-                logger = object : Logger {
-                    override fun log(message: String) {
-                        println("Ktorfit Log: $message") // Логирование в консоль
+        single<HttpClient>(named("no_auth")) {
+            val httpClient = HttpClient {
+                install(Logging) {
+                    level = LogLevel.ALL // Уровень логирования (ALL, HEADERS, BODY, INFO, NONE)
+                    logger = object : Logger {
+                        override fun log(message: String) {
+                            println("Ktorfit Log: $message") // Логирование в консоль
+                        }
                     }
                 }
-            }
-            install(ContentNegotiation) {
-                json(Json {
-                    prettyPrint = true
-                    isLenient = true
-                })
-            }
-
-            defaultRequest {
-                url {
-                    if (isHttps) {
-                        protocol = URLProtocol.HTTPS
-                    }
-                    host = baseUrl
+                install(ContentNegotiation) {
+                    json(
+                        Json {
+                            prettyPrint = true
+                            isLenient = true
+                        },
+                    )
                 }
+
+                defaultRequest {
+                    url {
+                        if (isHttps) {
+                            protocol = URLProtocol.HTTPS
+                        }
+                        host = baseUrl
+                    }
+                }
+
+                expectSuccess = true
             }
-
-            expectSuccess = true
+            httpClient
         }
-        httpClient
-    }
 
-    //Api
-    single<AuthApi> {
-        val httpClient = get<HttpClient>(named("no_auth"))
-        val wsClient = get<HttpClient>(named("ws_callcheck"))
-        AuthApiImpl(httpClient, wsClient)
-    }
+        // Api
+        single<AuthApi> {
+            val httpClient = get<HttpClient>(named("no_auth"))
+            val wsClient = get<HttpClient>(named("ws_callcheck"))
+            AuthApiImpl(httpClient, wsClient)
+        }
 
-    single<UserApi> {
-        val httpClient = get<HttpClient>(named("auth"))
-        UserApiImpl(httpClient)
-    }
+        single<UserApi> {
+            val httpClient = get<HttpClient>(named("auth"))
+            UserApiImpl(httpClient)
+        }
 
-    single<CatalogApi> {
-        val httpClient = get<HttpClient>(named("no_auth"))
-        CatalogApiImpl(httpClient)
-    }
+        single<CatalogApi> {
+            val httpClient = get<HttpClient>(named("no_auth"))
+            CatalogApiImpl(httpClient)
+        }
 
-    single<CartApi> {
-        val httpClient = get<HttpClient>(named("cart"))
-        CartApiImpl(httpClient)
-    }
+        single<CartApi> {
+            val httpClient = get<HttpClient>(named("cart"))
+            CartApiImpl(httpClient)
+        }
 
-    single<MapApi> {
-        val httpClient = get<HttpClient>(named("no_auth"))
-        MapApiImpl(httpClient)
-    }
+        single<MapApi> {
+            val httpClient = get<HttpClient>(named("no_auth"))
+            MapApiImpl(httpClient)
+        }
 
-    single<DepartmentApi> {
-        val httpClient = get<HttpClient>(named("no_auth"))
-        DepartmentApiImpl(httpClient)
-    }
+        single<DepartmentApi> {
+            val httpClient = get<HttpClient>(named("no_auth"))
+            DepartmentApiImpl(httpClient)
+        }
 
-    single<PaymentApi> {
-        val httpClient = get<HttpClient>(named("auth"))
-        PaymentApiImpl(httpClient)
-    }
+        single<PaymentApi> {
+            val httpClient = get<HttpClient>(named("auth"))
+            PaymentApiImpl(httpClient)
+        }
 
-    single<OrderApi> {
-        val httpClient = get<HttpClient>(named("no_auth"))
-        val wsClient = get<HttpClient>(named("ws_orders"))
-        OrderApiImpl(httpClient, wsClient)
+        single<OrderApi> {
+            val httpClient = get<HttpClient>(named("no_auth"))
+            val wsClient = get<HttpClient>(named("ws_orders"))
+            OrderApiImpl(httpClient, wsClient)
+        }
     }
-}

@@ -84,7 +84,7 @@ class DefaultCatalogComponent(
             }
 
             is CatalogViewEvent.OnProductClicked -> {
-                callbacks.showProductCard(event.id.toInt())
+                callbacks.showProductCard(event.id)
             }
         }
     }

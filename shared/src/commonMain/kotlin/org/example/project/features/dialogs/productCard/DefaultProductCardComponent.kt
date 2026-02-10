@@ -1,4 +1,4 @@
-package org.example.project.features.dialogs.product_card
+package org.example.project.features.dialogs.productCard
 
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.Job
@@ -9,26 +9,26 @@ import org.example.project.domain.models.ResultModel
 import org.example.project.domain.repositories.CartRepository
 import org.example.project.domain.usecase.cart.AddToCartUseCase
 import org.example.project.domain.usecase.cart.RemoveFromCartUseCase
-import org.example.project.domain.usecase.catalog.GetProductCardUseCase
+import org.example.project.domain.usecase.catalog.GetProductUseCase
 import org.example.project.features.SnackBarManager
 
 class DefaultProductCardComponent(
     componentContent: ComponentContext,
-    private val productId: Int,
+    private val productId: Long,
     snackBarManager: SnackBarManager,
-    private val getProductCardUseCase: GetProductCardUseCase,
+    private val getProductUseCase: GetProductUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val removeFromCartUseCase: RemoveFromCartUseCase,
-    private val cartRepository: CartRepository
+    private val cartRepository: CartRepository,
 ) : ProductCardComponent(
-    componentContent = componentContent,
-    initialState = ProductCardViewState(
-        isLoading = true,
-        product = null,
-    ),
-    reducer = ProductCardReducer(),
-    snackBarManager = snackBarManager
-) {
+        componentContent = componentContent,
+        initialState = ProductCardViewState(
+            isLoading = true,
+            product = null,
+        ),
+        reducer = ProductCardReducer(),
+        snackBarManager = snackBarManager,
+    ) {
     private var job: Job? = null
 
     override fun onEvent(event: ProductCardViewEvent) {
@@ -37,18 +37,24 @@ class DefaultProductCardComponent(
                 reduce(event)
                 showError(event.error)
             }
+
             is ProductCardViewEvent.OnProductLoaded -> {
                 reduce(event)
             }
+
             is ProductCardViewEvent.OnThrowError -> {
                 reduce(event)
                 showThrowError(event.throwable)
             }
 
-            is ProductCardViewEvent.OnCartLoaded -> reduce(event)
+            is ProductCardViewEvent.OnCartLoaded -> {
+                reduce(event)
+            }
+
             ProductCardViewEvent.OnAddToCart -> {
                 state.value.product?.let { addToCart(it) }
             }
+
             ProductCardViewEvent.OnRemoveFromCart -> {
                 state.value.product?.let { removeFromCart(it) }
             }
@@ -61,16 +67,18 @@ class DefaultProductCardComponent(
 
     private fun loadProduct() {
         coroutineScope.launch {
-            getProductCardUseCase.invoke(productId)
+            getProductUseCase
+                .invoke(productId)
                 .catch {
                     onEvent(ProductCardViewEvent.OnThrowError(it))
-                }
-                .collect { resultModel ->
+                }.collect { resultModel ->
                     when (resultModel) {
                         is ResultModel.Error -> {
                             onEvent(ProductCardViewEvent.OnError(resultModel.message ?: "Что-то пошло не так"))
                         }
+
                         ResultModel.Loading -> {}
+
                         is ResultModel.Success<ProductModel> -> {
                             onEvent(ProductCardViewEvent.OnProductLoaded(resultModel.data))
                             subscribeToCart()
@@ -82,15 +90,15 @@ class DefaultProductCardComponent(
 
     private fun addToCart(product: ProductModel) {
         val params = AddToCartUseCase.Params(
-            product = product.copy(count = product.count + 1)
+            product = product.copy(count = product.count + 1),
         )
         job?.cancel()
         job = coroutineScope.launch {
-            addToCartUseCase.invoke(params)
+            addToCartUseCase
+                .invoke(params)
                 .catch {
                     onEvent(ProductCardViewEvent.OnThrowError(it))
-                }
-                .collect { resultModel ->
+                }.collect { resultModel ->
                     if (resultModel is ResultModel.Error) {
                         onEvent(ProductCardViewEvent.OnError(resultModel.message ?: "Что-то пошло не так"))
                     }
@@ -100,15 +108,15 @@ class DefaultProductCardComponent(
 
     private fun removeFromCart(product: ProductModel) {
         val params = RemoveFromCartUseCase.Params(
-            product = product.copy(count = product.count - 1)
+            product = product.copy(count = product.count - 1),
         )
         job?.cancel()
         job = coroutineScope.launch {
-            removeFromCartUseCase.invoke(params)
+            removeFromCartUseCase
+                .invoke(params)
                 .catch {
                     onEvent(ProductCardViewEvent.OnThrowError(it))
-                }
-                .collect { resultModel ->
+                }.collect { resultModel ->
                     if (resultModel is ResultModel.Error) {
                         onEvent(ProductCardViewEvent.OnError(resultModel.message ?: "Что-то пошло не так"))
                     }

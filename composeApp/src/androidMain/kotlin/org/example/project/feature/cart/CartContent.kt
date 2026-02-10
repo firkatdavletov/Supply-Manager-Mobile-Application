@@ -39,9 +39,9 @@ import org.example.project.feature.ui_components.DefaultCartButton
 fun CartContent(
     modifier: Modifier,
     products: List<CartItemModel>,
-    productPrice: Int,
-    deliveryPrice: Int,
-    totalAmount: Int,
+    productPrice: Long,
+    deliveryPrice: Long,
+    totalAmount: Long,
     deliveryType: DeliveryType,
     onBackButtonClicked: () -> Unit = {},
     onAddToCart: (CartItemModel) -> Unit = {},
@@ -154,7 +154,7 @@ fun CartContent(
                         Text(
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onBackground,
-                            text = if (deliveryPrice == 0) "бесплатно" else "$deliveryPrice ₽"
+                            text = if (deliveryPrice == 0L) "бесплатно" else "$deliveryPrice ₽"
                         )
                     }
                 }

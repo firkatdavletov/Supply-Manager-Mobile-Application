@@ -8,11 +8,16 @@ import org.example.project.domain.models.ResultModel
 
 interface CatalogRepository {
     val catalogSubject: SharedFlow<List<CategoryModel>>
+
     fun getCategories(): Flow<List<CategoryModel>>
+
     fun getCategory(id: Long): Flow<ResultModel<CategoryModel>>
+
     fun getCategoryById(id: Long): Flow<CategoryModel?>
-    fun getProductCard(id: Int): Flow<ResultModel<ProductModel>>
+
+    fun getProduct(id: Long): Flow<ResultModel<ProductModel>>
+
     fun getProducts(categoryId: Long): Flow<List<ProductModel>>
-    fun getProductCard(productId: Long): Flow<ProductModel?>
+
     fun getRemoteCategories(): Flow<ResultModel<List<CategoryModel>>>
 }

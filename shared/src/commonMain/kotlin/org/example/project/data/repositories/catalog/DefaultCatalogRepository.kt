@@ -21,7 +21,7 @@ class DefaultCatalogRepository(
     private val catalogLocalDataStore: LocalCatalogDataStore,
     private val categoryMapper: CategoryMapper,
     private val productMapper: ProductMapper,
-): CatalogRepository {
+) : CatalogRepository {
 
     private val _catalogSubject = MutableSharedFlow<List<CategoryModel>>(replay = 1)
 
@@ -55,13 +55,19 @@ class DefaultCatalogRepository(
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getProducts(categoryId: Long): Flow<List<ProductModel>> {
         return flow {
-
         }
     }
 
-    override fun getProductCard(productId: Long): Flow<ProductModel?> {
+    override fun getProduct(id: Long): Flow<ResultModel<ProductModel>> {
         return flow {
+            emit(ResultModel.Loading)
+            val response = catalogRemoteDataStore.getProduct(id)
 
+            if (response.success && response.product != null) {
+                emit(ResultModel.Success(productMapper.toModel(response.product)))
+            } else {
+                emit(ResultModel.Error(response.error, response.code))
+            }
         }
     }
 
@@ -73,19 +79,6 @@ class DefaultCatalogRepository(
                 val model = categoryMapper.toModel(response.catalog)
                 _catalogSubject.emit(model)
                 emit(ResultModel.Success(model))
-            } else {
-                emit(ResultModel.Error(response.error, response.code))
-            }
-        }
-    }
-
-    override fun getProductCard(id: Int): Flow<ResultModel<ProductModel>> {
-        return flow {
-            emit(ResultModel.Loading)
-            val response =  catalogRemoteDataStore.getProduct(id)
-
-            if (response.success && response.product != null) {
-                emit(ResultModel.Success(productMapper.toModel(response.product)))
             } else {
                 emit(ResultModel.Error(response.error, response.code))
             }
