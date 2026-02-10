@@ -8,11 +8,8 @@ import org.example.project.domain.usecase.base.IOUseCase
 
 class LoadUserUseCase(
     private val userRepository: UserRepository,
-): IOUseCase<Unit, ResultModel<Boolean>>() {
+) : IOUseCase<Unit, ResultModel<Boolean>>() {
     override fun execute(param: Unit): Flow<ResultModel<Boolean>> {
         return userRepository.loadUser()
-            .onEach {  resultModel ->
-
-            }
     }
 }

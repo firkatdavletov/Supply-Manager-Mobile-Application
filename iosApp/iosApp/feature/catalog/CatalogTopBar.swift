@@ -36,7 +36,6 @@ struct CatalogTopBar: View {
             Spacer()
         }
         .padding(.horizontal)
-        .background(Color.white)
         .padding(.vertical, 10)
         .overlay(
             Rectangle()

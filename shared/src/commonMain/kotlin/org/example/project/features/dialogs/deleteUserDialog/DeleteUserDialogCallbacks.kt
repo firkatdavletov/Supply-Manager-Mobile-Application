@@ -1,4 +1,4 @@
-package org.example.project.features.dialogs.delete_user_dialog
+package org.example.project.features.dialogs.deleteUserDialog
 
 data class DeleteUserDialogCallbacks(
     val onDismiss: () -> Unit,

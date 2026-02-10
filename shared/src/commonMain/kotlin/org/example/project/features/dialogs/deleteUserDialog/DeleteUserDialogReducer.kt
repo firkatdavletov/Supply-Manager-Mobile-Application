@@ -1,11 +1,11 @@
-package org.example.project.features.dialogs.delete_user_dialog
+package org.example.project.features.dialogs.deleteUserDialog
 
 import org.example.project.features.base.Reducer
 
 class DeleteUserDialogReducer : Reducer<DeleteUserDialogViewState, DeleteUserDialogViewEvent, DeleteUserDialogViewEffect> {
     override fun reduce(
         state: DeleteUserDialogViewState,
-        event: DeleteUserDialogViewEvent
+        event: DeleteUserDialogViewEvent,
     ): DeleteUserDialogViewState {
         return when (event) {
             DeleteUserDialogViewEvent.OnConfirm -> state

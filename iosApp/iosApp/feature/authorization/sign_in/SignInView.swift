@@ -27,13 +27,15 @@ struct SignInView: View {
                 component.onEvent(event: SignInViewEventOnPhoneNumberChanged(phone: phone))
             },
             isLoading: state.isLoading,
-            authTypes: state.authTypes) { type in
+            authTypes: state.authTypes,
+            onAuthTypeClicked: { type in
                 component.onEvent(event: SignInViewEventAuthTypeClicked(authType: type))
-            } onLoginButtonClicked: { value in
-                component.onEvent(event: SignInViewEventLoginClicked(phoneNumber: value))
-            } onBackClicked: {
+            },
+            showBackButton: true,
+            onBackClicked: {
                 component.onEvent(event: SignInViewEventOnBackClicked())
             }
+        )
             .navigationBarBackButtonHidden()
     }
 }

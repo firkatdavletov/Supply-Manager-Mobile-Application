@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
-import org.example.project.feature.authorization.sign_in.SignInScreen
+import org.example.project.feature.authorization.signIin.SignInScreen
 import org.example.project.feature.authorization.verification.VerificationScreen
 import org.example.project.features.authorization.AuthorizationComponent
 

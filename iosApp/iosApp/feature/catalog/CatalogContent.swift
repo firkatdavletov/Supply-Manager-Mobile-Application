@@ -24,52 +24,95 @@ struct CatalogContent: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            CatalogTopBar(
-                title: title,
-                onBack: onBackButtonClicked
-            )
-            Text("\(amount)")
+            topBar
+            content
+        }
+        .background(Color(.systemGroupedBackground))
+        .safeAreaInset(edge: .bottom) {
+            if shouldShowCartButton {
+                cartButton
+            }
+        }
+    }
+}
 
-            ScrollView {
-                VStack {
-                    if (!categories.isEmpty) {
-                        LazyVStack {
-                            ForEach(categories, id: \.id) { category in
-                                CategoryCardView(
-                                    title: category.title,
-                                    imageUrl: category.imageUrl
-                                )
-                                .onTapGesture {
-                                    onCategoryClicked(category.id)
-                                }
-                            }
-                        }
-                        .padding()
-                    }
-                    
-                    if (!products.isEmpty) {
-                        LazyVStack {
-                            ForEach(products, id: \.id) { product in
-                                ProductCardView(
-                                    product: product,
-                                    onAddToCart: { id in
-                                        onAddToCart(product)
-                                    },
-                                    onRemove: { id in
-                                        onRemoveFromCart(product)
-                                    },
-                                    onShowDetails: { id in
-                                        onProductClicked(id)
-                                    }
-                                )
-                            }
-                        }
-                        .padding()
-                    }
+private extension CatalogContent {
+    var shouldShowCartButton: Bool {
+        amount != 0
+    }
+    
+    var topBar: some View {
+        CatalogTopBar(
+            title: title,
+            onBack: onBackButtonClicked
+        )
+    }
+    
+    var content: some View {
+        ScrollView {
+            VStack(spacing: 16) {
+                if isLoading {
+                    ProgressView()
                 }
                 
+                categoriesSection
+                productsSection
             }
-            .background(Color(.systemGroupedBackground))
+            .padding()
         }
+        .background(Color(.systemGroupedBackground))
+    }
+    
+    var categoriesSection: some View {
+        Group {
+            if !categories.isEmpty {
+                LazyVStack(spacing: 12) {
+                    ForEach(categories, id: \.id) { category in
+                        CategoryCardView(
+                            title: category.title,
+                            imageUrl: category.imageUrl
+                        )
+                        .onTapGesture {
+                            onCategoryClicked(category.id)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    var productsSection: some View {
+        Group {
+            if !products.isEmpty {
+                LazyVStack(spacing: 12) {
+                    ForEach(products, id: \.id) { product in
+                        ProductCardView(
+                            product: product,
+                            onAddToCart: { _ in
+                                onAddToCart(product)
+                            },
+                            onRemove: { _ in
+                                onRemoveFromCart(product)
+                            },
+                            onShowDetails: { id in
+                                onProductClicked(id)
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
+    
+    var cartButton: some View {
+        PrimaryButton(
+            title: "Перейти в корзину (\(amount.asCurrency()))",
+            onClick: onCartButtonClicked,
+            enabled: !isLoading
+        )
+        .padding(.horizontal, 16)
+        .padding(.top, 8)
+        .padding(.bottom, 12)
+        .background(Color.background)
     }
 }

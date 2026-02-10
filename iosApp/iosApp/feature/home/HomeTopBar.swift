@@ -13,6 +13,7 @@ struct HomeTopBar: View {
     let companyLogoName: String
     let userName: String
     let onAddTap: () -> Void
+    let onProfileClicked: () -> Void
     
     var body: some View {
         HStack(spacing: 12) {
@@ -31,6 +32,9 @@ struct HomeTopBar: View {
                 Text(userName)
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.black)
+            }
+            .onTapGesture {
+                onProfileClicked()
             }
             
             Spacer()

@@ -1,11 +1,11 @@
-package org.example.project.features.dialogs.logout_user_dialog
+package org.example.project.features.dialogs.logoutUserDialog
 
 import org.example.project.features.base.Reducer
 
 class LogoutUserDialogReducer : Reducer<LogoutUserDialogViewState, LogoutUserDialogViewEvent, LogoutUserDialogViewEffect> {
     override fun reduce(
         state: LogoutUserDialogViewState,
-        event: LogoutUserDialogViewEvent
+        event: LogoutUserDialogViewEvent,
     ): LogoutUserDialogViewState {
         return when (event) {
             LogoutUserDialogViewEvent.OnConfirm -> state

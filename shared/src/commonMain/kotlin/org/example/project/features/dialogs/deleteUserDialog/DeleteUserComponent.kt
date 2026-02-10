@@ -1,4 +1,4 @@
-package org.example.project.features.dialogs.delete_user_dialog
+package org.example.project.features.dialogs.deleteUserDialog
 
 import com.arkivanov.decompose.ComponentContext
 import org.example.project.features.SnackBarManager
@@ -10,8 +10,8 @@ abstract class DeleteUserComponent(
     reducer: DeleteUserDialogReducer,
     snackBarManager: SnackBarManager,
 ) : BaseComponent<DeleteUserDialogViewState, DeleteUserDialogViewEvent, DeleteUserDialogViewEffect>(
-    componentContext,
-    initialState,
-    reducer,
-    snackBarManager,
-)
+        componentContext,
+        initialState,
+        reducer,
+        snackBarManager,
+    )

@@ -24,8 +24,8 @@ struct PrimaryButton: View {
                     .font(AppTypography.titleMedium)
                     .frame(maxWidth: .infinity)
                     .padding(12)
-                    .background(enabled ? Color.primaryContainer : Color.primaryContainer.opacity(0.5))
-                    .foregroundColor(Color.onPrimaryContainer)
+                    .background(enabled ? Color.blue : Color.blue.opacity(0.5))
+                    .foregroundColor(Color.white)
                     .cornerRadius(25)
             }
         )

@@ -1,4 +1,4 @@
-package org.example.project.feature.authorization.sign_in
+package org.example.project.feature.authorization.signIin
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -26,12 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Devices.PIXEL_9
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.DeliveryAppTheme
 import com.example.ui.theme.AppTypography
+import org.example.project.domain.models.AuthTypeModel
 import org.example.project.feature.ui_components.DefaultTextField
 import org.example.project.utils.PhoneNumberVisualTransformation
 
@@ -41,7 +40,7 @@ fun SignInContent(
     isLoading: Boolean,
     phoneNumber: String,
     onPhoneNumberChanged: (String) -> Unit = {},
-    authTypes: List<String>,
+    authTypes: List<AuthTypeModel>,
     onAuthTypeClicked: (String) -> Unit = {},
  ) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -106,7 +105,7 @@ fun SignInContent(
                     ) {
                         Button(
                             onClick = {
-                                onAuthTypeClicked(authTypes[it])
+                                onAuthTypeClicked(authTypes[it].key)
                             },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -114,11 +113,7 @@ fun SignInContent(
                             )
                         ) {
                             Text(
-                                text = when (authTypes[it]) {
-                                    "sms" -> "СМС"
-                                    "call" -> "По звонку"
-                                    else -> ""
-                                }
+                                text = authTypes[it].title
                             )
                         }
                     }
@@ -150,7 +145,7 @@ private fun SignInContent_Preview() {
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
             isLoading = false,
-            authTypes = listOf("sms", "call"),
+            authTypes = emptyList(),
             phoneNumber = "",
         )
     }

@@ -2,7 +2,6 @@ package org.example.project.features.catalog
 
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import org.example.project.domain.models.CategoryModel
@@ -10,6 +9,7 @@ import org.example.project.domain.models.ProductModel
 import org.example.project.domain.models.ResultModel
 import org.example.project.domain.repositories.CartRepository
 import org.example.project.domain.usecase.cart.AddToCartUseCase
+import org.example.project.domain.usecase.cart.LoadCartUseCase
 import org.example.project.domain.usecase.cart.RemoveFromCartUseCase
 import org.example.project.domain.usecase.catalog.GetCategoryUseCase
 import org.example.project.domain.usecase.catalog.GetRemoteCategoriesUseCase
@@ -22,12 +22,13 @@ class DefaultCatalogComponent(
     private val getCategoryUseCase: GetCategoryUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val removeFromCartUseCase: RemoveFromCartUseCase,
+    private val loadCartUseCase: LoadCartUseCase,
     private val cartRepository: CartRepository,
-): CatalogComponent (
-    componentContext = componentContext,
-    initialState = CatalogViewState(),
-    reducer = CatalogReducer(),
-) {
+) : CatalogComponent(
+        componentContext = componentContext,
+        initialState = CatalogViewState(),
+        reducer = CatalogReducer(),
+    ) {
     private var job: Job? = null
     private var subscribeJob: Job? = null
 
@@ -35,9 +36,10 @@ class DefaultCatalogComponent(
         if (categoryId == null) {
             getCategories()
         } else {
-            subscribeToCart()
             getCategory(categoryId.toLong())
         }
+        subscribeToCart()
+        loadCart()
     }
 
     override fun onStop() {
@@ -87,6 +89,18 @@ class DefaultCatalogComponent(
         }
     }
 
+    private fun loadCart() {
+        coroutineScope.launch {
+            loadCartUseCase
+                .invoke(Unit)
+                .catch {
+                    print(it)
+                }.collect {
+                    print(it)
+                }
+        }
+    }
+
     private fun subscribeToCart() {
         subscribeJob?.cancel()
         subscribeJob = coroutineScope.launch {
@@ -98,17 +112,20 @@ class DefaultCatalogComponent(
 
     private fun getCategories() {
         coroutineScope.launch {
-            getCategoriesUseCase.invoke(Unit)
-                .catch {  }
+            getCategoriesUseCase
+                .invoke(Unit)
+                .catch { }
                 .collect { resultModel ->
                     when (resultModel) {
                         is ResultModel.Error -> {}
+
                         ResultModel.Loading -> {}
+
                         is ResultModel.Success<List<CategoryModel>> -> {
                             onEvent(
                                 CatalogViewEvent.OnCategoriesLoaded(
-                                    resultModel.data
-                                )
+                                    resultModel.data,
+                                ),
                             )
                         }
                     }
@@ -118,17 +135,20 @@ class DefaultCatalogComponent(
 
     private fun getCategory(id: Long) {
         coroutineScope.launch {
-            getCategoryUseCase.invoke(id)
-                .catch {  }
+            getCategoryUseCase
+                .invoke(id)
+                .catch { }
                 .collect { resultModel ->
                     when (resultModel) {
                         is ResultModel.Error -> {}
+
                         ResultModel.Loading -> {}
+
                         is ResultModel.Success<CategoryModel> -> {
                             onEvent(
                                 CatalogViewEvent.OnCategoryLoaded(
-                                    resultModel.data
-                                )
+                                    resultModel.data,
+                                ),
                             )
                         }
                     }
@@ -140,10 +160,10 @@ class DefaultCatalogComponent(
         job?.cancel()
         job = coroutineScope.launch {
             val params = AddToCartUseCase.Params(product)
-            addToCartUseCase.invoke(params)
-                .catch {  }
+            addToCartUseCase
+                .invoke(params)
+                .catch { }
                 .collect {
-
                 }
         }
     }
@@ -152,10 +172,10 @@ class DefaultCatalogComponent(
         job?.cancel()
         job = coroutineScope.launch {
             val params = RemoveFromCartUseCase.Params(product)
-            removeFromCartUseCase.invoke(params)
-                .catch {  }
+            removeFromCartUseCase
+                .invoke(params)
+                .catch { }
                 .collect {
-
                 }
         }
     }

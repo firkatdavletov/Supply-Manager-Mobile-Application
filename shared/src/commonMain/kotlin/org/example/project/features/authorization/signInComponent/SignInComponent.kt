@@ -1,4 +1,4 @@
-package org.example.project.features.authorization.sign_in_component
+package org.example.project.features.authorization.signInComponent
 
 import com.arkivanov.decompose.ComponentContext
 import org.example.project.features.SnackBarManager
@@ -13,7 +13,7 @@ abstract class SignInComponent(componentContext: ComponentContext, snackBarManag
             isError = false,
             selectedAuthType = "",
             phoneNumber = "",
-            confirmEnabled = false
+            confirmEnabled = false,
         ),
         reducer = SignInReducer(),
         snackBarManager = snackBarManager,

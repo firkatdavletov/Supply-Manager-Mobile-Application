@@ -21,8 +21,8 @@ import com.arkivanov.decompose.value.Value
 import org.example.project.features.SnackBarManager
 import org.example.project.features.app_introduction.AppIntroCallbacks
 import org.example.project.features.app_introduction.AppIntroductionComponent
-import org.example.project.features.authorization.sign_in_component.SignInCallbacks
-import org.example.project.features.authorization.sign_in_component.SignInComponent
+import org.example.project.features.authorization.signInComponent.SignInCallbacks
+import org.example.project.features.authorization.signInComponent.SignInComponent
 import org.example.project.features.authorization.verification_component.VerificationComponent
 import org.example.project.features.authorization.verification_component.VerifyCallbacks
 import org.example.project.features.cart.CartComponent
@@ -31,10 +31,10 @@ import org.example.project.features.catalog.CatalogCallbacks
 import org.example.project.features.catalog.CatalogComponent
 import org.example.project.features.current_order.CurrentOrderCallbacks
 import org.example.project.features.current_order.CurrentOrderComponent
-import org.example.project.features.dialogs.delete_user_dialog.DeleteUserComponent
-import org.example.project.features.dialogs.delete_user_dialog.DeleteUserDialogCallbacks
-import org.example.project.features.dialogs.logout_user_dialog.LogoutUserComponent
-import org.example.project.features.dialogs.logout_user_dialog.LogoutUserDialogCallbacks
+import org.example.project.features.dialogs.deleteUserDialog.DeleteUserComponent
+import org.example.project.features.dialogs.deleteUserDialog.DeleteUserDialogCallbacks
+import org.example.project.features.dialogs.logoutUserDialog.LogoutUserComponent
+import org.example.project.features.dialogs.logoutUserDialog.LogoutUserDialogCallbacks
 import org.example.project.features.dialogs.product_card.ProductCardComponent
 import org.example.project.features.home.HomeCallbacks
 import org.example.project.features.home.HomeComponent
@@ -173,8 +173,8 @@ class DefaultRootComponent(
 
     private fun getLaunchComponent(componentContext: ComponentContext): LaunchComponent {
         val callbacks = LaunchNavigationCallbacks(
-            navigateToSignIn = { navigation.pushNew(Config.SignIn(LaunchComponent::class.simpleName)) },
-            navigateToHome = { navigation.pushToFront(Config.Home) },
+            navigateToSignIn = { safeNavigate(Config.SignIn(LaunchComponent::class.simpleName)) },
+            navigateToHome = { safeNavigate(Config.Home) },
         )
 
         return get { parametersOf(componentContext, callbacks) }
@@ -240,7 +240,7 @@ class DefaultRootComponent(
                 }
             },
             navigateToProfile = {
-                navigation.pushToFront(Config.Profile)
+                safeNavigate(Config.Profile)
             },
             navigateToOrder = { orderId ->
                 if (!childStack.items.any {
@@ -254,7 +254,6 @@ class DefaultRootComponent(
                 }
             },
             navigateToAuthorization = {
-                navigation.pushToFront(Config.SignIn(HomeComponent::class.simpleName))
             },
         )
         return get { parametersOf(componentContent, callbacks) }
@@ -357,10 +356,10 @@ class DefaultRootComponent(
     ): SignInComponent {
         val callbacks = SignInCallbacks(
             navigateToHome = {
-                navigation.pushToFront(Config.Home)
+                safeNavigate(Config.Home)
             },
             navigateToVerify = { phoneNumber, authType, fromScreen, checkId, callPhone ->
-                navigation.pushNew(Config.Verification(fromScreen, phoneNumber, authType, checkId, callPhone))
+                safeNavigate(Config.Verification(fromScreen, phoneNumber, authType, checkId, callPhone))
             },
             onBack = {
                 navigation.pop()
@@ -384,10 +383,10 @@ class DefaultRootComponent(
                 navigation.pop()
             },
             navigateToHome = {
-                navigation.pushToFront(Config.Home)
+                safeNavigate(Config.Home)
             },
             navigateToPayment = {
-                navigation.pushToFront(Config.Home)
+                safeNavigate(Config.Home)
             },
         )
         return get {
@@ -445,7 +444,7 @@ class DefaultRootComponent(
             },
             onSuccess = {
                 dialogNavigation.dismiss()
-                navigation.pop()
+                safeNavigate(Config.Launch)
             },
         )
         return get {
@@ -463,11 +462,22 @@ class DefaultRootComponent(
             },
             onSuccess = {
                 dialogNavigation.dismiss()
-                navigation.pop()
+                safeNavigate(Config.Launch)
             },
         )
         return get {
             parametersOf(componentContent, dialogConfig, callbacks)
+        }
+    }
+
+    private fun safeNavigate(config: Config) {
+        if (!childStack.items.any {
+                it.configuration == config
+            }
+        ) {
+            navigation.pushNew(config)
+        } else {
+            navigation.pushToFront(config)
         }
     }
 }

@@ -7,12 +7,11 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import org.example.project.feature.app_introduction.AppIntroductionContent
 import org.example.project.feature.authorization.AuthorizationContent
-import org.example.project.feature.authorization.sign_in.SignInScreen
+import org.example.project.feature.authorization.signIin.SignInScreen
 import org.example.project.feature.authorization.verification.VerificationScreen
 import org.example.project.feature.launch.LaunchScreen
 import org.example.project.feature.main_tabs.MainTabsContent
 import org.example.project.feature.cart.CartScreen
-import org.example.project.feature.catalog.CatalogContent
 import org.example.project.feature.catalog.CatalogScreen
 import org.example.project.feature.current_order.CurrentOrderScreen
 import org.example.project.feature.home.HomeScreen

@@ -22,6 +22,7 @@ struct HomeView: View {
     var body: some View {
         HomeContent(
             isLoading: state.isLoading,
+            userName: state.userName,
             orders: state.orders,
             deliveredCount: Int(state.deliveredCount),
             cancelledCount: Int(state.cancelledCount),
@@ -29,7 +30,8 @@ struct HomeView: View {
             processingCount: Int(state.processingCount),
             onOrderTap: { self.component.onEvent(event: HomeViewEventOnOrderClicked(id: $0)) },
             onRefresh: { self.component.onEvent(event: HomeViewEventOnRefresh())},
-            onAddTap: { self.component.onEvent(event: HomeViewEventOnAddClicked())}
+            onAddTap: { self.component.onEvent(event: HomeViewEventOnAddClicked())},
+            onProfileClicked: { component.onEvent(event: HomeViewEventOnUserClicked())}
         )
         .navigationBarBackButtonHidden(true)
     }

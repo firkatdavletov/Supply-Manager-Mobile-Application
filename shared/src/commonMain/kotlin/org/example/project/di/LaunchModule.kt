@@ -6,14 +6,15 @@ import org.example.project.features.launch.LaunchComponent
 import org.example.project.features.launch.LaunchNavigationCallbacks
 import org.koin.dsl.module
 
-fun launchModule() = module {
-    single<LaunchComponent> { (componentContext: ComponentContext, callbacks: LaunchNavigationCallbacks) ->
-        DefaultLaunchComponent(
-            componentContext = componentContext,
-            loadUserUseCase = get(),
-            callbacks = callbacks,
-            snackBarManager = get(),
-            orderRepository = get()
-        )
+fun launchModule() =
+    module {
+        factory<LaunchComponent> { (componentContext: ComponentContext, callbacks: LaunchNavigationCallbacks) ->
+            DefaultLaunchComponent(
+                componentContext = componentContext,
+                loadUserUseCase = get(),
+                callbacks = callbacks,
+                snackBarManager = get(),
+                orderRepository = get(),
+            )
+        }
     }
-}

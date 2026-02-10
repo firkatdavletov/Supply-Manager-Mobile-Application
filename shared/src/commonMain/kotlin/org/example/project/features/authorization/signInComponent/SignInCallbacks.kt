@@ -1,4 +1,4 @@
-package org.example.project.features.authorization.sign_in_component
+package org.example.project.features.authorization.signInComponent
 
 data class SignInCallbacks(
     val onBack: () -> Unit,
@@ -7,6 +7,7 @@ data class SignInCallbacks(
         authType: String,
         fromString: String?,
         checkId: String?,
-        callPhone: String?) -> Unit,
+        callPhone: String?,
+    ) -> Unit,
     val navigateToHome: () -> Unit,
 )

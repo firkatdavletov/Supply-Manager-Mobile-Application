@@ -1,4 +1,4 @@
-package org.example.project.features.dialogs.logout_user_dialog
+package org.example.project.features.dialogs.logoutUserDialog
 
 data class LogoutUserDialogCallbacks(
     val onDismiss: () -> Unit,

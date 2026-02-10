@@ -5,9 +5,10 @@ import org.example.project.features.base.Reducer
 
 data class HomeViewState(
     val isLoading: Boolean,
+    val userName: String,
     val orders: List<OrderPreviewModel>,
     val deliveredCount: Int,
     val cancelledCount: Int,
     val pendingCount: Int,
     val processingCount: Int,
-): Reducer.ViewState
+) : Reducer.ViewState

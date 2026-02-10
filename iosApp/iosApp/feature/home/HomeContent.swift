@@ -12,6 +12,7 @@ import Shared
 
 struct HomeContent: View {
     let isLoading: Bool
+    let userName: String
     let orders: [OrderPreviewModel]
     let deliveredCount: Int
     let cancelledCount: Int
@@ -20,6 +21,7 @@ struct HomeContent: View {
     let onOrderTap: (Int64) -> Void
     let onRefresh: () -> Void
     let onAddTap: () -> Void
+    let onProfileClicked: () -> Void
     
     private let columns = Array(
         repeating: GridItem(.flexible(), spacing: 12),
@@ -30,8 +32,9 @@ struct HomeContent: View {
         VStack(alignment: .center) {
             HomeTopBar(
                 companyLogoName: "Logo", // имя ассета
-                userName: "Эллина Кулушева",
-                onAddTap: onAddTap
+                userName: userName,
+                onAddTap: onAddTap,
+                onProfileClicked: onProfileClicked
             )
             
             if (isLoading) {
@@ -74,18 +77,3 @@ struct HomeContent: View {
         }
     }
 }
-
-#Preview {
-    HomeContent(
-        isLoading: false,
-        orders: [],
-        deliveredCount: 0,
-        cancelledCount: 0,
-        pendingCount: 0,
-        processingCount: 0,
-        onOrderTap: { id in},
-        onRefresh: {},
-        onAddTap: {}
-    )
-}
-

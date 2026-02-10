@@ -2,7 +2,6 @@ package org.example.project.domain.repositories
 
 import kotlinx.coroutines.flow.Flow
 import org.example.project.domain.models.AuthTypeModel
-import org.example.project.domain.models.AuthTypesModel
 import org.example.project.domain.models.ResultModel
 import org.example.project.domain.models.VerifyPhoneNumberModel
 

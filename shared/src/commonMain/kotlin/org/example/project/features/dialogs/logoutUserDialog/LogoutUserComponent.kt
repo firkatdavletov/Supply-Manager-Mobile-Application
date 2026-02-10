@@ -1,4 +1,4 @@
-package org.example.project.features.dialogs.logout_user_dialog
+package org.example.project.features.dialogs.logoutUserDialog
 
 import com.arkivanov.decompose.ComponentContext
 import org.example.project.features.SnackBarManager
@@ -10,8 +10,8 @@ abstract class LogoutUserComponent(
     reducer: LogoutUserDialogReducer,
     snackBarManager: SnackBarManager,
 ) : BaseComponent<LogoutUserDialogViewState, LogoutUserDialogViewEvent, LogoutUserDialogViewEffect>(
-    componentContext,
-    initialState,
-    reducer,
-    snackBarManager,
-)
+        componentContext,
+        initialState,
+        reducer,
+        snackBarManager,
+    )

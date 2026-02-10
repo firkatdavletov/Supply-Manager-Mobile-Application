@@ -1,4 +1,4 @@
-package org.example.project.features.dialogs.delete_user_dialog
+package org.example.project.features.dialogs.logoutUserDialog
 
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.Dispatchers
@@ -6,57 +6,68 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.example.project.domain.models.ResultModel
-import org.example.project.domain.usecase.user.DeleteUserUseCase
+import org.example.project.domain.usecase.user.LogoutUserUseCase
 import org.example.project.features.SnackBarManager
 
-class DefaultDeleteUserComponent(
+class DefaultLogoutUserComponent(
     componentContext: ComponentContext,
     snackBarManager: SnackBarManager,
-    private val deleteUserUseCase: DeleteUserUseCase,
-    private val callbacks: DeleteUserDialogCallbacks,
-) : DeleteUserComponent(
-    componentContext = componentContext,
-    initialState = DeleteUserDialogViewState(false),
-    reducer = DeleteUserDialogReducer(),
-    snackBarManager = snackBarManager
-) {
-    override fun onEvent(event: DeleteUserDialogViewEvent) {
+    private val logoutUserUseCase: LogoutUserUseCase,
+    private val callbacks: LogoutUserDialogCallbacks,
+) : LogoutUserComponent(
+        componentContext = componentContext,
+        initialState = LogoutUserDialogViewState(false),
+        reducer = LogoutUserDialogReducer(),
+        snackBarManager = snackBarManager,
+    ) {
+    override fun onEvent(event: LogoutUserDialogViewEvent) {
         when (event) {
-            DeleteUserDialogViewEvent.OnConfirm -> confirm()
-            DeleteUserDialogViewEvent.OnDismiss -> callbacks.onDismiss()
+            LogoutUserDialogViewEvent.OnConfirm -> {
+                confirm()
+            }
 
-            is DeleteUserDialogViewEvent.OnError -> {
+            LogoutUserDialogViewEvent.OnDismiss -> {
+                callbacks.onDismiss()
+            }
+
+            is LogoutUserDialogViewEvent.OnError -> {
                 reduce(event)
                 showError(event.error)
             }
-            is DeleteUserDialogViewEvent.OnThrowError -> {
+
+            is LogoutUserDialogViewEvent.OnThrowError -> {
                 reduce(event)
                 showThrowError(event.throwable)
             }
-            DeleteUserDialogViewEvent.OnLoading -> reduce(event)
+
+            LogoutUserDialogViewEvent.OnLoading -> {
+                reduce(event)
+            }
         }
     }
 
     private fun confirm() {
         coroutineScope.launch {
-            deleteUserUseCase.invoke(Unit)
+            logoutUserUseCase
+                .invoke(Unit)
                 .catch {
                     withContext(Dispatchers.Main) {
-                        onEvent(DeleteUserDialogViewEvent.OnThrowError(it))
+                        onEvent(LogoutUserDialogViewEvent.OnThrowError(it))
                     }
-                }
-                .collect { resultModel ->
+                }.collect { resultModel ->
                     when (resultModel) {
                         is ResultModel.Error -> {
                             withContext(Dispatchers.Main) {
-                                onEvent(DeleteUserDialogViewEvent.OnError(resultModel.message ?: "Что-то пошло не так"))
+                                onEvent(LogoutUserDialogViewEvent.OnError(resultModel.message ?: "Что-то пошло не так"))
                             }
                         }
+
                         ResultModel.Loading -> {
                             withContext(Dispatchers.Main) {
-                                onEvent(DeleteUserDialogViewEvent.OnLoading)
+                                onEvent(LogoutUserDialogViewEvent.OnLoading)
                             }
                         }
+
                         is ResultModel.Success<Boolean> -> {
                             if (resultModel.data) {
                                 withContext(Dispatchers.Main) {

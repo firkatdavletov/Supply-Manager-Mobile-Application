@@ -11,7 +11,6 @@ import org.example.project.data.datastore.local.SecurityStorage
 import org.example.project.data.datastore.remote.cart.RemoteCartDataStore
 import org.example.project.data.entities.AddressEntity
 import org.example.project.data.entities.CityEntity
-import org.example.project.domain.models.ResultModel
 import org.example.project.data.mapper.AddressModelMapper
 import org.example.project.data.mapper.CartMapper
 import org.example.project.data.mapper.DeliveryInfoMapper
@@ -21,6 +20,7 @@ import org.example.project.domain.models.CartModel
 import org.example.project.domain.models.DeliveryInfoModel
 import org.example.project.domain.models.DeliveryType
 import org.example.project.domain.models.ProductModel
+import org.example.project.domain.models.ResultModel
 import org.example.project.domain.repositories.CartRepository
 
 class DefaultCartRepository(
@@ -29,7 +29,7 @@ class DefaultCartRepository(
     private val cartMapper: CartMapper,
     private val addressModelMapper: AddressModelMapper,
     private val deliveryInfoMapper: DeliveryInfoMapper,
-): CartRepository {
+) : CartRepository {
 
     private val _cartSubject = MutableSharedFlow<CartModel>(replay = 1)
 
@@ -53,7 +53,7 @@ class DefaultCartRepository(
         deliveryType: DeliveryType,
         deliveryAddress: AddressModel?,
         departmentId: Int,
-        deliveryInfo: DeliveryInfoModel?
+        deliveryInfo: DeliveryInfoModel?,
     ): Flow<ResultModel<Boolean>> {
         val deviceId = securityStorage.getDeviceId()
         val newAddress = deliveryAddress?.let {
@@ -69,10 +69,10 @@ class DefaultCartRepository(
                     name = deliveryAddress.city.name,
                     subCities = emptyList(),
                     latitude = deliveryAddress.city.latitude,
-                    longitude = deliveryAddress.city.longitude
+                    longitude = deliveryAddress.city.longitude,
                 ),
                 latitude = deliveryAddress.latitude,
-                longitude = deliveryAddress.longitude
+                longitude = deliveryAddress.longitude,
             )
         }
         val body = CreateCartRequestBody(
@@ -81,7 +81,7 @@ class DefaultCartRepository(
             deliveryAddress = newAddress,
             departmentId = departmentId,
             deliveryPrice = deliveryInfo?.deliveryPrice ?: 0,
-            freeDeliveryPrice = deliveryInfo?.freeDeliveryPrice
+            freeDeliveryPrice = deliveryInfo?.freeDeliveryPrice,
         )
         return flow {
             emit(ResultModel.Loading)
@@ -103,7 +103,7 @@ class DefaultCartRepository(
             val result = remoteCartDataStore.updateQuantity(productId = product.id, quantity = product.count)
 
             if (result.success && result.cart != null) {
-                _cartSubject.tryEmit(cartMapper.toModel(result.cart))
+                _cartSubject.emit(cartMapper.toModel(result.cart))
                 emit(ResultModel.Success(true))
             } else {
                 emit(ResultModel.Error(result.error, result.code))
@@ -116,7 +116,7 @@ class DefaultCartRepository(
         deliveryAddress: AddressModel?,
         departmentId: Int,
         deliveryInfo: DeliveryInfoModel,
-        comment: String?
+        comment: String?,
     ): Flow<ResultModel<Boolean>> {
         return flow {
             val request = UpdateCartAddressRequestBody(
@@ -129,7 +129,7 @@ class DefaultCartRepository(
             val response = remoteCartDataStore.updateCartAddress(request)
 
             if (response.success && response.cart != null) {
-                _cartSubject.tryEmit(cartMapper.toModel(response.cart))
+                _cartSubject.emit(cartMapper.toModel(response.cart))
                 emit(ResultModel.Success(true))
             } else {
                 emit(ResultModel.Error(response.error, response.code))
@@ -158,7 +158,7 @@ class DefaultCartRepository(
                 productId = product.id,
                 title = product.title,
                 quantity = 1,
-                price = product.price
+                price = product.price,
             )
         }
 
@@ -174,7 +174,7 @@ class DefaultCartRepository(
 
         val updatedCart = cart.copy(
             items = updatedItems,
-            totalPrice = totalPrice
+            totalPrice = totalPrice,
         )
         _cartSubject.tryEmit(updatedCart)
     }
