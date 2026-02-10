@@ -22,24 +22,34 @@ struct CartView: View {
     var body: some View {
         CartContent(
             cartItems: state.cartItems,
-            productPrice: state.productsPrice,
-            deliveryPrice: state.deliveryPrice,
-            totalAmount: state.totalPrice,
-            freeDeliveryPrice: state.freeDeliveryPrice,
+            productPrice: state.productsPrice.asInt64,
+            deliveryPrice: state.deliveryPrice.asInt64,
+            totalAmount: state.totalPrice.asInt64,
+            freeDeliveryPrice: state.freeDeliveryPrice.asInt64,
             deliveryType: state.deliveryType,
-            onAddToCart: { item in
-                component.onEvent(event: CartViewEventOnAddToCart(product: item))
-            },
-            onRemoveFromCart: { item in
-                component.onEvent(event: CartViewEventOnRemoveFromCart(product: item))
-            },
-            onBack: {
-                component.onEvent(event: CartViewEventOnBackClick())
-            },
-            onConfirm: {
-                component.onEvent(event: CartViewEventOnConfirmButtonClicked())
-            }
+            onAddToCart: onAddToCart,
+            onRemoveFromCart: onRemoveFromCart,
+            onBack: onBack,
+            onConfirm: onConfirm
         )
         .navigationBarBackButtonHidden(true)
+    }
+}
+
+private extension CartView {
+    func onAddToCart(_ item: CartItemModel) {
+        component.onEvent(event: CartViewEventOnAddToCart(product: item))
+    }
+
+    func onRemoveFromCart(_ item: CartItemModel) {
+        component.onEvent(event: CartViewEventOnRemoveFromCart(product: item))
+    }
+
+    func onBack() {
+        component.onEvent(event: CartViewEventOnBackClick())
+    }
+
+    func onConfirm() {
+        component.onEvent(event: CartViewEventOnConfirmButtonClicked())
     }
 }

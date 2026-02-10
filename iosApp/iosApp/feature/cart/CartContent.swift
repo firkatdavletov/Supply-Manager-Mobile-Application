@@ -26,12 +26,28 @@ struct CartContent: View {
             headerView
                 .padding(16)
                 .background(Color.blue)
-            // Content
             cartItemList
-            // Bottom info and button
             infoView
                 .padding(.horizontal)
         }
+    }
+}
+
+private extension CartContent {
+    var isDeliveryFree: Bool {
+        guard deliveryType == .delivery else {
+            return false
+        }
+
+        if totalAmount == 0 {
+            return true
+        }
+
+        guard let freeDeliveryPrice else {
+            return false
+        }
+
+        return productPrice > freeDeliveryPrice
     }
 }
 
@@ -59,12 +75,8 @@ extension CartContent {
                 ForEach(cartItems, id: \.productId) { item in
                     CartItemView(
                         item: item,
-                        onAdd: { item in
-                            onAddToCart(item)
-                        },
-                        onRemove: { item in
-                            onRemoveFromCart(item)
-                        }
+                        onAdd: onAddToCart,
+                        onRemove: onRemoveFromCart
                     )
                     Divider()
                 }
@@ -88,24 +100,25 @@ extension CartContent {
                     .foregroundColor(Color.onBackground)
             }
 
-            if (deliveryType == DeliveryType.delivery) {
+            if deliveryType == .delivery {
                 HStack {
                     Text("Стоимость доставки:")
                         .font(AppTypography.bodyLarge)
                         .foregroundColor(Color.onBackground)
                     Spacer()
 
-                    if (totalAmount == 0 || (freeDeliveryPrice != nil && productPrice > freeDeliveryPrice!)) {
+                    if isDeliveryFree {
                         Text("бесплатно")
                             .font(AppTypography.titleLarge)
                             .foregroundColor(Color.onBackground)
                     } else {
-                        Text("\(deliveryPrice.asCurrency)")
+                        Text("\(deliveryPrice.asCurrency())")
                             .font(AppTypography.titleLarge)
                             .foregroundColor(Color.onBackground)
                     }
                 }
             }
+
             HStack {
                 Text("Итого:")
                     .font(AppTypography.bodyLarge)
