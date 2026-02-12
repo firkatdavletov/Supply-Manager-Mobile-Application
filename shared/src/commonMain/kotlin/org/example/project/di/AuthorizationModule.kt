@@ -12,14 +12,12 @@ import org.koin.dsl.module
 
 fun authorizationModule() =
     module {
-        factory<SignInComponent> { (componentContext: ComponentContext, config: Config.SignIn, callbacks: SignInCallbacks) ->
+        factory<SignInComponent> { (componentContext: ComponentContext, _: Config.SignIn, callbacks: SignInCallbacks) ->
             DefaultSignInComponent(
                 componentContext = componentContext,
                 snackBarManager = get(),
-                getAuthTypesUseCase = get(),
-                verifyPhoneNumberUseCase = get(),
+                loginByEmailUseCase = get(),
                 callbacks = callbacks,
-                fromScreen = config.fromScreen,
             )
         }
         factory<VerificationComponent> { (componentContext: ComponentContext, config: Config.Verification, callbacks: VerifyCallbacks) ->

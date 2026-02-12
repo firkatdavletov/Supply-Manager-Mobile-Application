@@ -23,14 +23,19 @@ struct SignInView: View {
     
     var body: some View {
         SignInContent(
-            onPhoneNumberEntered: { phone in
-                component.onEvent(event: SignInViewEventOnPhoneNumberChanged(phone: phone))
+            login: state.login,
+            password: state.password,
+            onLoginChanged: { login in
+                component.onEvent(event: SignInViewEventOnLoginChanged(login: login))
+            },
+            onPasswordChanged: { password in
+                component.onEvent(event: SignInViewEventOnPasswordChanged(password: password))
+            },
+            onLoginClicked: {
+                component.onEvent(event: SignInViewEventOnLoginClicked())
             },
             isLoading: state.isLoading,
-            authTypes: state.authTypes,
-            onAuthTypeClicked: { type in
-                component.onEvent(event: SignInViewEventAuthTypeClicked(authType: type))
-            },
+            isLoginEnabled: state.confirmEnabled,
             showBackButton: true,
             onBackClicked: {
                 component.onEvent(event: SignInViewEventOnBackClicked())

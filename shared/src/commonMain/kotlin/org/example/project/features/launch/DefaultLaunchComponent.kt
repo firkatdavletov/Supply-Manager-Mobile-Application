@@ -1,12 +1,16 @@
 package org.example.project.features.launch
 
 import com.arkivanov.decompose.ComponentContext
+import io.ktor.client.plugins.ClientRequestException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.example.project.domain.models.ResultModel
 import org.example.project.domain.repositories.OrderRepository
 import org.example.project.domain.usecase.user.LoadUserUseCase
 import org.example.project.features.SnackBarManager
+import org.example.project.features.utils.toUserMessage
 
 class DefaultLaunchComponent(
     componentContext: ComponentContext,
@@ -44,8 +48,17 @@ class DefaultLaunchComponent(
     private fun loadData() {
         coroutineScope.launch {
             loadUserUseCase(Unit)
-                .catch {
-                    callbacks.navigateToSignIn()
+                .catch { throwable ->
+                    if (throwable is ClientRequestException && throwable.response.status.value == 401) {
+                        withContext(Dispatchers.Main) {
+                            callbacks.navigateToSignIn()
+                        }
+                    } else {
+                        showError(throwable.toUserMessage())
+                        withContext(Dispatchers.Main) {
+                            callbacks.navigateToSignIn()
+                        }
+                    }
                 }.collect { resultModel ->
                     when (resultModel) {
                         is ResultModel.Error -> {
@@ -56,7 +69,6 @@ class DefaultLaunchComponent(
 
                         is ResultModel.Success<Boolean> -> {
                             if (resultModel.data) {
-//                                orderRepository.connect()
                                 callbacks.navigateToHome()
                             } else {
                                 callbacks.navigateToSignIn()

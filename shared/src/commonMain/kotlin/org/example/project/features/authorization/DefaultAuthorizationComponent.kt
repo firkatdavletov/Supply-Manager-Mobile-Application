@@ -45,9 +45,6 @@ class DefaultAuthorizationComponent(
             is Config.SignIn -> {
                 val callbacks = SignInCallbacks(
                     onBack = { navigation.pop() },
-                    navigateToVerify = { phoneNumber, authType, _, _, _ ->
-                        navigation.pushToFront(Config.Verification(phoneNumber, authType))
-                    },
                     navigateToHome = { callbacks.navigateToHome() },
                 )
                 AuthorizationComponent.Child.SignInChild(

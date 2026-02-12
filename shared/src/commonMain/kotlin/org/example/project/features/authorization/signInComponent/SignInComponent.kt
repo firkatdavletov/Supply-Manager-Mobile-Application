@@ -8,11 +8,9 @@ abstract class SignInComponent(componentContext: ComponentContext, snackBarManag
     BaseComponent<SignInViewState, SignInViewEvent, SignViewEffect>(
         componentContext = componentContext,
         initialState = SignInViewState(
-            authTypes = emptyList(),
-            isLoading = true,
-            isError = false,
-            selectedAuthType = "",
-            phoneNumber = "",
+            login = "",
+            password = "",
+            isLoading = false,
             confirmEnabled = false,
         ),
         reducer = SignInReducer(),

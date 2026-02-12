@@ -8,39 +8,21 @@ class SignInReducer : Reducer<SignInViewState, SignInViewEvent, SignViewEffect> 
         event: SignInViewEvent,
     ): SignInViewState {
         return when (event) {
-            is SignInViewEvent.AuthTypeClicked -> {
+            is SignInViewEvent.OnLoginChanged -> {
                 state.copy(
-                    selectedAuthType = event.authType,
-                    confirmEnabled = state.phoneNumber.length == 13,
+                    login = event.login,
+                    confirmEnabled = event.login.isNotBlank() && state.password.isNotBlank(),
                 )
             }
 
-            is SignInViewEvent.LoginClicked -> {
+            is SignInViewEvent.OnPasswordChanged -> {
                 state.copy(
-                    isLoading = true,
+                    password = event.password,
+                    confirmEnabled = state.login.isNotBlank() && event.password.isNotBlank(),
                 )
             }
 
-            is SignInViewEvent.OnGetAuthTypes -> {
-                state.copy(
-                    authTypes = event.types,
-                    isLoading = false,
-                )
-            }
-
-            is SignInViewEvent.OnPhoneNumberChanged -> {
-                state.copy(
-                    phoneNumber = event.phone,
-                    confirmEnabled = event.phone.length == 10 && state.selectedAuthType.isNotEmpty(),
-                )
-            }
-
-            is SignInViewEvent.OnShowMessage -> {
-                state.copy(
-                    isLoading = false,
-                )
-            }
-
+            SignInViewEvent.OnLoginClicked,
             SignInViewEvent.OnLoading -> {
                 state.copy(
                     isLoading = true,
@@ -53,9 +35,7 @@ class SignInReducer : Reducer<SignInViewState, SignInViewEvent, SignViewEffect> 
                 )
             }
 
-            else -> {
-                state
-            }
+            SignInViewEvent.OnBackClicked -> state
         }
     }
 

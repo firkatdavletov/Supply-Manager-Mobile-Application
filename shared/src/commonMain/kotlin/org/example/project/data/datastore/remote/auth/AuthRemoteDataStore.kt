@@ -3,6 +3,8 @@ package org.example.project.data.datastore.remote.auth
 import kotlinx.coroutines.flow.SharedFlow
 import org.example.project.data.api.auth_api.model.CheckSmsCodeResponseBody
 import org.example.project.data.api.auth_api.model.GetAuthTypesResponseBody
+import org.example.project.data.api.auth_api.model.LoginByEmailRequestBody
+import org.example.project.data.api.auth_api.model.TokenPairDto
 import org.example.project.data.api.auth_api.model.VerifyPhoneNumberRequestBody
 import org.example.project.data.api.auth_api.model.VerifyPhoneNumberResponseBody
 import org.example.project.data.entities.TokenPairEntity
@@ -18,6 +20,8 @@ interface AuthRemoteDataStore {
         phone: String,
         code: String,
     ): CheckSmsCodeResponseBody
+
+    suspend fun loginByEmail(request: LoginByEmailRequestBody): TokenPairDto
 
     suspend fun connect(checkId: String)
 

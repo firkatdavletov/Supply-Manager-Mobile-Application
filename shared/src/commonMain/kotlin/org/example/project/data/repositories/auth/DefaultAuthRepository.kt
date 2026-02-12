@@ -3,6 +3,7 @@ package org.example.project.data.repositories.auth
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import org.example.project.data.api.auth_api.model.LoginByEmailRequestBody
 import org.example.project.data.api.auth_api.model.VerifyPhoneNumberRequestBody
 import org.example.project.data.datastore.local.SecurityStorage
 import org.example.project.data.datastore.remote.auth.AuthRemoteDataStore
@@ -84,6 +85,21 @@ class DefaultAuthRepository(
             } else {
                 emit(false)
             }
+        }
+    }
+
+    override fun loginByEmail(
+        email: String,
+        password: String,
+    ): Flow<Boolean> {
+        return flow {
+            val request = LoginByEmailRequestBody(email, password)
+            val response = authRemoteDataStore.loginByEmail(request)
+
+            securityStorage.saveAccessToken(response.access)
+            securityStorage.saveRefreshToken(response.refresh)
+
+            emit(true)
         }
     }
 

@@ -94,9 +94,8 @@ import org.example.project.domain.repositories.SbpBanksRepository
 import org.example.project.domain.repositories.TokenRepository
 import org.example.project.domain.repositories.UserRepository
 import org.example.project.domain.usecase.auth.GetAccessTokenUseCase
-import org.example.project.domain.usecase.auth.GetAuthTypesUseCase
+import org.example.project.domain.usecase.auth.LoginByEmailUseCase
 import org.example.project.domain.usecase.auth.VerifyCodeUseCase
-import org.example.project.domain.usecase.auth.VerifyPhoneNumberUseCase
 import org.example.project.domain.usecase.cart.AddToCartUseCase
 import org.example.project.domain.usecase.cart.ClearCartUseCase
 import org.example.project.domain.usecase.cart.CreateCartUseCase
@@ -170,9 +169,8 @@ fun appModule() =
 
         // UseCases
         factory<LoadUserUseCase> { LoadUserUseCase(get()) }
-        factory<GetAuthTypesUseCase> { GetAuthTypesUseCase(get()) }
         factory<GetAccessTokenUseCase> { GetAccessTokenUseCase(get()) }
-        factory<VerifyPhoneNumberUseCase> { VerifyPhoneNumberUseCase(get()) }
+        factory<LoginByEmailUseCase> { LoginByEmailUseCase(get()) }
         factory<VerifyCodeUseCase> { VerifyCodeUseCase(get()) }
         factory<GetCategoriesUseCase> { GetCategoriesUseCase(get()) }
         factory<GetProductsUseCase> { GetProductsUseCase(get()) }

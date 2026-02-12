@@ -358,9 +358,6 @@ class DefaultRootComponent(
             navigateToHome = {
                 safeNavigate(Config.Home)
             },
-            navigateToVerify = { phoneNumber, authType, fromScreen, checkId, callPhone ->
-                safeNavigate(Config.Verification(fromScreen, phoneNumber, authType, checkId, callPhone))
-            },
             onBack = {
                 navigation.pop()
             },

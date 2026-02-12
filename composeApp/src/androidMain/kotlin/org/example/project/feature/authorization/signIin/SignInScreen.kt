@@ -2,7 +2,6 @@ package org.example.project.feature.authorization.signIin
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -12,7 +11,6 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import org.example.project.features.authorization.signInComponent.SignInComponent
 import org.example.project.features.authorization.signInComponent.SignInViewEvent
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SignInScreen(component: SignInComponent) {
     val state by component.state.subscribeAsState()
@@ -26,13 +24,17 @@ fun SignInScreen(component: SignInComponent) {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         isLoading = state.isLoading,
-        phoneNumber = state.phoneNumber,
-        onPhoneNumberChanged = {
-            component.onEvent(SignInViewEvent.OnPhoneNumberChanged(it))
+        login = state.login,
+        password = state.password,
+        isLoginEnabled = state.confirmEnabled,
+        onLoginChanged = {
+            component.onEvent(SignInViewEvent.OnLoginChanged(it))
         },
-        authTypes = state.authTypes,
-        onAuthTypeClicked = {
-            component.onEvent(SignInViewEvent.AuthTypeClicked(it))
+        onPasswordChanged = {
+            component.onEvent(SignInViewEvent.OnPasswordChanged(it))
+        },
+        onLoginClicked = {
+            component.onEvent(SignInViewEvent.OnLoginClicked)
         },
     )
 }

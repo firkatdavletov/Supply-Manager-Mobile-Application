@@ -20,6 +20,11 @@ interface AuthRepository {
         code: String,
     ): Flow<Boolean>
 
+    fun loginByEmail(
+        email: String,
+        password: String,
+    ): Flow<Boolean>
+
     suspend fun connect(checkId: String)
 
     suspend fun disconnect()

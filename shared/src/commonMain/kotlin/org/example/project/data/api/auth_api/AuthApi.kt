@@ -6,8 +6,10 @@ import org.example.project.data.api.auth_api.model.CheckSmsCodeResponseBody
 import org.example.project.data.api.auth_api.model.CreateCartRequestBody
 import org.example.project.data.api.auth_api.model.CreateCartResponse
 import org.example.project.data.api.auth_api.model.GetAuthTypesResponseBody
+import org.example.project.data.api.auth_api.model.LoginByEmailRequestBody
 import org.example.project.data.api.auth_api.model.RefreshTokenRequestBody
 import org.example.project.data.api.auth_api.model.RefreshTokenResponseBody
+import org.example.project.data.api.auth_api.model.TokenPairDto
 import org.example.project.data.api.auth_api.model.VerifyPhoneNumberRequestBody
 import org.example.project.data.api.auth_api.model.VerifyPhoneNumberResponseBody
 import org.example.project.data.entities.TokenPairEntity
@@ -22,6 +24,8 @@ interface AuthApi {
     ): VerifyPhoneNumberResponseBody
 
     suspend fun checkSmsCode(body: CheckSmsCodeRequestBody): CheckSmsCodeResponseBody
+
+    suspend fun loginByEmail(body: LoginByEmailRequestBody): TokenPairDto
 
     suspend fun refreshTokens(refreshTokenRequestBody: RefreshTokenRequestBody): RefreshTokenResponseBody
 
