@@ -31,9 +31,9 @@ import org.example.project.data.api.auth_api.model.CreateCartRequestBody
 import org.example.project.data.api.auth_api.model.CreateCartResponse
 import org.example.project.data.api.auth_api.model.GetAuthTypesResponseBody
 import org.example.project.data.api.auth_api.model.LoginByEmailRequestBody
+import org.example.project.data.api.auth_api.model.LoginByEmailResponseBody
 import org.example.project.data.api.auth_api.model.RefreshTokenRequestBody
 import org.example.project.data.api.auth_api.model.RefreshTokenResponseBody
-import org.example.project.data.api.auth_api.model.TokenPairDto
 import org.example.project.data.api.auth_api.model.VerifyPhoneNumberRequestBody
 import org.example.project.data.api.auth_api.model.VerifyPhoneNumberResponseBody
 import org.example.project.data.entities.TokenPairEntity
@@ -68,9 +68,9 @@ class AuthApiImpl(private val httpClient: HttpClient, val wsClient: HttpClient) 
             }.body()
     }
 
-    override suspend fun loginByEmail(body: LoginByEmailRequestBody): TokenPairDto {
+    override suspend fun loginByEmail(body: LoginByEmailRequestBody): LoginByEmailResponseBody {
         return httpClient
-            .post("auth/loginByEmail") {
+            .post("/auth/loginByEmail") {
                 contentType(ContentType.Application.Json)
                 setBody(body)
             }.body()

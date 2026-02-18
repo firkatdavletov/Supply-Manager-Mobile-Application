@@ -54,7 +54,6 @@ class DefaultLaunchComponent(
                             callbacks.navigateToSignIn()
                         }
                     } else {
-                        showError(throwable.toUserMessage())
                         withContext(Dispatchers.Main) {
                             callbacks.navigateToSignIn()
                         }

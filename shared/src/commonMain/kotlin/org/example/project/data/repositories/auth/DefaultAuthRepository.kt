@@ -96,10 +96,14 @@ class DefaultAuthRepository(
             val request = LoginByEmailRequestBody(email, password)
             val response = authRemoteDataStore.loginByEmail(request)
 
-            securityStorage.saveAccessToken(response.access)
-            securityStorage.saveRefreshToken(response.refresh)
+            if (response.success && response.tokens != null) {
+                securityStorage.saveAccessToken(response.tokens.access)
+                securityStorage.saveRefreshToken(response.tokens.refresh)
 
-            emit(true)
+                emit(true)
+            } else {
+                emit(false)
+            }
         }
     }
 

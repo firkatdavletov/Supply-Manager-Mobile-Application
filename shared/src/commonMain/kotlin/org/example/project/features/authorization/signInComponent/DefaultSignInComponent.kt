@@ -5,13 +5,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.example.project.domain.models.ResultModel
 import org.example.project.domain.usecase.auth.LoginByEmailUseCase
+import org.example.project.domain.usecase.user.LoadUserUseCase
 import org.example.project.features.SnackBarManager
 
 class DefaultSignInComponent(
     componentContext: ComponentContext,
     snackBarManager: SnackBarManager,
     private val loginByEmailUseCase: LoginByEmailUseCase,
+    private val loadUserUseCase: LoadUserUseCase,
     private val callbacks: SignInCallbacks,
 ) : SignInComponent(componentContext, snackBarManager) {
 
@@ -67,9 +70,37 @@ class DefaultSignInComponent(
                 }.collect { isSuccess ->
                     withContext(Dispatchers.Main) {
                         if (isSuccess) {
-                            callbacks.navigateToHome()
+                            loadUser()
                         } else {
                             onEvent(SignInViewEvent.OnError("Не удалось выполнить вход"))
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun loadUser() {
+        coroutineScope.launch {
+            loadUserUseCase
+                .invoke(Unit)
+                .catch {
+                    onEvent(SignInViewEvent.OnThrowError(it))
+                }.collect { resultModel ->
+                    when (resultModel) {
+                        is ResultModel.Error -> {
+                            onEvent(SignInViewEvent.OnError(resultModel.message))
+                        }
+
+                        ResultModel.Loading -> {}
+
+                        is ResultModel.Success<Boolean> -> {
+                            withContext(Dispatchers.Main) {
+                                if (resultModel.data) {
+                                    callbacks.navigateToHome()
+                                } else {
+                                    onEvent(SignInViewEvent.OnError("Не удалось выполнить вход"))
+                                }
+                            }
                         }
                     }
                 }

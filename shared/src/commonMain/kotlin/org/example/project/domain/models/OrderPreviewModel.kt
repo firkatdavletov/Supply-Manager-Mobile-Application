@@ -9,5 +9,5 @@ data class OrderPreviewModel(
     val status: OrderStatus,
     val customerName: String,
     val companyName: String?,
-    val deliveryTime: String?,
+    val deliveryTime: String,
 )

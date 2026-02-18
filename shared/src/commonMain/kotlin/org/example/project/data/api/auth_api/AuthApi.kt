@@ -7,6 +7,7 @@ import org.example.project.data.api.auth_api.model.CreateCartRequestBody
 import org.example.project.data.api.auth_api.model.CreateCartResponse
 import org.example.project.data.api.auth_api.model.GetAuthTypesResponseBody
 import org.example.project.data.api.auth_api.model.LoginByEmailRequestBody
+import org.example.project.data.api.auth_api.model.LoginByEmailResponseBody
 import org.example.project.data.api.auth_api.model.RefreshTokenRequestBody
 import org.example.project.data.api.auth_api.model.RefreshTokenResponseBody
 import org.example.project.data.api.auth_api.model.TokenPairDto
@@ -25,7 +26,7 @@ interface AuthApi {
 
     suspend fun checkSmsCode(body: CheckSmsCodeRequestBody): CheckSmsCodeResponseBody
 
-    suspend fun loginByEmail(body: LoginByEmailRequestBody): TokenPairDto
+    suspend fun loginByEmail(body: LoginByEmailRequestBody): LoginByEmailResponseBody
 
     suspend fun refreshTokens(refreshTokenRequestBody: RefreshTokenRequestBody): RefreshTokenResponseBody
 

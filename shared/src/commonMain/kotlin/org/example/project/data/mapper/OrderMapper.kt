@@ -28,20 +28,20 @@ class OrderMapper(
         )
     }
 
-    fun toPreviewModel(entity: OrderPreviewEntity) = OrderPreviewModel(
-        id = entity.id,
-        totalAmount = (entity.totalAmount * 100).toLong(),
-        status = entity.status,
-        customerName = entity.customerName,
-        companyName = entity.companyName,
-        deliveryTime = entity.deliveryTime?.let {
-            DateUtility.formatLocalDateTimeSimple(entity.deliveryTime)
-        },
-    )
+    fun toPreviewModel(entity: OrderPreviewEntity) =
+        OrderPreviewModel(
+            id = entity.id,
+            totalAmount = entity.totalAmount,
+            status = entity.status,
+            customerName = entity.customerName,
+            companyName = entity.companyName,
+            deliveryTime = entity.deliveryTime,
+        )
 
     fun toPreviewModel(entities: List<OrderPreviewEntity>) = entities.map { toPreviewModel(it) }
 
-    fun toModel(entities: List<OrderEntity>) = entities.map {
-        toModel(it)
-    }
+    fun toModel(entities: List<OrderEntity>) =
+        entities.map {
+            toModel(it)
+        }
 }

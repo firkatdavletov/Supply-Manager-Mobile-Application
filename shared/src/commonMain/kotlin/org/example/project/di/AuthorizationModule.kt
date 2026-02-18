@@ -17,6 +17,7 @@ fun authorizationModule() =
                 componentContext = componentContext,
                 snackBarManager = get(),
                 loginByEmailUseCase = get(),
+                loadUserUseCase = get(),
                 callbacks = callbacks,
             )
         }

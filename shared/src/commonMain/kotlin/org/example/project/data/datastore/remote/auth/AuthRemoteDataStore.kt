@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import org.example.project.data.api.auth_api.model.CheckSmsCodeResponseBody
 import org.example.project.data.api.auth_api.model.GetAuthTypesResponseBody
 import org.example.project.data.api.auth_api.model.LoginByEmailRequestBody
+import org.example.project.data.api.auth_api.model.LoginByEmailResponseBody
 import org.example.project.data.api.auth_api.model.TokenPairDto
 import org.example.project.data.api.auth_api.model.VerifyPhoneNumberRequestBody
 import org.example.project.data.api.auth_api.model.VerifyPhoneNumberResponseBody
@@ -21,7 +22,7 @@ interface AuthRemoteDataStore {
         code: String,
     ): CheckSmsCodeResponseBody
 
-    suspend fun loginByEmail(request: LoginByEmailRequestBody): TokenPairDto
+    suspend fun loginByEmail(request: LoginByEmailRequestBody): LoginByEmailResponseBody
 
     suspend fun connect(checkId: String)
 

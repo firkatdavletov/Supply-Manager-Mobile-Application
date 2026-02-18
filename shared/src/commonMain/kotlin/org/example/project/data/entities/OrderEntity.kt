@@ -11,7 +11,7 @@ data class OrderEntity(
     val status: OrderStatus,
     val deliveryType: DeliveryType,
     val deliveryAddress: String?,
-    val deliveryTime: String?,
+    val deliveryTime: String,
     val items: List<OrderItemEntity>,
     val deliveryPrice: Long,
     val totalAmount: Long,

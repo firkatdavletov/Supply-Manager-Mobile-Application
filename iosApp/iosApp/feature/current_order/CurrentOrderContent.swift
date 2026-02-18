@@ -260,7 +260,7 @@ struct CurrentOrderContent: View {
                 Text(orderItem.name)
                     .font(AppTypography.titleMedium)
                     .foregroundStyle(Color.onBackground)
-                Text("\(orderItem.price.asCurrency()) ₽ (за шт.)")
+                Text("\(orderItem.price.asCurrency())")
                     .font(AppTypography.bodySmall)
                     .foregroundStyle(Color.gray)
             }
