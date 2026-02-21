@@ -19,6 +19,8 @@ struct SignInContent: View {
     let isLoginEnabled: Bool
     let showBackButton: Bool
     let onBackClicked: () -> Void
+    
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         VStack(spacing: 12) {
@@ -52,6 +54,18 @@ struct SignInContent: View {
             .cornerRadius(10)
 
             Spacer()
+            
+            Text("Политика конфиденциальности")
+                .foregroundStyle(Color.black)
+                .font(AppTypography.bodySmall)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading) // 1. Растягиваем на всю ширину
+                .contentShape(Rectangle()) // чтобы кликабельной была вся область
+                .onTapGesture {
+                    if let url = URL(string: "https://foodbox-service-firkat.amvera.io/privacy-policy") {
+                        openURL(url) // 2. Открываем браузер
+                    }
+                }
 
             Button(action: onLoginClicked) {
                 Text("Войти")

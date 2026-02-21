@@ -11,4 +11,5 @@ data class HomeViewState(
     val cancelledCount: Int,
     val pendingCount: Int,
     val processingCount: Int,
+    val showSettingsButton: Boolean = false,
 ) : Reducer.ViewState

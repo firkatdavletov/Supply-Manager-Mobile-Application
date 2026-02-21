@@ -14,9 +14,9 @@ struct StatusChip: View {
     
     var title: String {
         switch status {
-            case .pending: return "Новый"
-            case .processing: return "В работе"
-            case .completed: return "Завершён"
+            case .pending: return "В ожидании"
+            case .processing: return "Принят"
+            case .completed: return "Отправлен"
             case .cancelled: return "Отменён"
             default : return "Неизвестно"
         }

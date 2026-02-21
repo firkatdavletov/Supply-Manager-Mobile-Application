@@ -17,7 +17,7 @@ struct AllCounterCardView: View {
                 .font(.system(size: 32, weight: .bold))
                 .foregroundColor(.black)
             
-            Text("Всего заявок")
+            Text("Всего")
                 .font(.system(size: 14, weight: .medium))
                 .foregroundColor(.gray)
         }

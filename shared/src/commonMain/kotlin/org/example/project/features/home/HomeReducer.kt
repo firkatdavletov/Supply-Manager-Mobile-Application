@@ -1,6 +1,7 @@
 package org.example.project.features.home
 
 import org.example.project.domain.models.OrderStatus
+import org.example.project.domain.models.UserRole
 import org.example.project.features.base.Reducer
 
 class HomeReducer() : Reducer<HomeViewState, HomeViewEvent, HomeViewEffect> {
@@ -29,6 +30,7 @@ class HomeReducer() : Reducer<HomeViewState, HomeViewEvent, HomeViewEffect> {
             is HomeViewEvent.OnUserLoaded -> {
                 state.copy(
                     userName = event.user.name,
+                    showSettingsButton = event.user.role == UserRole.ADMIN,
                 )
             }
 

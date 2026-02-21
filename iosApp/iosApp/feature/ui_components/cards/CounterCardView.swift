@@ -16,18 +16,18 @@ struct CounterCardView: View {
     
     var title: String {
         switch status {
-            case .pending: return "Новый"
-            case .processing: return "В работе"
-            case .completed: return "Завершён"
-            case .cancelled: return "Отменён"
+            case .pending: return "В ожидании"
+            case .processing: return "Приняты"
+            case .completed: return "Отправлены"
+            case .cancelled: return "Отменены"
             default : return "Неизвестно"
         }
     }
     
     var backgroundColor: Color {
         switch status {
-        case .pending: return Color.blue.opacity(0.15)
-        case .processing: return Color.orange.opacity(0.15)
+        case .pending: return Color.orange.opacity(0.15)
+        case .processing: return Color.green.opacity(0.15)
         case .cancelled: return Color.green.opacity(0.15)
         case .cancelled: return Color.red.opacity(0.15)
         default : return Color.blue.opacity(0.15)
@@ -36,7 +36,7 @@ struct CounterCardView: View {
         
     var textColor: Color {
         switch status {
-        case .pending: return .blue
+        case .pending: return .orange
         case .delivery: return .orange
         case .completed: return .green
         case .cancelled: return .red
@@ -54,7 +54,7 @@ struct CounterCardView: View {
             
             Text(title)
                 .font(.system(size: 14, weight: .medium))
-                .foregroundColor(Color.onBackground)
+                .foregroundColor(textColor)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 20)

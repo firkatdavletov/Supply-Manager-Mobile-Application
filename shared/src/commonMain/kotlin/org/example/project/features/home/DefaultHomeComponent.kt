@@ -9,7 +9,6 @@ import org.example.project.domain.models.OrderPreviewModel
 import org.example.project.domain.models.ResultModel
 import org.example.project.domain.repositories.UserRepository
 import org.example.project.domain.usecase.order.GetOrdersUseCase
-import org.example.project.domain.usecase.user.LoadUserUseCase
 import org.example.project.features.SnackBarManager
 
 class DefaultHomeComponent(
@@ -52,6 +51,7 @@ class DefaultHomeComponent(
             }
 
             HomeViewEvent.OnAddClicked -> {
+                homeCallbacks.navigateToCatalog()
             }
 
             HomeViewEvent.OnUserClicked -> {

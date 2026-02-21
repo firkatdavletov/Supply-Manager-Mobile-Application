@@ -38,6 +38,11 @@ struct HomeTopBar: View {
             }
 
             Spacer()
+
+            Button(action: onAddTap) {
+                Image(systemName: "gear")
+                    .foregroundColor(Color.blue)
+            }
         }
         .padding(.horizontal)
         .padding(.vertical, 10)
