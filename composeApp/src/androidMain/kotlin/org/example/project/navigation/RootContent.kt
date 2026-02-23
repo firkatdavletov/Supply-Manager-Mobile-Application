@@ -19,6 +19,7 @@ import org.example.project.feature.map_view.MapScreen
 import org.example.project.feature.payment.PaymentScreen
 import org.example.project.feature.profile.ProfileScreen
 import org.example.project.feature.search_address.SearchAddressScreen
+import org.example.project.feature.settings.SettingsScreen
 
 @Composable
 fun RootContent(
@@ -42,6 +43,7 @@ fun RootContent(
             is RootComponent.Child.CurrentOrder -> CurrentOrderScreen(child.component)
             is RootComponent.Child.Catalog -> CatalogScreen(child.component)
             is RootComponent.Child.Profile -> ProfileScreen(child.component)
+            is RootComponent.Child.Settings -> SettingsScreen(child.component)
             is RootComponent.Child.SignIn -> SignInScreen(child.component)
             is RootComponent.Child.Verification -> VerificationScreen(child.component)
             is RootComponent.Child.SearchAddress -> SearchAddressScreen(child.component)

@@ -31,6 +31,9 @@ sealed class Config {
     data object Profile : Config()
 
     @Serializable
+    data object Settings : Config()
+
+    @Serializable
     data class SignIn(
         val fromScreen: String?
     ) : Config()

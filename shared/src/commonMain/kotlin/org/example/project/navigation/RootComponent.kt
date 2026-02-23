@@ -21,6 +21,7 @@ import org.example.project.features.map.MapComponent
 import org.example.project.features.payment.PaymentComponent
 import org.example.project.features.profile.ProfileComponent
 import org.example.project.features.search_address.SearchAddressComponent
+import org.example.project.features.settings.SettingsComponent
 
 interface RootComponent {
     val childStack: Value<ChildStack<*, Child>>
@@ -53,6 +54,8 @@ interface RootComponent {
         class Catalog(val component: CatalogComponent) : Child()
 
         class Profile(val component: ProfileComponent) : Child()
+
+        class Settings(val component: SettingsComponent) : Child()
 
         class SignIn(val component: SignInComponent) : Child()
 

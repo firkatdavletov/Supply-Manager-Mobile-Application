@@ -48,6 +48,8 @@ import org.example.project.features.profile.ProfileCallbacks
 import org.example.project.features.profile.ProfileComponent
 import org.example.project.features.search_address.SearchAddressCallbacks
 import org.example.project.features.search_address.SearchAddressComponent
+import org.example.project.features.settings.SettingsCallbacks
+import org.example.project.features.settings.SettingsComponent
 import org.example.project.navigation.RootComponent.BottomChild.DeleteUser
 import org.example.project.navigation.RootComponent.BottomChild.LogoutUser
 import org.example.project.navigation.RootComponent.BottomChild.ProductCard
@@ -61,6 +63,7 @@ import org.example.project.navigation.RootComponent.Child.Payment
 import org.example.project.navigation.RootComponent.Child.Profile
 import org.example.project.navigation.RootComponent.Child.SearchAddress
 import org.example.project.navigation.RootComponent.Child.SelectAddress
+import org.example.project.navigation.RootComponent.Child.Settings
 import org.example.project.navigation.RootComponent.Child.SignIn
 import org.example.project.navigation.RootComponent.Child.Verification
 import org.koin.core.component.KoinComponent
@@ -136,6 +139,10 @@ class DefaultRootComponent(
 
             Config.Profile -> {
                 Profile(getProfileComponent(componentContext))
+            }
+
+            Config.Settings -> {
+                Settings(getSettingsComponent(componentContext))
             }
 
             is Config.SignIn -> {
@@ -232,12 +239,8 @@ class DefaultRootComponent(
             navigateToCart = {
                 navigation.pushToFront(Config.Cart)
             },
-            navigateToCatalog = {
-                if (!childStack.items.any { it.configuration == Config.Catalog(null) }) {
-                    navigation.pushNew(Config.Catalog(null))
-                } else {
-                    navigation.pushToFront(Config.Catalog(null))
-                }
+            navigateToSettings = {
+                safeNavigate(Config.Settings)
             },
             navigateToProfile = {
                 safeNavigate(Config.Profile)
@@ -342,6 +345,27 @@ class DefaultRootComponent(
             },
             showLogoutUserDialog = {
                 dialogNavigation.activate(DialogConfig.LogoutUser)
+            },
+        )
+
+        return get {
+            parametersOf(context, callbacks)
+        }
+    }
+
+    private fun getSettingsComponent(context: ComponentContext): SettingsComponent {
+        val callbacks = SettingsCallbacks(
+            navigateBack = {
+                navigation.pop()
+            },
+            navigateToCatalog = {
+                safeNavigate(Config.Catalog(null))
+            },
+            navigateToStores = {
+            },
+            navigateToAccounts = {
+            },
+            navigateToDeliveryTerms = {
             },
         )
 

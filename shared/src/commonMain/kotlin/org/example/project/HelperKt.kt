@@ -13,6 +13,7 @@ import org.example.project.di.mapModule
 import org.example.project.di.paymentModule
 import org.example.project.di.platformModule
 import org.example.project.di.profileModule
+import org.example.project.di.settingsModule
 import org.koin.core.context.startKoin
 
 fun initKoin() {
@@ -30,6 +31,7 @@ fun initKoin() {
             currentOrderModule(),
             catalogModule(),
             profileModule(),
+            settingsModule(),
             dialogsModule(),
         )
     }
