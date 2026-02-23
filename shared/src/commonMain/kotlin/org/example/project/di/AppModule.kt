@@ -22,6 +22,8 @@ import org.example.project.data.api.cart_api.CartApi
 import org.example.project.data.api.cart_api.CartApiImpl
 import org.example.project.data.api.catalog.CatalogApi
 import org.example.project.data.api.catalog.CatalogApiImpl
+import org.example.project.data.api.catalog_import.CatalogImportApi
+import org.example.project.data.api.catalog_import.CatalogImportApiImpl
 import org.example.project.data.api.departments_api.DepartmentApi
 import org.example.project.data.api.departments_api.DepartmentApiImpl
 import org.example.project.data.api.map_api.MapApi
@@ -46,6 +48,8 @@ import org.example.project.data.datastore.remote.cart.DefaultRemoteCartDataStore
 import org.example.project.data.datastore.remote.cart.RemoteCartDataStore
 import org.example.project.data.datastore.remote.catalog.CatalogRemoteDataStore
 import org.example.project.data.datastore.remote.catalog.DefaultCatalogRemoteDataStore
+import org.example.project.data.datastore.remote.catalog_import.CatalogImportRemoteDataStore
+import org.example.project.data.datastore.remote.catalog_import.DefaultCatalogImportRemoteDataStore
 import org.example.project.data.datastore.remote.departments.DefaultDepartmentsRemoteDataStore
 import org.example.project.data.datastore.remote.departments.DepartmentsRemoteDataStore
 import org.example.project.data.datastore.remote.geo.DefaultGeoRemoteDatasource
@@ -76,6 +80,7 @@ import org.example.project.data.mapper.WorkingHoursMapper
 import org.example.project.data.repositories.auth.DefaultAuthRepository
 import org.example.project.data.repositories.cart.DefaultCartRepository
 import org.example.project.data.repositories.catalog.DefaultCatalogRepository
+import org.example.project.data.repositories.catalog_import.DefaultCatalogImportRepository
 import org.example.project.data.repositories.departments.DefaultDepartmentRepository
 import org.example.project.data.repositories.geo.DefaultGeoRepository
 import org.example.project.data.repositories.order.DefaultOrderRepository
@@ -85,6 +90,7 @@ import org.example.project.data.repositories.token.DefaultTokenRepository
 import org.example.project.data.repositories.user.DefaultUserRepository
 import org.example.project.domain.repositories.AuthRepository
 import org.example.project.domain.repositories.CartRepository
+import org.example.project.domain.repositories.CatalogImportRepository
 import org.example.project.domain.repositories.CatalogRepository
 import org.example.project.domain.repositories.DepartmentsRepository
 import org.example.project.domain.repositories.GeoRepository
@@ -107,6 +113,7 @@ import org.example.project.domain.usecase.catalog.GetCategoryUseCase
 import org.example.project.domain.usecase.catalog.GetProductUseCase
 import org.example.project.domain.usecase.catalog.GetProductsUseCase
 import org.example.project.domain.usecase.catalog.GetRemoteCategoriesUseCase
+import org.example.project.domain.usecase.catalog.ImportCatalogCsvUseCase
 import org.example.project.domain.usecase.departments.GetDepartmentsUseCase
 import org.example.project.domain.usecase.geo.GetGeoAddressUseCase
 import org.example.project.domain.usecase.geo.SearchAddressUseCase
@@ -147,6 +154,7 @@ fun appModule() =
         single<UserRemoteDataStore> { DefaultUserRemoteDatastore(get()) }
         single<UserLocalDataStore> { DefaultUserLocalDataStore() }
         single<CatalogRemoteDataStore> { DefaultCatalogRemoteDataStore(get()) }
+        single<CatalogImportRemoteDataStore> { DefaultCatalogImportRemoteDataStore(get()) }
         single<LocalCatalogDataStore> { DefaultLocalCatalogDataStore() }
         single<GeoRemoteDatasource> { DefaultGeoRemoteDatasource(get()) }
         single<RemoteCartDataStore> { DefaultRemoteCartDataStore(get(), get()) }
@@ -159,6 +167,7 @@ fun appModule() =
         single<AuthRepository> { DefaultAuthRepository(get(), get(), get(), get()) }
         single<UserRepository> { DefaultUserRepository(get(), get(), get()) }
         single<CatalogRepository> { DefaultCatalogRepository(get(), get(), get(), get()) }
+        single<CatalogImportRepository> { DefaultCatalogImportRepository(get()) }
         single<TokenRepository> { DefaultTokenRepository(get()) }
         single<CartRepository> { DefaultCartRepository(get(), get(), get(), get(), get()) }
         single<GeoRepository> { DefaultGeoRepository(get(), get()) }
@@ -182,6 +191,7 @@ fun appModule() =
         factory<GetDepartmentsUseCase> { GetDepartmentsUseCase(get(), get()) }
         factory<GetProductUseCase> { GetProductUseCase(get()) }
         factory<GetRemoteCategoriesUseCase> { GetRemoteCategoriesUseCase(get()) }
+        factory<ImportCatalogCsvUseCase> { ImportCatalogCsvUseCase(get()) }
         factory<CreateOrderUseCase> { CreateOrderUseCase(get()) }
         factory<GetSbpBanksUseCase> { GetSbpBanksUseCase(get()) }
         factory<GetPaymentTypesUseCase> { GetPaymentTypesUseCase(get()) }
@@ -449,6 +459,11 @@ fun appModule() =
         single<CatalogApi> {
             val httpClient = get<HttpClient>(named("no_auth"))
             CatalogApiImpl(httpClient)
+        }
+
+        single<CatalogImportApi> {
+            val httpClient = get<HttpClient>(named("auth"))
+            CatalogImportApiImpl(httpClient)
         }
 
         single<CartApi> {

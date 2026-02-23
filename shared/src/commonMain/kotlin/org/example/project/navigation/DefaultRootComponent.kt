@@ -29,6 +29,8 @@ import org.example.project.features.cart.CartComponent
 import org.example.project.features.cart.CartViewCallbacks
 import org.example.project.features.catalog.CatalogCallbacks
 import org.example.project.features.catalog.CatalogComponent
+import org.example.project.features.catalog_settings.CatalogSettingsCallbacks
+import org.example.project.features.catalog_settings.CatalogSettingsComponent
 import org.example.project.features.current_order.CurrentOrderCallbacks
 import org.example.project.features.current_order.CurrentOrderComponent
 import org.example.project.features.dialogs.deleteUserDialog.DeleteUserComponent
@@ -38,6 +40,8 @@ import org.example.project.features.dialogs.logoutUserDialog.LogoutUserDialogCal
 import org.example.project.features.dialogs.productCard.ProductCardComponent
 import org.example.project.features.home.HomeCallbacks
 import org.example.project.features.home.HomeComponent
+import org.example.project.features.import_csv.ImportCsvCallbacks
+import org.example.project.features.import_csv.ImportCsvComponent
 import org.example.project.features.launch.LaunchComponent
 import org.example.project.features.launch.LaunchNavigationCallbacks
 import org.example.project.features.map.MapCallbacks
@@ -56,8 +60,10 @@ import org.example.project.navigation.RootComponent.BottomChild.ProductCard
 import org.example.project.navigation.RootComponent.Child.AppIntroduction
 import org.example.project.navigation.RootComponent.Child.Cart
 import org.example.project.navigation.RootComponent.Child.Catalog
+import org.example.project.navigation.RootComponent.Child.CatalogSettings
 import org.example.project.navigation.RootComponent.Child.CurrentOrder
 import org.example.project.navigation.RootComponent.Child.Home
+import org.example.project.navigation.RootComponent.Child.ImportCsv
 import org.example.project.navigation.RootComponent.Child.Launch
 import org.example.project.navigation.RootComponent.Child.Payment
 import org.example.project.navigation.RootComponent.Child.Profile
@@ -143,6 +149,14 @@ class DefaultRootComponent(
 
             Config.Settings -> {
                 Settings(getSettingsComponent(componentContext))
+            }
+
+            Config.CatalogSettings -> {
+                CatalogSettings(getCatalogSettingsComponent(componentContext))
+            }
+
+            Config.ImportCsv -> {
+                ImportCsv(getImportCsvComponent(componentContext))
             }
 
             is Config.SignIn -> {
@@ -358,14 +372,45 @@ class DefaultRootComponent(
             navigateBack = {
                 navigation.pop()
             },
-            navigateToCatalog = {
-                safeNavigate(Config.Catalog(null))
+            navigateToCatalogSettings = {
+                safeNavigate(Config.CatalogSettings)
             },
             navigateToStores = {
             },
             navigateToAccounts = {
             },
             navigateToDeliveryTerms = {
+            },
+        )
+
+        return get {
+            parametersOf(context, callbacks)
+        }
+    }
+
+    private fun getCatalogSettingsComponent(context: ComponentContext): CatalogSettingsComponent {
+        val callbacks = CatalogSettingsCallbacks(
+            navigateBack = {
+                navigation.pop()
+            },
+            navigateToCategoryCards = {
+            },
+            navigateToProductCards = {
+            },
+            navigateToCsvImport = {
+                safeNavigate(Config.ImportCsv)
+            },
+        )
+
+        return get {
+            parametersOf(context, callbacks)
+        }
+    }
+
+    private fun getImportCsvComponent(context: ComponentContext): ImportCsvComponent {
+        val callbacks = ImportCsvCallbacks(
+            navigateBack = {
+                navigation.pop()
             },
         )
 

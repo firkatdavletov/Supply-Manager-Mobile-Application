@@ -20,7 +20,7 @@ class DefaultSettingsComponent(
             is SettingsViewEvent.OnMenuItemClicked -> {
                 reduce(event)
                 when (event.item) {
-                    SettingsMenuItem.CATALOG -> callbacks.navigateToCatalog()
+                    SettingsMenuItem.CATALOG -> callbacks.navigateToCatalogSettings()
                     SettingsMenuItem.STORES -> callbacks.navigateToStores()
                     SettingsMenuItem.ACCOUNTS -> callbacks.navigateToAccounts()
                     SettingsMenuItem.DELIVERY_TERMS -> callbacks.navigateToDeliveryTerms()

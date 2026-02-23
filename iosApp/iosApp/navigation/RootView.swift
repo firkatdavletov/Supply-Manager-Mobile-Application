@@ -46,6 +46,8 @@ struct RootView: View {
                 case let child as RootComponentChild.Settings: SettingsView(component: child.component)
                 case let child as RootComponentChild.CurrentOrder: CurrentOrderView(component: child.component)
                 case let child as RootComponentChild.SearchAddress: SearchAddressView(component: child.component)
+                case let child as RootComponentChild.CatalogSettings: CatalogSettingsView(component: child.component)
+                case let child as RootComponentChild.ImportCsv: ImportCsvView(component: child.component)
                 default: EmptyView()
                 }
             }

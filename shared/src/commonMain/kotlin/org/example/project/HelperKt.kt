@@ -5,9 +5,11 @@ import org.example.project.di.appModule
 import org.example.project.di.authorizationModule
 import org.example.project.di.cartModule
 import org.example.project.di.catalogModule
+import org.example.project.di.catalogSettingsModule
 import org.example.project.di.currentOrderModule
 import org.example.project.di.dialogsModule
 import org.example.project.di.homeModule
+import org.example.project.di.importCsvModule
 import org.example.project.di.launchModule
 import org.example.project.di.mapModule
 import org.example.project.di.paymentModule
@@ -30,6 +32,8 @@ fun initKoin() {
             platformModule(),
             currentOrderModule(),
             catalogModule(),
+            catalogSettingsModule(),
+            importCsvModule(),
             profileModule(),
             settingsModule(),
             dialogsModule(),

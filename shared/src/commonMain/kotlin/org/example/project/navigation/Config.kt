@@ -34,6 +34,12 @@ sealed class Config {
     data object Settings : Config()
 
     @Serializable
+    data object CatalogSettings : Config()
+
+    @Serializable
+    data object ImportCsv : Config()
+
+    @Serializable
     data class SignIn(
         val fromScreen: String?
     ) : Config()

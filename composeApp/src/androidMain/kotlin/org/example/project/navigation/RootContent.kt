@@ -13,8 +13,10 @@ import org.example.project.feature.launch.LaunchScreen
 import org.example.project.feature.main_tabs.MainTabsContent
 import org.example.project.feature.cart.CartScreen
 import org.example.project.feature.catalog.CatalogScreen
+import org.example.project.feature.catalog_settings.CatalogSettingsScreen
 import org.example.project.feature.current_order.CurrentOrderScreen
 import org.example.project.feature.home.HomeScreen
+import org.example.project.feature.import_csv.ImportCsvScreen
 import org.example.project.feature.map_view.MapScreen
 import org.example.project.feature.payment.PaymentScreen
 import org.example.project.feature.profile.ProfileScreen
@@ -42,6 +44,8 @@ fun RootContent(
             is RootComponent.Child.Payment -> PaymentScreen(child.component)
             is RootComponent.Child.CurrentOrder -> CurrentOrderScreen(child.component)
             is RootComponent.Child.Catalog -> CatalogScreen(child.component)
+            is RootComponent.Child.CatalogSettings -> CatalogSettingsScreen(child.component)
+            is RootComponent.Child.ImportCsv -> ImportCsvScreen(child.component)
             is RootComponent.Child.Profile -> ProfileScreen(child.component)
             is RootComponent.Child.Settings -> SettingsScreen(child.component)
             is RootComponent.Child.SignIn -> SignInScreen(child.component)
