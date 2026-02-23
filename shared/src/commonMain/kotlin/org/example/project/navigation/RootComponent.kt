@@ -17,12 +17,14 @@ import org.example.project.features.dialogs.deleteUserDialog.DeleteUserComponent
 import org.example.project.features.dialogs.logoutUserDialog.LogoutUserComponent
 import org.example.project.features.dialogs.productCard.ProductCardComponent
 import org.example.project.features.edit_category.EditCategoryComponent
+import org.example.project.features.edit_product_setting.EditProductComponent
 import org.example.project.features.home.HomeComponent
 import org.example.project.features.import_csv.ImportCsvComponent
 import org.example.project.features.launch.LaunchComponent
 import org.example.project.features.main_tabs.MainTabsComponent
 import org.example.project.features.map.MapComponent
 import org.example.project.features.payment.PaymentComponent
+import org.example.project.features.products_settings.ProductsSettingsComponent
 import org.example.project.features.profile.ProfileComponent
 import org.example.project.features.search_address.SearchAddressComponent
 import org.example.project.features.settings.SettingsComponent
@@ -66,6 +68,10 @@ interface RootComponent {
         class CategoriesSettings(val component: CategoriesSettingsComponent) : Child()
 
         class EditCategory(val component: EditCategoryComponent) : Child()
+
+        class ProductsSettings(val component: ProductsSettingsComponent) : Child()
+
+        class EditProductSetting(val component: EditProductComponent) : Child()
 
         class ImportCsv(val component: ImportCsvComponent) : Child()
 

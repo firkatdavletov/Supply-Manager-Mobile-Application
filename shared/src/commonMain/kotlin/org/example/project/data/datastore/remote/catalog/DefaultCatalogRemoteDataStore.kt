@@ -4,6 +4,7 @@ import org.example.project.data.api.catalog.CatalogApi
 import org.example.project.data.api.catalog.model.GetCatalogResponseBody
 import org.example.project.data.api.catalog.model.GetCategoryResponseBody
 import org.example.project.data.api.catalog.model.GetProductResponseBody
+import org.example.project.data.api.catalog.model.GetProductsResponseBody
 
 class DefaultCatalogRemoteDataStore(
     private val catalogApi: CatalogApi,
@@ -18,5 +19,9 @@ class DefaultCatalogRemoteDataStore(
 
     override suspend fun getCategory(id: Long): GetCategoryResponseBody {
         return catalogApi.getCategory(id)
+    }
+
+    override suspend fun getAllProducts(): GetProductsResponseBody {
+        return catalogApi.getAllProducts()
     }
 }

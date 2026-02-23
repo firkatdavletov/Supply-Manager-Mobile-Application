@@ -55,6 +55,18 @@ class DefaultCatalogRepository(
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getProducts(categoryId: Long): Flow<List<ProductModel>> {
         return flow {
+            val response = catalogRemoteDataStore.getAllProducts()
+
+            if (response.success) {
+                val products = productMapper.toModel(response.products)
+                if (categoryId == 0L) {
+                    emit(products)
+                } else {
+                    emit(products.filter { it.categoryId == categoryId })
+                }
+            } else {
+                emit(emptyList())
+            }
         }
     }
 

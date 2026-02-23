@@ -10,6 +10,7 @@ import org.example.project.di.categoriesSettingsModule
 import org.example.project.di.currentOrderModule
 import org.example.project.di.dialogsModule
 import org.example.project.di.editCategoryModule
+import org.example.project.di.editProductSettingModule
 import org.example.project.di.homeModule
 import org.example.project.di.importCsvModule
 import org.example.project.di.launchModule
@@ -17,6 +18,7 @@ import org.example.project.di.mapModule
 import org.example.project.di.paymentModule
 import org.example.project.di.platformModule
 import org.example.project.di.profileModule
+import org.example.project.di.productsSettingsModule
 import org.example.project.di.settingsModule
 import org.koin.core.context.startKoin
 
@@ -37,6 +39,8 @@ fun initKoin() {
             catalogSettingsModule(),
             categoriesSettingsModule(),
             editCategoryModule(),
+            productsSettingsModule(),
+            editProductSettingModule(),
             importCsvModule(),
             profileModule(),
             settingsModule(),

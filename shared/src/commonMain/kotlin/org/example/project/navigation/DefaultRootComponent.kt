@@ -42,6 +42,8 @@ import org.example.project.features.dialogs.logoutUserDialog.LogoutUserDialogCal
 import org.example.project.features.dialogs.productCard.ProductCardComponent
 import org.example.project.features.edit_category.EditCategoryCallbacks
 import org.example.project.features.edit_category.EditCategoryComponent
+import org.example.project.features.edit_product_setting.EditProductComponent
+import org.example.project.features.edit_product_setting.EditProductSettingCallbacks
 import org.example.project.features.home.HomeCallbacks
 import org.example.project.features.home.HomeComponent
 import org.example.project.features.import_csv.ImportCsvCallbacks
@@ -52,6 +54,8 @@ import org.example.project.features.map.MapCallbacks
 import org.example.project.features.map.MapComponent
 import org.example.project.features.payment.PaymentCallbacks
 import org.example.project.features.payment.PaymentComponent
+import org.example.project.features.products_settings.ProductsSettingsCallbacks
+import org.example.project.features.products_settings.ProductsSettingsComponent
 import org.example.project.features.profile.ProfileCallbacks
 import org.example.project.features.profile.ProfileComponent
 import org.example.project.features.search_address.SearchAddressCallbacks
@@ -68,10 +72,12 @@ import org.example.project.navigation.RootComponent.Child.CatalogSettings
 import org.example.project.navigation.RootComponent.Child.CategoriesSettings
 import org.example.project.navigation.RootComponent.Child.CurrentOrder
 import org.example.project.navigation.RootComponent.Child.EditCategory
+import org.example.project.navigation.RootComponent.Child.EditProductSetting
 import org.example.project.navigation.RootComponent.Child.Home
 import org.example.project.navigation.RootComponent.Child.ImportCsv
 import org.example.project.navigation.RootComponent.Child.Launch
 import org.example.project.navigation.RootComponent.Child.Payment
+import org.example.project.navigation.RootComponent.Child.ProductsSettings
 import org.example.project.navigation.RootComponent.Child.Profile
 import org.example.project.navigation.RootComponent.Child.SearchAddress
 import org.example.project.navigation.RootComponent.Child.SelectAddress
@@ -167,6 +173,14 @@ class DefaultRootComponent(
 
             is Config.EditCategory -> {
                 EditCategory(getEditCategoryComponent(componentContext, config))
+            }
+
+            Config.ProductsSettings -> {
+                ProductsSettings(getProductsSettingsComponent(componentContext))
+            }
+
+            is Config.EditProductSetting -> {
+                EditProductSetting(getEditProductSettingComponent(componentContext, config))
             }
 
             Config.ImportCsv -> {
@@ -411,6 +425,7 @@ class DefaultRootComponent(
                 safeNavigate(Config.CategoriesSettings)
             },
             navigateToProductCards = {
+                safeNavigate(Config.ProductsSettings)
             },
             navigateToCsvImport = {
                 safeNavigate(Config.ImportCsv)
@@ -428,10 +443,10 @@ class DefaultRootComponent(
                 navigation.pop()
             },
             navigateToAddCategory = {
-                navigation.pushNew(Config.EditCategory(categoryId = null))
+                safeNavigate(Config.EditCategory(categoryId = null))
             },
             navigateToEditCategory = { categoryId ->
-                navigation.pushNew(Config.EditCategory(categoryId = categoryId))
+                safeNavigate(Config.EditCategory(categoryId = categoryId))
             },
         )
 
@@ -464,6 +479,39 @@ class DefaultRootComponent(
 
         return get {
             parametersOf(context, callbacks)
+        }
+    }
+
+    private fun getProductsSettingsComponent(context: ComponentContext): ProductsSettingsComponent {
+        val callbacks = ProductsSettingsCallbacks(
+            navigateBack = {
+                navigation.pop()
+            },
+            navigateToAddProduct = {
+                safeNavigate(Config.EditProductSetting(productId = null))
+            },
+            navigateToEditProduct = { productId ->
+                safeNavigate(Config.EditProductSetting(productId = productId))
+            },
+        )
+
+        return get {
+            parametersOf(context, callbacks)
+        }
+    }
+
+    private fun getEditProductSettingComponent(
+        context: ComponentContext,
+        config: Config.EditProductSetting,
+    ): EditProductComponent {
+        val callbacks = EditProductSettingCallbacks(
+            navigateBack = {
+                navigation.pop()
+            },
+        )
+
+        return get {
+            parametersOf(context, config.productId, callbacks)
         }
     }
 

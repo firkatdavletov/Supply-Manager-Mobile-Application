@@ -9,5 +9,6 @@ interface CatalogApi {
     suspend fun getCategories(): GetCatalogResponseBody
     suspend fun getCategory(id: Long) : GetCategoryResponseBody
     suspend fun getProduct(productId: Long): GetProductResponseBody
+    suspend fun getAllProducts(): GetProductsResponseBody
     suspend fun getProductsByCategory(categoryId: Long): GetProductsResponseBody
 }

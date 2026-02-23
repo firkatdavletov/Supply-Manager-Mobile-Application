@@ -110,6 +110,7 @@ import org.example.project.domain.usecase.cart.RemoveFromCartUseCase
 import org.example.project.domain.usecase.cart.UpdateDeliveryAddressUseCase
 import org.example.project.domain.usecase.catalog.GetCategoriesUseCase
 import org.example.project.domain.usecase.catalog.GetCategoryUseCase
+import org.example.project.domain.usecase.catalog.GetAllProductsUseCase
 import org.example.project.domain.usecase.catalog.GetProductUseCase
 import org.example.project.domain.usecase.catalog.GetProductsUseCase
 import org.example.project.domain.usecase.catalog.GetRemoteCategoriesUseCase
@@ -182,6 +183,7 @@ fun appModule() =
         factory<LoginByEmailUseCase> { LoginByEmailUseCase(get()) }
         factory<VerifyCodeUseCase> { VerifyCodeUseCase(get()) }
         factory<GetCategoriesUseCase> { GetCategoriesUseCase(get()) }
+        factory<GetAllProductsUseCase> { GetAllProductsUseCase(get()) }
         factory<GetProductsUseCase> { GetProductsUseCase(get()) }
         factory<AddToCartUseCase> { AddToCartUseCase(get()) }
         factory<LoadCartUseCase> { LoadCartUseCase(get()) }

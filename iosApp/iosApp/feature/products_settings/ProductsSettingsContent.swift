@@ -1,24 +1,24 @@
 import SwiftUI
 import Shared
 
-struct CategoriesSettingsContent: View {
+struct ProductsSettingsContent: View {
     let title: String
-    let categories: [CategoryModel]
+    let products: [Shared.ProductModel]
     let searchQuery: String
-    let selectedCategoryId: KotlinLong?
+    let selectedProductId: KotlinLong?
     let isLoading: Bool
     let onBack: () -> Void
-    let onAddCategory: () -> Void
+    let onAddProduct: () -> Void
     let onSearchQueryChanged: (String) -> Void
-    let onCategoryClicked: (Int64) -> Void
+    let onProductClicked: (Int64) -> Void
 
     var body: some View {
         VStack(spacing: 0) {
             topBar
 
             VStack(spacing: 12) {
-                Button(action: onAddCategory) {
-                    Text("Добавить категорию")
+                Button(action: onAddProduct) {
+                    Text("Добавить товар")
                         .font(AppTypography.bodyLarge)
                         .foregroundStyle(Color.white)
                         .frame(maxWidth: .infinity)
@@ -28,7 +28,7 @@ struct CategoriesSettingsContent: View {
                 }
 
                 TextField(
-                    "Поиск категорий",
+                    "Поиск товаров",
                     text: Binding(
                         get: { searchQuery },
                         set: { onSearchQueryChanged($0) }
@@ -41,9 +41,9 @@ struct CategoriesSettingsContent: View {
                     ProgressView()
                         .frame(maxWidth: .infinity, minHeight: 180)
                     Spacer()
-                } else if categories.isEmpty {
+                } else if products.isEmpty {
                     Spacer()
-                    Text("Категории не найдены")
+                    Text("Товары не найдены")
                         .font(AppTypography.bodyMedium)
                         .foregroundStyle(Color.onSurface.opacity(0.75))
                         .frame(maxWidth: .infinity, minHeight: 180)
@@ -51,20 +51,24 @@ struct CategoriesSettingsContent: View {
                 } else {
                     ScrollView {
                         VStack(spacing: 0) {
-                            ForEach(categories, id: \.id) { category in
-                                let isSelected = selectedCategoryId.asInt64 == category.id.asInt64
+                            ForEach(products, id: \.id) { product in
+                                let isSelected = selectedProductId.asInt64 == product.id.asInt64
                                 Button(
                                     action: {
-                                        onCategoryClicked(category.id.asInt64)
+                                        onProductClicked(product.id.asInt64)
                                     },
                                     label: {
                                         HStack(spacing: 12) {
                                             VStack(alignment: .leading, spacing: 2) {
-                                                Text(category.title)
+                                                Text(product.title)
                                                     .font(AppTypography.bodyLarge)
                                                     .foregroundStyle(Color.onBackground)
-                                                if let imageUrl = category.imageUrl, !imageUrl.isEmpty {
-                                                    Text(imageUrl)
+                                                Text("Цена: \(product.price.asCurrency())")
+                                                    .font(AppTypography.bodySmall)
+                                                    .foregroundStyle(Color.onSurface.opacity(0.8))
+                                            
+                                                if let description = product.description_ ,!description.isEmpty {
+                                                    Text(description)
                                                         .font(AppTypography.bodySmall)
                                                         .foregroundStyle(Color.onSurface.opacity(0.8))
                                                 }
@@ -81,7 +85,7 @@ struct CategoriesSettingsContent: View {
                                 )
                                 .buttonStyle(.plain)
 
-                                if category.id != categories.last?.id {
+                                if product.id != products.last?.id {
                                     Divider()
                                         .overlay(Color.onSurface.opacity(0.15))
                                         .padding(.leading, 16)
@@ -98,7 +102,7 @@ struct CategoriesSettingsContent: View {
     }
 }
 
-extension CategoriesSettingsContent {
+extension ProductsSettingsContent {
     private var topBar: some View {
         HStack {
             Button(action: onBack) {

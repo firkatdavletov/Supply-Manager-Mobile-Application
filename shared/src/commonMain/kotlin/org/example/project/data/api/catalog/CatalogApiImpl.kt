@@ -35,6 +35,15 @@ class CatalogApiImpl(private val httpClient: HttpClient) : CatalogApi {
             }.body()
     }
 
+    override suspend fun getAllProducts(): GetProductsResponseBody {
+        return httpClient
+            .get {
+                url {
+                    path("catalog", "products", "all")
+                }
+            }.body()
+    }
+
     override suspend fun getProductsByCategory(categoryId: Long): GetProductsResponseBody {
         return httpClient
             .get {
