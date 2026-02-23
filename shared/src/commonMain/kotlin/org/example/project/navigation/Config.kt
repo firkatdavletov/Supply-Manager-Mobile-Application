@@ -37,6 +37,12 @@ sealed class Config {
     data object CatalogSettings : Config()
 
     @Serializable
+    data object CategoriesSettings : Config()
+
+    @Serializable
+    data class EditCategory(val categoryId: Long?) : Config()
+
+    @Serializable
     data object ImportCsv : Config()
 
     @Serializable

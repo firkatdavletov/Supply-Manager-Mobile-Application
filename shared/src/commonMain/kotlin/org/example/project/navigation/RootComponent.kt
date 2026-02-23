@@ -11,10 +11,12 @@ import org.example.project.features.authorization.verification_component.Verific
 import org.example.project.features.cart.CartComponent
 import org.example.project.features.catalog.CatalogComponent
 import org.example.project.features.catalog_settings.CatalogSettingsComponent
+import org.example.project.features.categories_settings.CategoriesSettingsComponent
 import org.example.project.features.current_order.CurrentOrderComponent
 import org.example.project.features.dialogs.deleteUserDialog.DeleteUserComponent
 import org.example.project.features.dialogs.logoutUserDialog.LogoutUserComponent
 import org.example.project.features.dialogs.productCard.ProductCardComponent
+import org.example.project.features.edit_category.EditCategoryComponent
 import org.example.project.features.home.HomeComponent
 import org.example.project.features.import_csv.ImportCsvComponent
 import org.example.project.features.launch.LaunchComponent
@@ -60,6 +62,10 @@ interface RootComponent {
         class Settings(val component: SettingsComponent) : Child()
 
         class CatalogSettings(val component: CatalogSettingsComponent) : Child()
+
+        class CategoriesSettings(val component: CategoriesSettingsComponent) : Child()
+
+        class EditCategory(val component: EditCategoryComponent) : Child()
 
         class ImportCsv(val component: ImportCsvComponent) : Child()
 

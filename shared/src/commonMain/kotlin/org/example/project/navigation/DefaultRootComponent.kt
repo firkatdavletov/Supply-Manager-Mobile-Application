@@ -31,6 +31,8 @@ import org.example.project.features.catalog.CatalogCallbacks
 import org.example.project.features.catalog.CatalogComponent
 import org.example.project.features.catalog_settings.CatalogSettingsCallbacks
 import org.example.project.features.catalog_settings.CatalogSettingsComponent
+import org.example.project.features.categories_settings.CategoriesSettingsCallbacks
+import org.example.project.features.categories_settings.CategoriesSettingsComponent
 import org.example.project.features.current_order.CurrentOrderCallbacks
 import org.example.project.features.current_order.CurrentOrderComponent
 import org.example.project.features.dialogs.deleteUserDialog.DeleteUserComponent
@@ -38,6 +40,8 @@ import org.example.project.features.dialogs.deleteUserDialog.DeleteUserDialogCal
 import org.example.project.features.dialogs.logoutUserDialog.LogoutUserComponent
 import org.example.project.features.dialogs.logoutUserDialog.LogoutUserDialogCallbacks
 import org.example.project.features.dialogs.productCard.ProductCardComponent
+import org.example.project.features.edit_category.EditCategoryCallbacks
+import org.example.project.features.edit_category.EditCategoryComponent
 import org.example.project.features.home.HomeCallbacks
 import org.example.project.features.home.HomeComponent
 import org.example.project.features.import_csv.ImportCsvCallbacks
@@ -61,7 +65,9 @@ import org.example.project.navigation.RootComponent.Child.AppIntroduction
 import org.example.project.navigation.RootComponent.Child.Cart
 import org.example.project.navigation.RootComponent.Child.Catalog
 import org.example.project.navigation.RootComponent.Child.CatalogSettings
+import org.example.project.navigation.RootComponent.Child.CategoriesSettings
 import org.example.project.navigation.RootComponent.Child.CurrentOrder
+import org.example.project.navigation.RootComponent.Child.EditCategory
 import org.example.project.navigation.RootComponent.Child.Home
 import org.example.project.navigation.RootComponent.Child.ImportCsv
 import org.example.project.navigation.RootComponent.Child.Launch
@@ -153,6 +159,14 @@ class DefaultRootComponent(
 
             Config.CatalogSettings -> {
                 CatalogSettings(getCatalogSettingsComponent(componentContext))
+            }
+
+            Config.CategoriesSettings -> {
+                CategoriesSettings(getCategoriesSettingsComponent(componentContext))
+            }
+
+            is Config.EditCategory -> {
+                EditCategory(getEditCategoryComponent(componentContext, config))
             }
 
             Config.ImportCsv -> {
@@ -394,6 +408,7 @@ class DefaultRootComponent(
                 navigation.pop()
             },
             navigateToCategoryCards = {
+                safeNavigate(Config.CategoriesSettings)
             },
             navigateToProductCards = {
             },
@@ -404,6 +419,39 @@ class DefaultRootComponent(
 
         return get {
             parametersOf(context, callbacks)
+        }
+    }
+
+    private fun getCategoriesSettingsComponent(context: ComponentContext): CategoriesSettingsComponent {
+        val callbacks = CategoriesSettingsCallbacks(
+            navigateBack = {
+                navigation.pop()
+            },
+            navigateToAddCategory = {
+                navigation.pushNew(Config.EditCategory(categoryId = null))
+            },
+            navigateToEditCategory = { categoryId ->
+                navigation.pushNew(Config.EditCategory(categoryId = categoryId))
+            },
+        )
+
+        return get {
+            parametersOf(context, callbacks)
+        }
+    }
+
+    private fun getEditCategoryComponent(
+        context: ComponentContext,
+        config: Config.EditCategory,
+    ): EditCategoryComponent {
+        val callbacks = EditCategoryCallbacks(
+            navigateBack = {
+                navigation.pop()
+            },
+        )
+
+        return get {
+            parametersOf(context, config.categoryId, callbacks)
         }
     }
 

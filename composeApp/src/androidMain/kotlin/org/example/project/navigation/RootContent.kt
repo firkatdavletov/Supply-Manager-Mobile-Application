@@ -14,7 +14,9 @@ import org.example.project.feature.main_tabs.MainTabsContent
 import org.example.project.feature.cart.CartScreen
 import org.example.project.feature.catalog.CatalogScreen
 import org.example.project.feature.catalog_settings.CatalogSettingsScreen
+import org.example.project.feature.categories_settings.CategoriesSettingsScreen
 import org.example.project.feature.current_order.CurrentOrderScreen
+import org.example.project.feature.edit_category.EditCategoryScreen
 import org.example.project.feature.home.HomeScreen
 import org.example.project.feature.import_csv.ImportCsvScreen
 import org.example.project.feature.map_view.MapScreen
@@ -45,6 +47,8 @@ fun RootContent(
             is RootComponent.Child.CurrentOrder -> CurrentOrderScreen(child.component)
             is RootComponent.Child.Catalog -> CatalogScreen(child.component)
             is RootComponent.Child.CatalogSettings -> CatalogSettingsScreen(child.component)
+            is RootComponent.Child.CategoriesSettings -> CategoriesSettingsScreen(child.component)
+            is RootComponent.Child.EditCategory -> EditCategoryScreen(child.component)
             is RootComponent.Child.ImportCsv -> ImportCsvScreen(child.component)
             is RootComponent.Child.Profile -> ProfileScreen(child.component)
             is RootComponent.Child.Settings -> SettingsScreen(child.component)
